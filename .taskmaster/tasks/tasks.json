@@ -247,7 +247,7 @@
             "description": "Criar entidade Comment com campos rich_text, task_id, user_id, created_at e implementar POST /tasks/{id}/comments endpoint",
             "dependencies": [],
             "details": "Entity: @Entity Comment {id UUID, taskId UUID, userId UUID, richText TEXT, createdAt TIMESTAMP}. Controller: POST endpoint com validação JSR303. Service: CommentService.save(). Incluir parsing básico de @mentions no texto salvo.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testar POST comment válido, rejeição sem task_id válido, persistência no banco PostgreSQL. Verificar constraints de tamanho rich_text.",
             "parentId": "undefined"
           },
@@ -272,7 +272,7 @@
               2
             ],
             "details": "No CommentService.save(): regex /@([a-zA-Z0-9_-]+)/g → buscar ProjectMember por username → criar Notification entities → WebSocket 'new_notification' para user_ids mencionados. Integrar com Task 10 Notification system.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Comment '@joao' → Notification criada para joão → WebSocket received em outro browser. Testar mention inválido ignorado.",
             "parentId": "undefined"
           },
@@ -285,7 +285,7 @@
               2
             ],
             "details": "Backend: POST /tasks/{id}/comments/upload-url → GoogleCloudStorage.generateSignedUrl(50MB, 15min). Frontend: CommentEditor upload button → fetch signed URL → upload direto → inserir <img src='gcp-url'> ou PDF preview. Limitar 50MB.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Upload 1MB/50MB sucesso, 51MB rejeitado. Imagem inline preview funciona. PDF thumbnail preview. Cleanup URLs expiradas.",
             "parentId": "undefined"
           },
@@ -300,7 +300,7 @@
               4
             ],
             "details": "WebSocket: 'new_comment' event com comment JSON para task subscribers. Frontend: useWebSocket subscribe task_id → append new comments UI. AOP @Aspect: log CREATE/UPDATE/DELETE comments com user_id de JWT, IP, old/new JSON. Integrar Task 10 audit system.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "2 browsers: user1 posta comment → user2 vê real-time. Audit_log tem entrada CREATE com dados corretos. Testar DELETE comment logs.",
             "parentId": "undefined"
           }
