@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.UUID;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,19 +54,19 @@ class ProjectRoleAspectTest {
         adminUser.setEmail("admin@test.com");
         adminUser.setPassword("hash");
         adminUser.setFullName("Admin User");
-        adminUser = userRepository.save(adminUser);
+        adminUser = Objects.requireNonNull(userRepository.save(adminUser));
 
         managerUser = new User();
         managerUser.setEmail("manager@test.com");
         managerUser.setPassword("hash");
         managerUser.setFullName("Manager User");
-        managerUser = userRepository.save(managerUser);
+        managerUser = Objects.requireNonNull(userRepository.save(managerUser));
 
         viewerUser = new User();
         viewerUser.setEmail("viewer@test.com");
         viewerUser.setPassword("hash");
         viewerUser.setFullName("Viewer User");
-        viewerUser = userRepository.save(viewerUser);
+        viewerUser = Objects.requireNonNull(userRepository.save(viewerUser));
 
         // Criar projeto de teste
         testProject = new Project();

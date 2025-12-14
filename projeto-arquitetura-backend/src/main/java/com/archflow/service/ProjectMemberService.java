@@ -10,7 +10,7 @@ import com.archflow.model.User;
 import com.archflow.repository.ProjectMemberRepository;
 import com.archflow.repository.ProjectRepository;
 import com.archflow.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,6 @@ public class ProjectMemberService {
     private final IAuthenticationContext authenticationContext;
     private final ProjectMemberMapper projectMemberMapper;
 
-    @Autowired
     public ProjectMemberService(
             ProjectMemberRepository projectMemberRepository,
             ProjectRepository projectRepository,

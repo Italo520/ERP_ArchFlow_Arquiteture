@@ -2,7 +2,7 @@ package com.archflow.service;
 
 import com.archflow.model.User;
 import com.archflow.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +22,6 @@ public class SpringAuthenticationContext implements IAuthenticationContext {
 
     private final UserRepository userRepository;
 
-    @Autowired
     public SpringAuthenticationContext(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

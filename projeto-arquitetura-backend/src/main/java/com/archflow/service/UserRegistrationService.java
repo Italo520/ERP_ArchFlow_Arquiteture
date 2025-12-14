@@ -3,7 +3,7 @@ package com.archflow.service;
 import com.archflow.dto.RegisterRequest;
 import com.archflow.model.User;
 import com.archflow.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,6 @@ public class UserRegistrationService implements IUserRegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public UserRegistrationService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder) {

@@ -6,8 +6,7 @@ import com.archflow.mapper.TaskMapper;
 import com.archflow.model.Project;
 import com.archflow.model.User;
 import com.archflow.repository.ProjectRepository;
-import com.archflow.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,6 @@ public class ProjectService {
     private final ProjectMapper projectMapper;
     private final TaskMapper taskMapper;
 
-    @Autowired
     public ProjectService(
             ProjectRepository projectRepository,
             com.archflow.repository.StageRepository stageRepository,

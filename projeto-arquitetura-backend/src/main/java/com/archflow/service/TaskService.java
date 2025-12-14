@@ -12,7 +12,7 @@ import com.archflow.repository.ProjectRepository;
 import com.archflow.repository.StageRepository;
 import com.archflow.repository.TaskRepository;
 import com.archflow.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +24,18 @@ import java.util.stream.Collectors;
 @Service
 public class TaskService {
 
-        @Autowired
-        private TaskRepository taskRepository;
+        private final TaskRepository taskRepository;
+        private final ProjectRepository projectRepository;
+        private final StageRepository stageRepository;
+        private final UserRepository userRepository;
 
-        @Autowired
-        private ProjectRepository projectRepository;
-
-        @Autowired
-        private StageRepository stageRepository;
-
-        @Autowired
-        private UserRepository userRepository;
+        public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository,
+                        StageRepository stageRepository, UserRepository userRepository) {
+                this.taskRepository = taskRepository;
+                this.projectRepository = projectRepository;
+                this.stageRepository = stageRepository;
+                this.userRepository = userRepository;
+        }
 
         public TaskResponseDTO createTask(@NonNull CreateTaskDTO request) {
                 Project project = projectRepository.findById(Objects.requireNonNull(request.getProjectId()))
@@ -45,7 +46,7 @@ public class TaskService {
 
                 User assignee = null;
                 if (request.getAssigneeId() != null) {
-                        assignee = userRepository.findById(request.getAssigneeId())
+                        assignee = userRepository.findById(Objects.requireNonNull(request.getAssigneeId()))
                                         .orElseThrow(() -> new RuntimeException("Assignee not found"));
                 }
 
@@ -83,7 +84,7 @@ public class TaskService {
                         task.setTags(request.getTags());
                 }
                 if (request.getAssigneeId() != null) {
-                        User assignee = userRepository.findById(request.getAssigneeId())
+                        User assignee = userRepository.findById(Objects.requireNonNull(request.getAssigneeId()))
                                         .orElseThrow(() -> new RuntimeException("Assignee not found"));
                         task.setAssignee(assignee);
                 }

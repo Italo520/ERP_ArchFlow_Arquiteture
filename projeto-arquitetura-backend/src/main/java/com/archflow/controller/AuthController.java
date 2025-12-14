@@ -7,7 +7,7 @@ import com.archflow.dto.UserResponse;
 import com.archflow.model.User;
 import com.archflow.service.IAuthenticationService;
 import com.archflow.service.IUserRegistrationService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +29,6 @@ public class AuthController {
     private final IUserRegistrationService userRegistrationService;
     private final IAuthenticationService authenticationService;
 
-    @Autowired
     public AuthController(
             IUserRegistrationService userRegistrationService,
             IAuthenticationService authenticationService) {

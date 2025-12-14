@@ -4,8 +4,6 @@ import com.archflow.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.UUID;
-
 /**
  * DTO para requisição de adição de membro ao projeto.
  */

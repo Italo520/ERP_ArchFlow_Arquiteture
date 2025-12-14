@@ -4,7 +4,7 @@ import com.archflow.dto.LoginRequest;
 import com.archflow.dto.LoginResponse;
 import com.archflow.model.User;
 import com.archflow.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,6 @@ public class AuthenticationService implements IAuthenticationService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-    @Autowired
     public AuthenticationService(
             AuthenticationManager authenticationManager,
             UserRepository userRepository,
