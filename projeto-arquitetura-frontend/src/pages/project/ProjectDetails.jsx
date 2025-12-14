@@ -21,6 +21,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import ProjectService from '../../services/project.service';
 import TaskService from '../../services/task.service';
+import TaskDetailsDialog from '../../components/tasks/TaskDetailsDialog';
 
 function Draggable({ id, children }) {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -49,7 +50,7 @@ function Droppable({ id, children, className }) {
     );
 }
 
-function TaskCard({ task }) {
+function TaskCard({ task, onClick }) {
     const getPriorityColor = (p) => {
         switch (p) {
             case 'URGENT': return 'bg-red-500 text-white';
@@ -61,7 +62,10 @@ function TaskCard({ task }) {
     };
 
     return (
-        <div className="flex flex-col gap-2 rounded-lg bg-background-light dark:bg-neutral-900 p-4 shadow-sm hover:shadow-md transition-shadow border border-neutral-200 dark:border-neutral-800">
+        <div
+            onClick={onClick}
+            className="flex flex-col gap-2 rounded-lg bg-background-light dark:bg-neutral-900 p-4 shadow-sm hover:shadow-md transition-shadow border border-neutral-200 dark:border-neutral-800 cursor-pointer"
+        >
             <div className="flex justify-between items-start">
                 <span className={`text-xs font-bold px-2 py-0.5 rounded ${getPriorityColor(task.priority)}`}>
                     {task.priority || 'NORMAL'}
@@ -92,7 +96,7 @@ function TaskCard({ task }) {
     );
 }
 
-function SortableStage({ stage, onDelete, onAddTask, editingStage, editStageName, setEditStageName, handleUpdateStage, startEditingStage }) {
+function SortableStage({ stage, onDelete, onAddTask, onTaskClick, editingStage, editStageName, setEditStageName, handleUpdateStage, startEditingStage }) {
     const {
         attributes,
         listeners,
@@ -145,7 +149,7 @@ function SortableStage({ stage, onDelete, onAddTask, editingStage, editStageName
                 ) : (
                     stage.tasks.map((task) => (
                         <Draggable key={task.id} id={task.id}>
-                            <TaskCard task={task} />
+                            <TaskCard task={task} onClick={() => onTaskClick(task.id)} />
                         </Draggable>
                     ))
                 )}
@@ -182,6 +186,7 @@ export default function ProjectDetails() {
     const [isStageDialogOpen, setIsStageDialogOpen] = useState(false);
     const [newStageName, setNewStageName] = useState('');
     const [activeId, setActiveId] = useState(null);
+    const [activeTaskDetailsId, setActiveTaskDetailsId] = useState(null);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -301,8 +306,12 @@ export default function ProjectDetails() {
             resetForm();
             loadProject();
         } catch (error) {
-            console.error("Error creating task", error);
-            alert("Erro ao criar tarefa.");
+            console.error("Error creating task details:", error);
+            if (error.response) {
+                console.error("Response data:", error.response.data);
+                console.error("Response status:", error.response.status);
+            }
+            alert("Erro ao criar tarefa. Verifique o console.");
         }
     };
 
@@ -357,6 +366,7 @@ export default function ProjectDetails() {
                                         key={stage.id}
                                         stage={stage}
                                         onAddTask={openNewTaskDialog}
+                                        onTaskClick={setActiveTaskDetailsId}
                                     />
                                 ))}
                             </div>
@@ -458,6 +468,14 @@ export default function ProjectDetails() {
                             </div>
                         </div>
                     </div>
+                )}
+
+                {/* Task Details Dialog using new component */}
+                {activeTaskDetailsId && (
+                    <TaskDetailsDialog
+                        taskId={activeTaskDetailsId}
+                        onClose={() => setActiveTaskDetailsId(null)}
+                    />
                 )}
             </div>
         </div>

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/v1/tasks")
 public class TaskController {
 
     @Autowired
@@ -40,5 +40,10 @@ public class TaskController {
     @GetMapping
     public ResponseEntity<List<TaskResponseDTO>> getTasks(@RequestParam @NonNull UUID projectId) {
         return ResponseEntity.ok(taskService.getTasksByProject(projectId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskResponseDTO> getTask(@PathVariable @NonNull UUID id) {
+        return ResponseEntity.ok(taskService.getTaskById(id));
     }
 }

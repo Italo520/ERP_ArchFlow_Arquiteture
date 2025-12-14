@@ -239,7 +239,7 @@
           "7",
           "8"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -259,7 +259,7 @@
               1
             ],
             "details": "Usar @tiptap/react + @tiptap/starter-kit. Extension custom Mention com autocomplete de membros projeto via API /projects/{id}/members. Debounce submit após 2s ou Ctrl+Enter. Sanitizar HTML output com DOMPurify.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testar rich text (bold, italic, list), @mention autocomplete funciona, submit envia JSON correto para backend. Verificar XSS prevention.",
             "parentId": "undefined"
           },

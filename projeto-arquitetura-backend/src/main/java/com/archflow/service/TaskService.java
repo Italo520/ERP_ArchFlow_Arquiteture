@@ -192,6 +192,12 @@ public class TaskService {
                                 .collect(Collectors.toList());
         }
 
+        public TaskResponseDTO getTaskById(UUID taskId) {
+                Task task = taskRepository.findById(taskId)
+                                .orElseThrow(() -> new RuntimeException("Task not found"));
+                return mapToDTO(task);
+        }
+
         private TaskResponseDTO mapToDTO(@NonNull Task task) {
                 TaskResponseDTO dto = new TaskResponseDTO(
                                 task.getId(),

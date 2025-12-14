@@ -27,7 +27,9 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(authorize -> authorize
                                                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
                                                 .permitAll()
-                                                .requestMatchers("/auth/**", "/health").permitAll()
+                                                .requestMatchers("/auth/**", "/health", "/ws/**", "/error",
+                                                                "/api/v1/storage/**")
+                                                .permitAll()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(
