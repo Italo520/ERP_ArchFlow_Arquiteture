@@ -8,7 +8,8 @@ import {
     useSensor,
     useSensors,
     useDraggable,
-    useDroppable
+    useDroppable,
+    DragOverlay
 } from '@dnd-kit/core';
 import {
     SortableContext,
@@ -208,7 +209,12 @@ export default function ProjectDetails() {
         const { active, over } = event;
         setActiveId(null);
 
-        if (!over) return;
+        console.log('Drag End:', { active, over });
+
+        if (!over) {
+            console.log('No over target, returning.');
+            return;
+        }
 
         const activeId = active.id;
         const overId = over.id;
@@ -230,24 +236,41 @@ export default function ProjectDetails() {
             const sourceStage = project.stages.find(stage => stage.tasks.some(task => task.id === activeId));
             const destStage = project.stages.find(stage => stage.id === overId || stage.tasks.some(task => task.id === overId));
 
-            if (!sourceStage || !destStage) return;
-            if (sourceStage.id === destStage.id) return; // Same stage reordering not implemented separately in backend for now
+            if (!sourceStage || !destStage) {
+                console.log('Source or Dest stage not found', { sourceStage, destStage });
+                return;
+            }
+            // Same stage reordering (skipped for now as per logic)
+            if (sourceStage.id === destStage.id) return;
+
+            console.log('Moving task', activeId, 'from', sourceStage.name, 'to', destStage.name);
 
             // Optimistic Update
             const newProject = { ...project };
             const sourceStageIndex = newProject.stages.findIndex(s => s.id === sourceStage.id);
             const destStageIndex = newProject.stages.findIndex(s => s.id === destStage.id);
 
-            const taskIndex = newProject.stages[sourceStageIndex].tasks.findIndex(t => t.id === activeId);
-            const task = newProject.stages[sourceStageIndex].tasks[taskIndex];
+            // Create new arrays to avoid mutation of state directly (though spread operator helps)
+            const sourceTasks = [...newProject.stages[sourceStageIndex].tasks];
+            const destTasks = [...newProject.stages[destStageIndex].tasks];
 
-            newProject.stages[sourceStageIndex].tasks.splice(taskIndex, 1);
-            newProject.stages[destStageIndex].tasks.push(task);
+            const taskIndex = sourceTasks.findIndex(t => t.id === activeId);
+            const task = sourceTasks[taskIndex];
+
+            // Remove from source
+            sourceTasks.splice(taskIndex, 1);
+            // Add to dest
+            destTasks.push(task);
+
+            // Update project structure
+            newProject.stages[sourceStageIndex] = { ...newProject.stages[sourceStageIndex], tasks: sourceTasks };
+            newProject.stages[destStageIndex] = { ...newProject.stages[destStageIndex], tasks: destTasks };
 
             setProject(newProject);
 
             try {
                 await TaskService.updateTaskStage(activeId, destStage.id);
+                console.log('Backend updated successfully');
             } catch (error) {
                 console.error("Error updating task stage", error);
                 loadProject(); // Revert on error
@@ -338,6 +361,21 @@ export default function ProjectDetails() {
                                 ))}
                             </div>
                         </SortableContext>
+
+                        <DragOverlay>
+                            {activeId && (
+                                (() => {
+                                    const task = project.stages
+                                        .flatMap(s => s.tasks)
+                                        .find(t => t.id === activeId);
+
+                                    if (task) {
+                                        return <TaskCard task={task} />;
+                                    }
+                                    return null;
+                                })()
+                            )}
+                        </DragOverlay>
                     </DndContext>
                 </main>
 

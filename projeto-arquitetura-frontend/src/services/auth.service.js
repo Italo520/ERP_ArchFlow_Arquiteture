@@ -1,20 +1,21 @@
+import api from './api';
+
 const AuthService = {
     login: async (email, password) => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const token = 'mock-jwt-token';
-                localStorage.setItem('token', token);
-                resolve({ token });
-            }, 500);
-        });
+        const response = await api.post('/auth/login', { email, password });
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+        }
+        return response.data;
     },
 
     register: async (name, email, password) => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({ success: true });
-            }, 500);
+        const response = await api.post('/auth/register', {
+            fullName: name,
+            email,
+            password
         });
+        return response.data;
     },
 
     logout: () => {
