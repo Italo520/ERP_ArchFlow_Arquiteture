@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import ProjectService from '../../services/project.service';
 import AuthService from '../../services/auth.service';
 
+import NotificationBell from '../../components/layout/NotificationBell';
+
 export default function Dashboard() {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -36,9 +38,12 @@ export default function Dashboard() {
                     <span className="material-symbols-outlined text-primary dark:text-neutral-50" style={{ fontSize: '28px' }}>architecture</span>
                     <h2 className="text-primary dark:text-neutral-50 text-lg font-bold leading-tight tracking-[-0.015em] flex-1">ArchFlow</h2>
                 </div>
-                <div className="flex items-center gap-2 cursor-pointer" onClick={handleLogout}>
-                    <p className="text-primary/80 dark:text-neutral-300 text-base font-bold leading-normal tracking-[0.015em] shrink-0">Sair</p>
-                    <span className="material-symbols-outlined text-primary/80 dark:text-neutral-300">logout</span>
+                <div className="flex items-center gap-4">
+                    <NotificationBell />
+                    <div className="flex items-center gap-2 cursor-pointer" onClick={handleLogout}>
+                        <p className="text-primary/80 dark:text-neutral-300 text-base font-bold leading-normal tracking-[0.015em] shrink-0">Sair</p>
+                        <span className="material-symbols-outlined text-primary/80 dark:text-neutral-300">logout</span>
+                    </div>
                 </div>
             </div>
 
@@ -86,7 +91,7 @@ export default function Dashboard() {
                             >
                                 <div
                                     className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg bg-neutral-200"
-                                    style={{ backgroundImage: 'url("https://placehold.co/600x400")' }} // Placeholder image
+                                    style={{ backgroundImage: `url("${project.imageUrl || 'https://placehold.co/600x400'}")` }}
                                 ></div>
                                 <div>
                                     <p className="text-primary dark:text-neutral-100 text-base font-medium leading-normal">{project.name}</p>

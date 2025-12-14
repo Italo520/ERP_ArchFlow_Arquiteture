@@ -321,7 +321,7 @@
           "5",
           "6"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -329,7 +329,7 @@
             "description": "Criar entidade JPA AuditLog com todos campos necessários para auditoria completa de ações conforme LGPD.",
             "dependencies": [],
             "details": "@Entity AuditLog: id(UUID), usuario_id(UUID), tabela(String), operacao(Enum: CREATE/UPDATE/DELETE), dados_anteriores(JSONB), dados_novos(JSONB), ip_address(String), user_agent(String), timestamp(LocalDateTime), projeto_id(UUID). Adicionar índices em usuario_id, timestamp, tabela. Usar @PrePersist/@PreUpdate para auto-timestamps.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testar serialização JSONB com dados complexos. Verificar constraints unique e índices. Testar query findByUsuarioIdAndDataAfter."
           },
           {
@@ -340,7 +340,7 @@
               1
             ],
             "details": "@Aspect com @Before/@After(\"execution(* com.exemplo.controller.*.*(..))\"). Extrair usuario_id de SecurityContext (JWT). Detectar operacao via HttpMethod/endpoint. Serializar request/response body para JSONB. Salvar via AuditLogService. Tratar exceções sem quebrar fluxo.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testar com MockMvc: POST/PUT/DELETE endpoints. Verificar 100% ações logadas com dados_anteriores/novos corretos. Testar sem JWT (deve falhar graciosamente)."
           },
           {
@@ -351,7 +351,7 @@
               1
             ],
             "details": "@Entity Notification: id(UUID), usuario_id(UUID), titulo(String), mensagem(Text), lida(boolean default false), tipo(Enum: INFO/WARNING/ERROR), projeto_id(UUID), criado_em(LocalDateTime). Repositório com findByUsuarioIdAndLidaFalseOrderByCriadoEmDesc. Tabela preferencias por user: email(boolean), inapp(boolean), webpush(boolean).",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testar CRUD notifications. Query não-lidas por user. Verificar defaults e ordenação temporal."
           },
           {
@@ -362,7 +362,7 @@
               3
             ],
             "details": "Configurar WebSocketMessageBrokerConfigurer com /ws como prefixo. Controller: @MessageMapping('/new_notification/{userId}'), @SendToUser('/topic/notifications'). Principal principal = SecurityContextHolder.getContext().getAuthentication(). Session por user_id. Integrar NotificationService para trigger.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testar múltiplos browsers logados diferentes users. Enviar notificação via POST, verificar real-time delivery. Testar disconnect/reconnect."
           },
           {
@@ -373,7 +373,7 @@
               4
             ],
             "details": "Componente: Badge com contador não-lidas (useQuery). Dropdown lista com markAsRead onClick. useWebSocket hook para '/user/topic/notifications'. Refresh contador via useSWR. Toast para novas notificações. Mobile responsive com slide-down.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testar fluxo: nova notificação -> badge++, click dropdown -> mark read -> badge 0. Verificar WebSocket em múltiplas abas. Testar preferências user (inapp off não mostra)."
           }
         ]

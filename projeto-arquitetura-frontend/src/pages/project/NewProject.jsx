@@ -1,22 +1,60 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProjectService from '../../services/project.service';
+import api from '../../services/api';
+import axios from 'axios';
 
 export default function NewProject() {
     const [name, setName] = useState('');
     const [clientName, setClientName] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const fileInputRef = useRef(null);
+
+    const handleFileSelect = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        try {
+            setIsUploading(true);
+
+            // 1. Get Upload URL
+            const { data } = await api.post('/api/v1/storage/upload-url', {
+                fileName: file.name,
+                contentType: file.type
+            });
+
+            // 2. Upload file
+            await axios.put(data.url, file, {
+                headers: { 'Content-Type': file.type }
+            });
+
+            // 3. Set Image URL (Local simulation convention)
+            // In a real scenario, the backend should return the public URL or we construct it based on bucket/key
+            const publicUrl = `${api.defaults.baseURL}/api/v1/storage/download/${file.name}`;
+            setImageUrl(publicUrl);
+
+        } catch (error) {
+            console.error("Upload failed", error);
+            setError('Falha no upload da imagem.');
+        } finally {
+            setIsUploading(false);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
 
     const handleSubmit = async (e) => {
-        // Prevent default if called from form submit, but button click might handle it directly
         if (e) e.preventDefault();
 
         setLoading(true);
         setError('');
         try {
-            await ProjectService.createProject({ name, clientName });
+            await ProjectService.createProject({ name, clientName, imageUrl });
             navigate('/dashboard');
         } catch (err) {
             setError('Erro ao criar projeto. Tente novamente.');
@@ -46,6 +84,35 @@ export default function NewProject() {
                     <h1 className="text-neutral-900 dark:text-neutral-50 tracking-tight text-3xl font-bold leading-tight text-left pb-3 pt-6">Criar Novo Projeto</h1>
 
                     {error && <p className="text-red-500 mb-4">{error}</p>}
+
+                    {/* Image Upload Area */}
+                    <div className="py-3 flex flex-col items-center">
+                        <div
+                            className="w-full aspect-video bg-neutral-100 dark:bg-neutral-800 rounded-lg border-2 border-dashed border-neutral-300 dark:border-neutral-600 flex items-center justify-center cursor-pointer overflow-hidden relative group"
+                            onClick={() => !isUploading && fileInputRef.current?.click()}
+                        >
+                            {imageUrl ? (
+                                <>
+                                    <img src={imageUrl} alt="Capa" className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white text-sm font-medium">Trocar Imagem</span>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-center p-4">
+                                    <span className="material-symbols-outlined text-neutral-400 text-4xl mb-2">add_photo_alternate</span>
+                                    <p className="text-neutral-500 text-sm">{isUploading ? 'Enviando...' : 'Adicionar Capa'}</p>
+                                </div>
+                            )}
+                        </div>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleFileSelect}
+                        />
+                    </div>
 
                     {/* TextField for Project Name */}
                     <div className="py-3">

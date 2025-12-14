@@ -56,6 +56,7 @@ public class ProjectService {
         project.setClientName(projectDTO.getClientName());
         project.setStatus("TO_DO"); // Default status
         project.setOwner(user);
+        project.setImageUrl(projectDTO.getImageUrl());
 
         Project savedProject = projectRepository.save(project);
 
@@ -119,6 +120,7 @@ public class ProjectService {
                 project.getName(),
                 project.getClientName(),
                 project.getStatus(),
+                project.getImageUrl(),
                 stageDTOs);
     }
 }

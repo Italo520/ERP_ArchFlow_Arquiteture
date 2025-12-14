@@ -8,14 +8,25 @@ public class ProjectDTO {
     private String clientName;
     private String status;
 
+    private String imageUrl;
+
     public ProjectDTO() {
     }
 
-    public ProjectDTO(UUID id, String name, String clientName, String status) {
+    public ProjectDTO(UUID id, String name, String clientName, String status, String imageUrl) {
         this.id = id;
         this.name = name;
         this.clientName = clientName;
         this.status = status;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public UUID getId() {

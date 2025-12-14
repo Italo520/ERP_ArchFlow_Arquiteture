@@ -28,6 +28,9 @@ public class Project {
     @Column(name = "created_at", updatable = false, insertable = false)
     private Timestamp createdAt;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     // Getters and Setters
     public UUID getId() {
         return id;
@@ -35,6 +38,14 @@ public class Project {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getName() {

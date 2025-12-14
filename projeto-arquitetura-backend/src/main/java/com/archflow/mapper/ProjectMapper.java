@@ -26,7 +26,8 @@ public class ProjectMapper implements DTOMapper<Project, ProjectDTO> {
                 Objects.requireNonNull(project.getId()),
                 project.getName(),
                 project.getClientName(),
-                project.getStatus());
+                project.getStatus(),
+                project.getImageUrl());
     }
 
     @Override
@@ -40,6 +41,7 @@ public class ProjectMapper implements DTOMapper<Project, ProjectDTO> {
         project.setName(dto.getName());
         project.setClientName(dto.getClientName());
         project.setStatus(dto.getStatus());
+        project.setImageUrl(dto.getImageUrl());
 
         return project;
     }

@@ -10,8 +10,9 @@ public class ProjectDetailsDTO extends ProjectDTO {
         super();
     }
 
-    public ProjectDetailsDTO(UUID id, String name, String clientName, String status, List<StageDTO> stages) {
-        super(id, name, clientName, status);
+    public ProjectDetailsDTO(UUID id, String name, String clientName, String status, String imageUrl,
+            List<StageDTO> stages) {
+        super(id, name, clientName, status, imageUrl);
         this.stages = stages;
     }
 

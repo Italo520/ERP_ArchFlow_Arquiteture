@@ -13,6 +13,9 @@ export const useWebSocket = (topic, onMessage) => {
 
     useEffect(() => {
         const stompClient = new Client({
+            connectHeaders: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
             // Using SockJS fallback
             webSocketFactory: () => new SockJS(WS_URL),
             onConnect: () => {
