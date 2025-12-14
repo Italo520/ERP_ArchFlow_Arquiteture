@@ -46,6 +46,22 @@ public class Task {
     @Column(name = "created_at", updatable = false, insertable = false)
     private Timestamp createdAt;
 
+    @Column(columnDefinition = "jsonb")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    private List<com.archflow.model.jsonb.Attachment> attachments;
+
+    @Column(columnDefinition = "jsonb")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    private List<com.archflow.model.jsonb.TaskComment> comments;
+
+    @Column(columnDefinition = "jsonb")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    private List<com.archflow.model.jsonb.ChecklistItem> checklist;
+
+    @Column(columnDefinition = "jsonb")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    private List<com.archflow.model.jsonb.HistoricoItem> historico;
+
     // Getters and Setters
     public UUID getId() {
         return id;
@@ -125,5 +141,37 @@ public class Task {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<com.archflow.model.jsonb.Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<com.archflow.model.jsonb.Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public List<com.archflow.model.jsonb.TaskComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<com.archflow.model.jsonb.TaskComment> comments) {
+        this.comments = comments;
+    }
+
+    public List<com.archflow.model.jsonb.ChecklistItem> getChecklist() {
+        return checklist;
+    }
+
+    public void setChecklist(List<com.archflow.model.jsonb.ChecklistItem> checklist) {
+        this.checklist = checklist;
+    }
+
+    public List<com.archflow.model.jsonb.HistoricoItem> getHistorico() {
+        return historico;
+    }
+
+    public void setHistorico(List<com.archflow.model.jsonb.HistoricoItem> historico) {
+        this.historico = historico;
     }
 }

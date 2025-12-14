@@ -145,4 +145,41 @@ public class TaskResponseDTO {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    private List<com.archflow.model.jsonb.Attachment> attachments;
+    private List<com.archflow.model.jsonb.TaskComment> comments;
+    private List<com.archflow.model.jsonb.ChecklistItem> checklist;
+    private List<com.archflow.model.jsonb.HistoricoItem> historico;
+
+    public List<com.archflow.model.jsonb.Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<com.archflow.model.jsonb.Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public List<com.archflow.model.jsonb.TaskComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<com.archflow.model.jsonb.TaskComment> comments) {
+        this.comments = comments;
+    }
+
+    public List<com.archflow.model.jsonb.ChecklistItem> getChecklist() {
+        return checklist;
+    }
+
+    public void setChecklist(List<com.archflow.model.jsonb.ChecklistItem> checklist) {
+        this.checklist = checklist;
+    }
+
+    public List<com.archflow.model.jsonb.HistoricoItem> getHistorico() {
+        return historico;
+    }
+
+    public void setHistorico(List<com.archflow.model.jsonb.HistoricoItem> historico) {
+        this.historico = historico;
+    }
 }

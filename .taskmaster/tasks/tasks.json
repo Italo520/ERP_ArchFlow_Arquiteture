@@ -71,7 +71,7 @@
           "3",
           "4"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -79,7 +79,7 @@
             "description": "Criar a entidade ProjectMember com campos project_id, user_id, role (enum), permissoes JSONB e definir enum Role com ADMIN,PROJECT_OWNER,MANAGER,ARCHITECT,VIEWER,CLIENT.",
             "dependencies": [],
             "details": "Adicionar @Entity, @Table, @Enumerated(EnumType.STRING) para role, @Column(columnDefinition=\"jsonb\") para permissoes. Incluir relacionamentos @ManyToOne com Project e User. Gerar migrations com Flyway/Liquibase.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testar serialização JSONB de permissões, validação enum role, constraints unique(project_id,user_id). Verificar herança hierárquica ADMIN > PROJECT_OWNER."
           },
           {
@@ -90,7 +90,7 @@
               1
             ],
             "details": "Método addMember verifica se caller tem role >= PROJECT_OWNER no projeto. getPermissions retorna JSONB com permissões efetivas + herança. Injetar ProjectRepository e UserRepository. Tratar exceções AccessDeniedException.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testes unitários com Mockito: addMember por ADMIN sucesso, VIEWER falha 403. Verificar herança permissões MANAGER herda de PROJECT_OWNER. Testar getPermissions retorna JSON correto."
           },
           {
@@ -101,7 +101,7 @@
               2
             ],
             "details": "POST recebe {userId, role}, valida role enum. GET retorna lista membros com roles e permissões. Usar @RestController, @Validated, ResponseEntity. Documentar com OpenAPI/Swagger.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testes @WebMvcTest com MockMvc: POST 201 com token PROJECT_OWNER, 403 com VIEWER. GET 200 lista completa para ADMIN. Validar JSON response schema."
           },
           {
@@ -113,7 +113,7 @@
               3
             ],
             "details": "Estender HandlerInterceptorAdapter ou OncePerRequestFilter. Extrair claims JWT com JwtDecoder. Consultar service.getUserRoleInProject(projectId, userId). Definir roles ordenadas em enum com compareTo(). Aplicar em endpoints /projects/{id}/**.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Testes integração: ADMIN acessa tudo, CLIENT só GET falha em POST. Simular tokens diferentes roles. Verificar 403 Unauthorized sem role válida no projeto. Performance <50ms consulta."
           }
         ]
@@ -132,7 +132,7 @@
           "4",
           "5"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -140,7 +140,7 @@
             "description": "Extend existing Task entity to include priority enum, dueDate, tags array, and JSONB fields for attachments, comments, checklist, historico.",
             "dependencies": [],
             "details": "Add @Enumerated Priority {HIGH,MEDIUM,LOW}, @Temporal/LocalDate dueDate, @ElementCollection String tags, @Type(JsonBinaryType.class) List<Attachment> anexos, List<Comment> comentarios, List<ChecklistItem> checklist, List<HistoricoItem> historico. Include projeto_id, responsavel_id relations. Add JSR303 validations @NotNull, @Size.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit tests for entity validation with @Valid. Verify JSONB serialization/deserialization with Jackson. Test priority enum constraints and tag uniqueness.",
             "parentId": "undefined"
           },
@@ -152,7 +152,7 @@
               1
             ],
             "details": "TaskDTO maps all entity fields. CreateTaskDTO excludes id/historico, requires titulo/descricao/projeto_id. UpdateTaskDTO @NotNull id, optional fields. Use MapStruct for entity-DTO mapping. Add @Valid groups for partial updates.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test DTO validation with @Valid. Verify MapStruct mappings bidirectional. Test JSON serialization with new fields.",
             "parentId": "undefined"
           },
@@ -165,7 +165,7 @@
               2
             ],
             "details": "Methods: createTask(CreateTaskDTO), getTasksByProject(UUID projectId, filters), updateTaskStatus(UUID id, Status status), updateTask(UUID id, UpdateTaskDTO). Auto-populate historico on updates. Validate responsavel_id permissions via ProjectMemberService. Use TaskRepository custom queries.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Integration tests with H2/Testcontainers. Verify historico auto-updates. Test filters by status/priority/responsavel. Mock ProjectMemberService.",
             "parentId": "undefined"
           },
@@ -178,7 +178,7 @@
               3
             ],
             "details": "Use @RestController, @Validated. GET supports pagination/filters ?status= &priority= &responsavelId=. POST @RequestBody @Valid CreateTaskDTO. PATCH @PathVariable UUID id, @RequestBody UpdateStatusDTO. JWT auth interceptor for project access. Return TaskDTO.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Controller tests with MockMvc. Test 200/400/401/403/404 scenarios. Verify JSR303 rejects invalid priority/tags. Pagination with 1000 tasks.",
             "parentId": "undefined"
           },
@@ -190,7 +190,7 @@
               1
             ],
             "details": "Add @Query methods: findByProjectIdAndStatus(UUID projectId, Status status), findByPriority(Priority priority), fullTextSearchOnChecklist(String term), countByProjectId(UUID projectId). Support pagination with Pageable. JSONB queries using @Query native PostgreSQL.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Repository slice tests with Testcontainers PostgreSQL. Verify JSONB queries on checklist/historico. Performance: query 1000 tasks <500ms. Test pagination/sort.",
             "parentId": "undefined"
           }

@@ -28,13 +28,16 @@ public class TaskService {
         private final ProjectRepository projectRepository;
         private final StageRepository stageRepository;
         private final UserRepository userRepository;
+        private final IAuthenticationContext authenticationContext;
 
         public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository,
-                        StageRepository stageRepository, UserRepository userRepository) {
+                        StageRepository stageRepository, UserRepository userRepository,
+                        IAuthenticationContext authenticationContext) {
                 this.taskRepository = taskRepository;
                 this.projectRepository = projectRepository;
                 this.stageRepository = stageRepository;
                 this.userRepository = userRepository;
+                this.authenticationContext = authenticationContext;
         }
 
         public TaskResponseDTO createTask(@NonNull CreateTaskDTO request) {
@@ -59,6 +62,28 @@ public class TaskService {
                 task.setPriority(request.getPriority());
                 task.setDueDate(request.getDueDate());
                 task.setTags(request.getTags());
+                task.setAttachments(request.getAttachments());
+                task.setChecklist(request.getChecklist());
+                task.setComments(new java.util.ArrayList<>());
+                task.setHistorico(new java.util.ArrayList<>());
+
+                // Add creation history
+                User currentUser = null;
+                try {
+                        currentUser = authenticationContext.getCurrentUser();
+                } catch (Exception e) {
+                        // Ignore if no auth context (e.g. tests)
+                }
+
+                if (currentUser != null) {
+                        com.archflow.model.jsonb.HistoricoItem historyItem = new com.archflow.model.jsonb.HistoricoItem(
+                                        java.time.LocalDateTime.now(),
+                                        currentUser.getId().toString(),
+                                        currentUser.getFullName(),
+                                        "CREATED",
+                                        "Tarefa criada");
+                        task.getHistorico().add(historyItem);
+                }
 
                 Task savedTask = taskRepository.save(task);
                 return mapToDTO(savedTask);
@@ -68,25 +93,62 @@ public class TaskService {
                 Task task = taskRepository.findById(taskId)
                                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
-                if (request.getTitle() != null) {
+                User currentUser = null;
+                try {
+                        currentUser = authenticationContext.getCurrentUser();
+                } catch (Exception e) {
+                        // ignore
+                }
+
+                List<String> changes = new java.util.ArrayList<>();
+
+                if (request.getTitle() != null && !Objects.equals(task.getTitle(), request.getTitle())) {
+                        changes.add("Título alterado");
                         task.setTitle(request.getTitle());
                 }
-                if (request.getDescription() != null) {
+                if (request.getDescription() != null
+                                && !Objects.equals(task.getDescription(), request.getDescription())) {
+                        changes.add("Descrição alterada");
                         task.setDescription(request.getDescription());
                 }
-                if (request.getPriority() != null) {
+                if (request.getPriority() != null && !Objects.equals(task.getPriority(), request.getPriority())) {
+                        changes.add("Prioridade alterada de " + task.getPriority() + " para " + request.getPriority());
                         task.setPriority(request.getPriority());
                 }
-                if (request.getDueDate() != null) {
+                if (request.getDueDate() != null && !Objects.equals(task.getDueDate(), request.getDueDate())) {
+                        changes.add("Data de entrega alterada");
                         task.setDueDate(request.getDueDate());
                 }
-                if (request.getTags() != null) {
+                if (request.getTags() != null && !Objects.equals(task.getTags(), request.getTags())) {
+                        changes.add("Tags atualizadas");
                         task.setTags(request.getTags());
                 }
                 if (request.getAssigneeId() != null) {
                         User assignee = userRepository.findById(Objects.requireNonNull(request.getAssigneeId()))
                                         .orElseThrow(() -> new RuntimeException("Assignee not found"));
-                        task.setAssignee(assignee);
+                        if (task.getAssignee() == null || !task.getAssignee().getId().equals(assignee.getId())) {
+                                changes.add("Responsável alterado para " + assignee.getFullName());
+                                task.setAssignee(assignee);
+                        }
+                }
+
+                if (request.getAttachments() != null) {
+                        task.setAttachments(request.getAttachments());
+                }
+                if (request.getChecklist() != null) {
+                        task.setChecklist(request.getChecklist());
+                }
+
+                if (!changes.isEmpty() && currentUser != null) {
+                        com.archflow.model.jsonb.HistoricoItem historyItem = new com.archflow.model.jsonb.HistoricoItem(
+                                        java.time.LocalDateTime.now(),
+                                        currentUser.getId().toString(),
+                                        currentUser.getFullName(),
+                                        "UPDATED",
+                                        String.join("; ", changes));
+                        if (task.getHistorico() == null)
+                                task.setHistorico(new java.util.ArrayList<>());
+                        task.getHistorico().add(historyItem);
                 }
 
                 Task updatedTask = taskRepository.save(task);
@@ -101,6 +163,25 @@ public class TaskService {
                                 .orElseThrow(() -> new RuntimeException("Stage not found"));
 
                 task.setStage(stage);
+
+                // Add history
+                try {
+                        User currentUser = authenticationContext.getCurrentUser();
+                        if (currentUser != null) {
+                                com.archflow.model.jsonb.HistoricoItem historyItem = new com.archflow.model.jsonb.HistoricoItem(
+                                                java.time.LocalDateTime.now(),
+                                                currentUser.getId().toString(),
+                                                currentUser.getFullName(),
+                                                "STATUS_CHANGED",
+                                                "Status alterado para " + stage.getName());
+                                if (task.getHistorico() == null)
+                                        task.setHistorico(new java.util.ArrayList<>());
+                                task.getHistorico().add(historyItem);
+                        }
+                } catch (Exception e) {
+                        // ignore
+                }
+
                 Task updatedTask = taskRepository.save(task);
                 return mapToDTO(updatedTask);
         }
@@ -112,7 +193,7 @@ public class TaskService {
         }
 
         private TaskResponseDTO mapToDTO(@NonNull Task task) {
-                return new TaskResponseDTO(
+                TaskResponseDTO dto = new TaskResponseDTO(
                                 task.getId(),
                                 task.getTitle(),
                                 task.getDescription(),
@@ -126,5 +207,12 @@ public class TaskService {
                                 task.getDueDate(),
                                 task.getTags(),
                                 task.getCreatedAt() != null ? task.getCreatedAt().toLocalDateTime() : null);
+
+                dto.setAttachments(task.getAttachments());
+                dto.setComments(task.getComments());
+                dto.setChecklist(task.getChecklist());
+                dto.setHistorico(task.getHistorico());
+
+                return dto;
         }
 }
