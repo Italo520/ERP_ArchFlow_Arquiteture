@@ -1,166 +1,45 @@
-const mockProjects = [
-    {
-        id: 1,
-        name: 'Residência no Lago Sul',
-        clientName: 'Família Oliveira',
-        status: 'IN_PROGRESS',
-        stages: [
-            {
-                id: 'todo',
-                name: 'A Fazer',
-                tasks: [
-                    { id: 't1', description: 'Definir layout do piso térreo' },
-                    { id: 't2', description: 'Revisar projeto elétrico com engenheiro' }
-                ]
-            },
-            {
-                id: 'in_progress',
-                name: 'Em Andamento',
-                tasks: [
-                    { id: 't3', description: 'Orçamento com fornecedores de mármore' }
-                ]
-            },
-            {
-                id: 'review',
-                name: 'Revisão',
-                tasks: []
-            },
-            {
-                id: 'done',
-                name: 'Concluído',
-                tasks: [
-                    { id: 't4', description: 'Contratar equipe de demolição' }
-                ]
-            }
-        ]
-    },
-    {
-        id: 2,
-        name: 'Edifício Comercial',
-        clientName: 'Empresa ACME',
-        status: 'DONE',
-        stages: []
-    },
-    {
-        id: 3,
-        name: 'Reforma Apartamento',
-        clientName: 'Sr. e Sra. Silva',
-        status: 'TO_DO',
-        stages: []
-    }
-];
+import api from './api';
 
 const ProjectService = {
     getAllProjects: async () => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(mockProjects);
-            }, 500);
-        });
+        const response = await api.get('/projects');
+        return response.data;
     },
 
     createProject: async (projectData) => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const newProject = {
-                    id: mockProjects.length + 1,
-                    ...projectData,
-                    status: 'TO_DO',
-                    stages: [
-                        { id: 'todo', name: 'A Fazer', tasks: [] },
-                        { id: 'in_progress', name: 'Em Andamento', tasks: [] },
-                        { id: 'review', name: 'Revisão', tasks: [] },
-                        { id: 'done', name: 'Concluído', tasks: [] }
-                    ]
-                };
-                mockProjects.push(newProject);
-                resolve(newProject);
-            }, 500);
-        });
+        const response = await api.post('/projects', projectData);
+        return response.data;
     },
 
     getProjectById: async (id) => {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                const project = mockProjects.find(p => p.id === parseInt(id));
-                if (project) {
-                    // Ensure stages exist if not present
-                    if (!project.stages || project.stages.length === 0) {
-                        project.stages = [
-                            { id: 'todo', name: 'A Fazer', tasks: [] },
-                            { id: 'in_progress', name: 'Em Andamento', tasks: [] },
-                            { id: 'review', name: 'Revisão', tasks: [] },
-                            { id: 'done', name: 'Concluído', tasks: [] }
-                        ];
-                    }
-                    resolve(project);
-                } else {
-                    reject(new Error('Project not found'));
-                }
-            }, 500);
-        });
+        const response = await api.get(`/projects/${id}`);
+        const project = response.data;
+        // Ensure stages exist if not present
+        if (!project.stages) {
+            project.stages = [];
+        }
+        return project;
     },
 
-    addTask: (projectId, stageId, task) => {
-        const project = mockProjects.find(p => p.id === parseInt(projectId));
-        if (project) {
-            const stage = project.stages.find(s => s.id === stageId);
-            if (stage) {
-                stage.tasks.push(task);
-            }
-        }
-    },
-
-    addStage: (projectId, stageName) => {
-        const project = mockProjects.find(p => p.id === parseInt(projectId));
-        if (project) {
-            const newStage = {
-                id: 'stage_' + Date.now(),
-                name: stageName,
-                tasks: []
-            };
-            project.stages.push(newStage);
-            return newStage;
-        }
+    // Placeholder for stage management - implementing strictly what was requested (Task management)
+    // Stage management endpoints would need to be added to backend to fully support these.
+    addStage: async (projectId, stageName) => {
+        console.warn('addStage not implemented in backend yet');
         return null;
     },
 
-    updateStage: (projectId, stageId, newName) => {
-        const project = mockProjects.find(p => p.id === parseInt(projectId));
-        if (project) {
-            const stage = project.stages.find(s => s.id === stageId);
-            if (stage) {
-                stage.name = newName;
-                return stage;
-            }
-        }
+    updateStage: async (projectId, stageId, newName) => {
+        console.warn('updateStage not implemented in backend yet');
         return null;
     },
 
-    deleteStage: (projectId, stageId) => {
-        console.log('Attempting to delete stage:', { projectId, stageId });
-        const project = mockProjects.find(p => p.id === parseInt(projectId));
-        if (project) {
-            console.log('Project found:', project);
-            const stageIndex = project.stages.findIndex(s => s.id === stageId);
-            console.log('Stage index:', stageIndex);
-            if (stageIndex !== -1) {
-                console.log('Deleting stage at index:', stageIndex);
-                project.stages.splice(stageIndex, 1);
-                console.log('Stages after deletion:', project.stages);
-                return true;
-            }
-        }
-        console.log('Failed to delete stage');
+    deleteStage: async (projectId, stageId) => {
+        console.warn('deleteStage not implemented in backend yet');
         return false;
     },
 
-    reorderStages: (projectId, newStagesOrder) => {
-        const project = mockProjects.find(p => p.id === parseInt(projectId));
-        if (project) {
-            project.stages = newStagesOrder;
-            return true;
-        }
+    reorderStages: async (projectId, newStagesOrder) => {
+        console.warn('reorderStages not implemented in backend yet');
         return false;
     }
 };

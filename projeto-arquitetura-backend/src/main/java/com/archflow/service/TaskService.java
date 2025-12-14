@@ -1,7 +1,8 @@
 package com.archflow.service;
 
-import com.archflow.dto.CreateTaskRequest;
-import com.archflow.dto.TaskDTO;
+import com.archflow.dto.CreateTaskDTO;
+import com.archflow.dto.TaskResponseDTO;
+import com.archflow.dto.UpdateTaskDTO;
 import com.archflow.dto.UpdateTaskStageRequest;
 import com.archflow.model.Project;
 import com.archflow.model.Stage;
@@ -15,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -33,7 +36,7 @@ public class TaskService {
         @Autowired
         private UserRepository userRepository;
 
-        public TaskDTO createTask(@NonNull CreateTaskRequest request) {
+        public TaskResponseDTO createTask(@NonNull CreateTaskDTO request) {
                 Project project = projectRepository.findById(Objects.requireNonNull(request.getProjectId()))
                                 .orElseThrow(() -> new RuntimeException("Project not found"));
 
@@ -42,21 +45,54 @@ public class TaskService {
 
                 User assignee = null;
                 if (request.getAssigneeId() != null) {
-                        assignee = userRepository.findById(Objects.requireNonNull(request.getAssigneeId()))
+                        assignee = userRepository.findById(request.getAssigneeId())
                                         .orElseThrow(() -> new RuntimeException("Assignee not found"));
                 }
 
                 Task task = new Task();
+                task.setTitle(request.getTitle());
                 task.setDescription(request.getDescription());
                 task.setProject(project);
                 task.setStage(stage);
                 task.setAssignee(assignee);
+                task.setPriority(request.getPriority());
+                task.setDueDate(request.getDueDate());
+                task.setTags(request.getTags());
 
                 Task savedTask = taskRepository.save(task);
                 return mapToDTO(savedTask);
         }
 
-        public TaskDTO updateTaskStage(@NonNull UUID taskId, @NonNull UpdateTaskStageRequest request) {
+        public TaskResponseDTO updateTask(@NonNull UUID taskId, @NonNull UpdateTaskDTO request) {
+                Task task = taskRepository.findById(taskId)
+                                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+                if (request.getTitle() != null) {
+                        task.setTitle(request.getTitle());
+                }
+                if (request.getDescription() != null) {
+                        task.setDescription(request.getDescription());
+                }
+                if (request.getPriority() != null) {
+                        task.setPriority(request.getPriority());
+                }
+                if (request.getDueDate() != null) {
+                        task.setDueDate(request.getDueDate());
+                }
+                if (request.getTags() != null) {
+                        task.setTags(request.getTags());
+                }
+                if (request.getAssigneeId() != null) {
+                        User assignee = userRepository.findById(request.getAssigneeId())
+                                        .orElseThrow(() -> new RuntimeException("Assignee not found"));
+                        task.setAssignee(assignee);
+                }
+
+                Task updatedTask = taskRepository.save(task);
+                return mapToDTO(updatedTask);
+        }
+
+        public TaskResponseDTO updateTaskStage(@NonNull UUID taskId, @NonNull UpdateTaskStageRequest request) {
                 Task task = taskRepository.findById(Objects.requireNonNull(taskId))
                                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
@@ -68,11 +104,26 @@ public class TaskService {
                 return mapToDTO(updatedTask);
         }
 
-        private TaskDTO mapToDTO(@NonNull Task task) {
-                return new TaskDTO(
-                                Objects.requireNonNull(task.getId()),
+        public List<TaskResponseDTO> getTasksByProject(UUID projectId) {
+                return taskRepository.findByProjectId(projectId).stream()
+                                .map(this::mapToDTO)
+                                .collect(Collectors.toList());
+        }
+
+        private TaskResponseDTO mapToDTO(@NonNull Task task) {
+                return new TaskResponseDTO(
+                                task.getId(),
+                                task.getTitle(),
                                 task.getDescription(),
-                                Objects.requireNonNull(task.getStage().getId()),
-                                task.getAssignee() != null ? task.getAssignee().getId() : null);
+                                task.getProject().getId(),
+                                task.getProject().getName(),
+                                task.getStage().getId(),
+                                task.getStage().getName(),
+                                task.getAssignee() != null ? task.getAssignee().getId() : null,
+                                task.getAssignee() != null ? task.getAssignee().getFullName() : null,
+                                task.getPriority(),
+                                task.getDueDate(),
+                                task.getTags(),
+                                task.getCreatedAt() != null ? task.getCreatedAt().toLocalDateTime() : null);
         }
 }

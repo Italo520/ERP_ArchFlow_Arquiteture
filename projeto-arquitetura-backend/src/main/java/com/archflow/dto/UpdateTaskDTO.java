@@ -5,37 +5,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public class TaskDTO {
-    private UUID id;
+public class UpdateTaskDTO {
     private String title;
     private String description;
-    private UUID stageId;
     private UUID assigneeId;
     private Priority priority;
     private LocalDateTime dueDate;
     private List<String> tags;
 
-    public TaskDTO() {
-    }
-
-    public TaskDTO(UUID id, String title, String description, UUID stageId, UUID assigneeId, Priority priority,
-            LocalDateTime dueDate, List<String> tags) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.stageId = stageId;
-        this.assigneeId = assigneeId;
-        this.priority = priority;
-        this.dueDate = dueDate;
-        this.tags = tags;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
+    public UpdateTaskDTO() {
     }
 
     public String getTitle() {
@@ -52,14 +30,6 @@ public class TaskDTO {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public UUID getStageId() {
-        return stageId;
-    }
-
-    public void setStageId(UUID stageId) {
-        this.stageId = stageId;
     }
 
     public UUID getAssigneeId() {

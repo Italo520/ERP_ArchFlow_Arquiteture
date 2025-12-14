@@ -1,25 +1,24 @@
-import ProjectService from './project.service';
+import api from './api';
 
 const TaskService = {
     createTask: async (taskData) => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const newTask = {
-                    id: 't' + Date.now(),
-                    description: taskData.description
-                };
-                ProjectService.addTask(taskData.projectId, taskData.stageId, newTask);
-                resolve(newTask);
-            }, 500);
-        });
+        const response = await api.post('/tasks', taskData);
+        return response.data;
+    },
+
+    updateTask: async (taskId, taskData) => {
+        const response = await api.patch(`/tasks/${taskId}`, taskData);
+        return response.data;
     },
 
     updateTaskStage: async (taskId, stageId) => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({ success: true });
-            }, 300);
-        });
+        const response = await api.patch(`/tasks/${taskId}/stage`, { stageId });
+        return response.data;
+    },
+
+    getTasksByProject: async (projectId) => {
+        const response = await api.get(`/tasks?projectId=${projectId}`);
+        return response.data;
     }
 };
 

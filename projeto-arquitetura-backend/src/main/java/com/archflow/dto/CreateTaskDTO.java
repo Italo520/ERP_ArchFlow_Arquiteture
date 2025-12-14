@@ -5,37 +5,29 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public class TaskDTO {
-    private UUID id;
+public class CreateTaskDTO {
     private String title;
     private String description;
+    private UUID projectId;
     private UUID stageId;
     private UUID assigneeId;
     private Priority priority;
     private LocalDateTime dueDate;
     private List<String> tags;
 
-    public TaskDTO() {
+    public CreateTaskDTO() {
     }
 
-    public TaskDTO(UUID id, String title, String description, UUID stageId, UUID assigneeId, Priority priority,
-            LocalDateTime dueDate, List<String> tags) {
-        this.id = id;
+    public CreateTaskDTO(String title, String description, UUID projectId, UUID stageId, UUID assigneeId,
+            Priority priority, LocalDateTime dueDate, List<String> tags) {
         this.title = title;
         this.description = description;
+        this.projectId = projectId;
         this.stageId = stageId;
         this.assigneeId = assigneeId;
         this.priority = priority;
         this.dueDate = dueDate;
         this.tags = tags;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -52,6 +44,14 @@ public class TaskDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public UUID getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(UUID projectId) {
+        this.projectId = projectId;
     }
 
     public UUID getStageId() {
