@@ -1,10 +1,14 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-import Dashboard from './pages/dashboard/Dashboard';
-import ProjectDetails from './pages/project/ProjectDetails';
-import NewProject from './pages/project/NewProject';
-import ProtectedRoute from './components/layout/ProtectedRoute';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import FinancialDashboard from './pages/FinancialDashboard';
+import Clients from './pages/Clients';
+import Documents from './pages/Documents';
+import Kanban from './pages/Kanban';
+import ProjectDetails from './pages/ProjectDetails';
+import Schedule from './pages/Schedule';
+import Settings from './pages/Settings';
+import Layout from './components/Layout';
 import './App.css';
 
 function App() {
@@ -13,31 +17,16 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/projects/new"
-          element={
-            <ProtectedRoute>
-              <NewProject />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/projects/:id"
-          element={
-            <ProtectedRoute>
-              <ProjectDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+        <Route path="/dashboard" element={<Layout><FinancialDashboard /></Layout>} />
+        <Route path="/clients" element={<Layout><Clients /></Layout>} />
+        <Route path="/documents" element={<Layout><Documents /></Layout>} />
+        <Route path="/projects" element={<Layout><Kanban /></Layout>} />
+        <Route path="/projects/details" element={<Layout><ProjectDetails /></Layout>} />
+        <Route path="/schedule" element={<Layout><Schedule /></Layout>} />
+        <Route path="/settings" element={<Layout><Settings /></Layout>} />
+
+        <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );

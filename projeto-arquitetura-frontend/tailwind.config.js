@@ -14,11 +14,11 @@ export default {
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
                 primary: {
-                    DEFAULT: "#1b1818",
+                    DEFAULT: "#38e07b", // Updated to Unified Green
                     foreground: "hsl(var(--primary-foreground))",
                 },
                 secondary: {
-                    DEFAULT: "hsl(var(--secondary))",
+                    DEFAULT: "#20df6c", // Updated to Alternate Green
                     foreground: "hsl(var(--secondary-foreground))",
                 },
                 destructive: {
@@ -41,8 +41,12 @@ export default {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
-                "background-light": "#f7f7f7",
-                "background-dark": "#1a1818",
+                "background-light": "#f6f8f7", // Updated
+                "background-dark": "#122017", // Updated
+                "surface-dark": "#1a2620", // New
+                "surface-highlight": "#254632", // New
+                "border-dark": "#29382f", // New
+                "text-secondary": "#9eb7a8", // New
                 "status-todo": "#FFC107",
                 "status-progress": "#2196F3",
                 "status-done": "#4CAF50",
@@ -53,7 +57,8 @@ export default {
                 sm: "calc(var(--radius) - 4px)",
             },
             fontFamily: {
-                "display": ["Inter", "sans-serif"]
+                "display": ["Spline Sans", "Manrope", "sans-serif"],
+                "body": ["Noto Sans", "Inter", "sans-serif"],
             },
         },
     },
