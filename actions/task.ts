@@ -15,6 +15,18 @@ const TaskSchema = z.object({
     stageId: z.string(),
     assigneeId: z.string().optional().nullable(),
     tags: z.array(z.string()).optional(),
+    // Enforcing strict structure for JSON fields ensures data integrity
+    attachments: z.array(z.object({
+        id: z.string(),
+        name: z.string(),
+        url: z.string(),
+        type: z.string().optional()
+    })).optional().default([]),
+    checklist: z.array(z.object({
+        id: z.string(),
+        text: z.string(),
+        checked: z.boolean()
+    })).optional().default([]),
 })
 
 // Types for JSONB fields
@@ -26,14 +38,14 @@ interface HistoryItem {
     details: string;
 }
 
-export async function createTask(data: z.infer<typeof TaskSchema>) {
+export async function createTask(data: z.input<typeof TaskSchema>) {
     const session = await auth();
     const user = session?.user;
 
     const validated = TaskSchema.safeParse(data);
     if (!validated.success) throw new Error("Dados inválidos");
 
-    const { title, description, priority, dueDate, projectId, stageId, assigneeId, tags } = validated.data;
+    const { title, description, priority, dueDate, projectId, stageId, assigneeId, tags, attachments, checklist } = validated.data;
 
     const history: HistoryItem[] = [];
     if (user && user.id) {
@@ -66,8 +78,8 @@ export async function createTask(data: z.infer<typeof TaskSchema>) {
             assigneeId: assigneeId || null,
             tags: tags || [],
             historico: history as any, // Prisma Json handling
-            checklist: [],
-            attachments: [],
+            checklist: checklist || [],
+            attachments: attachments || [],
             comments: [],
             position: newPosition
         }

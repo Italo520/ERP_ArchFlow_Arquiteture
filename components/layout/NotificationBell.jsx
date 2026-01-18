@@ -43,14 +43,16 @@ const NotificationBell = () => {
         }
     };
 
-    // WebSocket Handler
-    const handleNewNotification = (notification) => {
-        setNotifications((prev) => [notification, ...prev]);
-        setUnreadCount((prev) => prev + 1);
-        // Opcional: Mostrar um toast aqui
-    };
+    // WebSocket Handler - Temporarily disabled due to legacy backend removal
+    // useWebSocket('/user/queue/notifications', handleNewNotification);
+    const { notifications: wsNotifications } = useWebSocket();
 
-    useWebSocket('/user/queue/notifications', handleNewNotification);
+    // Sync WS notifications if necessary, but for now just relying on REST or empty.
+    useEffect(() => {
+        if (wsNotifications.length > 0) {
+            setNotifications(prev => [...prev, ...wsNotifications]);
+        }
+    }, [wsNotifications]);
 
     const handleMarkAsRead = async (notification) => {
         if (!notification.read) {

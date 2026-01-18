@@ -15,11 +15,11 @@ export default {
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
                 primary: {
-                    DEFAULT: "#38e07b", // Updated to Unified Green
+                    DEFAULT: "hsl(var(--primary))",
                     foreground: "hsl(var(--primary-foreground))",
                 },
                 secondary: {
-                    DEFAULT: "#20df6c", // Updated to Alternate Green
+                    DEFAULT: "hsl(var(--secondary))",
                     foreground: "hsl(var(--secondary-foreground))",
                 },
                 destructive: {
@@ -42,12 +42,12 @@ export default {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
-                "background-light": "#f6f8f7", // Updated
-                "background-dark": "#122017", // Updated
-                "surface-dark": "#1a2620", // New
-                "surface-highlight": "#254632", // New
-                "border-dark": "#29382f", // New
-                "text-secondary": "#9eb7a8", // New
+                "background-light": "#FBF2ED", // Light Beige
+                "background-dark": "#0D0D0D", // Deep Black
+                "surface-dark": "#152026", // Deep Blue
+                "surface-highlight": "#253840", // Slate
+                "border-dark": "#516973", // Blue Grey
+                "text-secondary": "#B7BCBF", // Grey
                 "status-todo": "#FFC107",
                 "status-progress": "#2196F3",
                 "status-done": "#4CAF50",
