@@ -1,0 +1,39 @@
+
+> projeto-arquitetura-frontend@0.0.0 dev
+> vite
+
+
+  VITE v7.1.10  ready in 214 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+20:57:43 [vite] (client) Pre-transform error: Failed to resolve import "recharts" from "src/pages/FinancialDashboard.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/italo/Área de Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/src/pages/FinancialDashboard.jsx:2:73
+  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import React from "react";
+  3  |  import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+     |                                                                            ^
+  4  |  const data = [
+  5  |    { name: "Mai", receita: 45, despesa: 30 },
+20:57:43 [vite] Internal server error: Failed to resolve import "recharts" from "src/pages/FinancialDashboard.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/italo/Área de Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/src/pages/FinancialDashboard.jsx:2:73
+  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import React from "react";
+  3  |  import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+     |                                                                            ^
+  4  |  const data = [
+  5  |    { name: "Mai", receita: 45, despesa: 30 },
+      at TransformPluginContext._formatLog (file:///home/italo/%C3%81rea%20de%20Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/node_modules/vite/dist/node/chunks/dep-B0GuR2De.js:31105:43)
+      at TransformPluginContext.error (file:///home/italo/%C3%81rea%20de%20Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/node_modules/vite/dist/node/chunks/dep-B0GuR2De.js:31102:14)
+      at normalizeUrl (file:///home/italo/%C3%81rea%20de%20Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/node_modules/vite/dist/node/chunks/dep-B0GuR2De.js:29589:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async file:///home/italo/%C3%81rea%20de%20Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/node_modules/vite/dist/node/chunks/dep-B0GuR2De.js:29647:32
+      at async Promise.all (index 2)
+      at async TransformPluginContext.transform (file:///home/italo/%C3%81rea%20de%20Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/node_modules/vite/dist/node/chunks/dep-B0GuR2De.js:29615:4)
+      at async EnvironmentPluginContainer.transform (file:///home/italo/%C3%81rea%20de%20Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/node_modules/vite/dist/node/chunks/dep-B0GuR2De.js:30904:14)
+      at async loadAndTransform (file:///home/italo/%C3%81rea%20de%20Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/node_modules/vite/dist/node/chunks/dep-B0GuR2De.js:26042:26)
+      at async viteTransformMiddleware (file:///home/italo/%C3%81rea%20de%20Trabalho/backend_archflow/ArchFlow/projeto-arquitetura-frontend/node_modules/vite/dist/node/chunks/dep-B0GuR2De.js:27117:20)
+21:00:26 [vite] (client) ✨ new dependencies optimized: recharts
+21:00:26 [vite] (client) ✨ optimized dependencies changed. reloading
