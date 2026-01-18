@@ -5,10 +5,17 @@ import { auth } from "@/auth"
 import { z } from "zod"
 import { revalidatePath } from "next/cache"
 
+import { supabase } from "@/lib/supabase";
+
 const ProjectSchema = z.object({
     name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
     clientName: z.string().optional(),
-    imageUrl: z.string().optional(),
+    imageUrl: z.string().optional(), // Will be populated after upload
+    address: z.string().optional(),
+    projectType: z.string().optional(),
+    totalArea: z.coerce.number().optional(),
+    startDate: z.string().optional(), // Receive as string from date picker
+    deliveryDate: z.string().optional(),
 })
 
 export async function createProject(formData: FormData) {
@@ -17,10 +24,46 @@ export async function createProject(formData: FormData) {
         throw new Error("Não autorizado");
     }
 
+    // Handle Image Upload
+    let publicUrl = null;
+    const imageFile = formData.get('imageFile') as File | null;
+
+    if (imageFile && imageFile.size > 0) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${session.user.id}-${Date.now()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+            .from('projects')
+            .upload(filePath, imageFile);
+
+        if (uploadError) {
+            console.error('Upload Error:', uploadError);
+            throw new Error('Erro ao fazer upload da imagem');
+        }
+
+        const { data: urlData } = supabase.storage
+            .from('projects')
+            .getPublicUrl(filePath);
+
+        publicUrl = urlData.publicUrl;
+    }
+
     const rawData = {
         name: formData.get('name'),
         clientName: formData.get('clientName'),
-        imageUrl: formData.get('imageUrl'),
+        imageUrl: publicUrl, // Use the uploaded URL or null
+        address: formData.get('address'),
+        projectType: formData.get('projectType'),
+        totalArea: formData.get('totalArea'),
+        startDate: formData.get('startDate'),
+        deliveryDate: formData.get('deliveryDate'),
+    }
+
+    // Pass "imageUrl": null if undefined/null to Zod if needed, or handle optional
+    if (!rawData.imageUrl && formData.get('imageUrl')) {
+        // Fallback if user passed a URL string directly (future proofing)
+        rawData.imageUrl = formData.get('imageUrl');
     }
 
     const validatedFields = ProjectSchema.safeParse(rawData);
@@ -29,20 +72,32 @@ export async function createProject(formData: FormData) {
         throw new Error("Dados inválidos");
     }
 
-    const { name, clientName, imageUrl } = validatedFields.data;
+    const { name, clientName, imageUrl, address, projectType, totalArea, startDate, deliveryDate } = validatedFields.data;
 
     const project = await prisma.project.create({
         data: {
             name,
             clientName: clientName || null,
             imageUrl: imageUrl || null,
-            status: "TO_DO",
+            address: address || null,
+            projectType: projectType || null,
+            totalArea: totalArea || null,
+            startDate: startDate ? new Date(startDate) : null,
+            deliveryDate: deliveryDate ? new Date(deliveryDate) : null,
+            status: "BS", // Briefing/Study
             ownerId: session.user.id,
         }
     });
 
-    // Create default stages
-    const defaultStages = ["To Do", "In Progress", "Done"];
+    // Create default architecture stages
+    const defaultStages = [
+        "Estudo Preliminar",
+        "Anteprojeto",
+        "Projeto Legal",
+        "Projeto Executivo",
+        "Obras"
+    ];
+
     await prisma.stage.createMany({
         data: defaultStages.map((stageName, index) => ({
             name: stageName,
