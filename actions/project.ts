@@ -9,13 +9,13 @@ import { supabase } from "@/lib/supabase";
 
 const ProjectSchema = z.object({
     name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
-    clientName: z.string().optional(),
-    imageUrl: z.string().optional(), // Will be populated after upload
-    address: z.string().optional(),
-    projectType: z.string().optional(),
-    totalArea: z.coerce.number().optional(),
-    startDate: z.string().optional(), // Receive as string from date picker
-    deliveryDate: z.string().optional(),
+    clientName: z.string().nullable().optional(),
+    imageUrl: z.string().nullable().optional(), // Will be populated after upload
+    address: z.string().nullable().optional(),
+    projectType: z.string().nullable().optional(),
+    totalArea: z.coerce.number().nullable().optional(),
+    startDate: z.string().nullable().optional(), // Receive as string from date picker
+    deliveryDate: z.string().nullable().optional(),
 })
 
 export async function createProject(formData: FormData) {
@@ -66,9 +66,12 @@ export async function createProject(formData: FormData) {
         rawData.imageUrl = formData.get('imageUrl');
     }
 
+    console.log("Raw Data for Validation:", rawData);
+
     const validatedFields = ProjectSchema.safeParse(rawData);
 
     if (!validatedFields.success) {
+        console.error("Zod Validation Errors:", validatedFields.error.flatten());
         throw new Error("Dados inválidos");
     }
 
@@ -133,6 +136,7 @@ export async function getProjectById(projectId: string) {
                 orderBy: { order: 'asc' },
                 include: {
                     tasks: {
+                        orderBy: { position: 'asc' },
                         include: {
                             assignee: { select: { id: true, fullName: true, email: true } }
                         }

@@ -125,3 +125,19 @@ export async function deleteTask(taskId: string, projectId: string) {
     revalidatePath(`/projects/${projectId}`);
     return { success: true };
 }
+
+export async function updateTaskPositions(projectId: string, updates: { id: string; position: number; stageId: string }[]) {
+    try {
+        await prisma.$transaction(
+            updates.map(u => prisma.task.update({
+                where: { id: u.id },
+                data: { position: u.position, stageId: u.stageId }
+            }))
+        );
+        revalidatePath(`/projects/${projectId}`);
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to update task positions", error);
+        throw new Error("Failed to update task positions");
+    }
+}
