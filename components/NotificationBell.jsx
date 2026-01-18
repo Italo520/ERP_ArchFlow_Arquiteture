@@ -25,7 +25,7 @@ const NotificationBell = () => {
 
                 {/* Connection Status Indicator */}
                 <span
-                    className={`absolute bottom-1.5 right-1.5 size-2 rounded-full border border-background-dark ${isConnected ? 'bg-green-500' : 'bg-gray-500'
+                    className={`absolute bottom-1.5 right-1.5 size-2 rounded-full border border-background-dark ${isConnected ? 'bg-primary' : 'bg-muted'
                         }`}
                     title={isConnected ? 'Conectado' : 'Desconectado'}
                 />
@@ -76,10 +76,10 @@ const NotificationBell = () => {
                                                 }`}
                                         >
                                             <div className="flex items-start gap-3">
-                                                <div className={`p-2 rounded-full ${notification.type === 'success' ? 'bg-green-500/20 text-green-500' :
-                                                        notification.type === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
-                                                            notification.type === 'error' ? 'bg-red-500/20 text-red-500' :
-                                                                'bg-primary/20 text-primary'
+                                                <div className={`p-2 rounded-full ${notification.type === 'success' ? 'bg-status-done/10 text-status-done' :
+                                                    notification.type === 'warning' ? 'bg-status-todo/10 text-status-todo' :
+                                                        notification.type === 'error' ? 'bg-destructive/10 text-destructive' :
+                                                            'bg-primary/20 text-primary'
                                                     }`}>
                                                     <span className="material-symbols-outlined text-lg">
                                                         {notification.icon || 'info'}

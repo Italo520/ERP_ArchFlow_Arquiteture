@@ -25,7 +25,9 @@ export async function registerUser(data: z.infer<typeof RegisterSchema>) {
 
         if (!validatedFields.success) {
             console.error("Validation failed:", validatedFields.error.flatten());
-            throw new Error(`Dados inválidos: ${validatedFields.error.errors.map(e => e.message).join(', ')}`);
+            const flattened = validatedFields.error.flatten();
+            const errorMessages = [...flattened.formErrors, ...Object.values(flattened.fieldErrors).flat()].join(', ');
+            throw new Error(`Dados inválidos: ${errorMessages}`);
         }
 
         const { email, password, fullName } = validatedFields.data;

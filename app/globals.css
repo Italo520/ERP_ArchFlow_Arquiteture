@@ -84,78 +84,67 @@
 
 @layer base {
   :root {
-    /* Ligth Mode: Pastel Tones */
-    --background: 210 20% 98%;
-    /* Almost white, very slight cool tint */
-    --foreground: 222 47% 11%;
-    /* Dark blue-grey text */
+    /* Light Mode: Pastel Palette */
+    --background: 21 63% 95%; /* #FBF2ED */
+    --foreground: 202 28% 11%; /* #152026 (Dark Blue for contrast) */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 100%; /* White for cards to pop */
+    --card-foreground: 202 28% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 202 28% 11%;
 
-    --primary: 153 38% 54%;
-    /* Pastel Green (Sage) */
-    --primary-foreground: 210 40% 98%;
+    --primary: 91 15% 80%; /* #CDD5C6 (Greenish Pastel) */
+    --primary-foreground: 202 28% 11%;
 
-    --secondary: 215 25% 90%;
-    /* Soft blue-grey */
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 202 5% 73%; /* #B7BCBF (Grey) */
+    --secondary-foreground: 202 28% 11%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 202 5% 90%;
+    --muted-foreground: 202 5% 45%;
 
-    --accent: 153 38% 94%;
-    /* Very light sage for hover */
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 24 42% 84%; /* #E8D4C6 (Beige) */
+    --accent-foreground: 202 28% 11%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 153 38% 54%;
+    --border: 202 5% 85%;
+    --input: 202 5% 85%;
+    --ring: 91 15% 80%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    /* Dark Mode: Dark Blue Tones */
-    --background: 222 47% 11%;
-    /* Deep Navy Blue */
-    --foreground: 210 40% 98%;
-    /* Off-white text */
+    /* Dark Mode: Deep Blue & Black Palette */
+    --background: 0 0% 5%; /* #0D0D0D (Deep Black) */
+    --foreground: 185 10% 61%; /* #92A4A6 (Light Text) */
 
-    --card: 217 33% 17%;
-    /* Lighter Navy for cards */
-    --card-foreground: 210 40% 98%;
+    --card: 202 28% 11%; /* #152026 (Deep Blue) */
+    --card-foreground: 185 10% 61%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 202 28% 11%;
+    --popover-foreground: 185 10% 61%;
 
-    --primary: 153 38% 54%;
-    /* Keep Sage Green for brand consistency, pops well on dark */
-    --primary-foreground: 222 47% 11%;
+    --primary: 91 15% 80%; /* #CDD5C6 (Same Pastel Green for consistency) */
+    --primary-foreground: 202 28% 11%;
 
-    --secondary: 217 33% 25%;
-    /* Even lighter Navy for secondary elements */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 196 26% 19%; /* #253840 (Slate) */
+    --secondary-foreground: 185 10% 61%;
 
-    --muted: 217 33% 25%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 196 26% 19%;
+    --muted-foreground: 196 16% 38%;
 
-    --accent: 217 33% 25%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 196 26% 19%;
+    --accent-foreground: 185 10% 61%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 185 10% 61%;
 
-    --border: 217 33% 25%;
-    /* Low contrast border */
-    --input: 217 33% 17%;
-    --ring: 153 38% 54%;
+    --border: 196 16% 38%; /* #516973 */
+    --input: 202 28% 11%;
+    --ring: 91 15% 80%;
   }
 }
 

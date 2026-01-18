@@ -185,7 +185,7 @@ export default function KanbanBoard({ project }) {
                 stages.findIndex((s) => s.id === overColumnId)
             );
 
-            const updates = newStages.map((stage, index) => ({
+            const updates = newStages.map((stage: any, index) => ({
                 id: stage.id,
                 order: index
             }));

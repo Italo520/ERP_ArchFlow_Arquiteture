@@ -19,10 +19,10 @@ const CommentList = ({ taskId, projectId }) => {
         commentService.getComments(taskId).then(setComments).catch(console.error);
     }, [taskId]);
 
-    // WebSocket subscription
-    useWebSocket(`/topic/tasks/${taskId}/comments`, (newComment) => {
-        setComments((prev) => [...prev, newComment]);
-    });
+    // WebSocket subscription - Temporarily disabled
+    // useWebSocket(`/topic/tasks/${taskId}/comments`, (newComment) => {
+    //    setComments((prev) => [...prev, newComment]);
+    // });
 
     const handleAddComment = async (richText) => {
         try {
