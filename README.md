@@ -1,223 +1,104 @@
-# ArchFlow Frontend - Next.js
+# ArchFlow ERP - Full Stack Next.js
 
-Sistema de gestão de projetos de arquitetura construído com Next.js 15.
+Sistema de gestão de projetos de arquitetura (ERP) migrado para uma arquitetura Full Stack monolítica moderna com **Next.js 16**, **Prisma ORM** e **PostgreSQL**.
 
-## 🚀 Início Rápido
+Este projeto substitui a antiga arquitetura desacoplada (Frontend React + Backend Java Spring Boot) por uma solução unificada, performática e pronta para PWA.
 
-### Pré-requisitos
-- Node.js 18+
-- Backend Spring Boot rodando em `http://localhost:8080`
+## 🚀 Tecnologias
 
-### Instalação
+- **Framework:** [Next.js 16.1.1](https://nextjs.org/) (App Router & Server Actions)
+- **Linguagem:** TypeScript
+- **Banco de Dados:** PostgreSQL (via Supabase)
+- **ORM:** [Prisma](https://www.prisma.io/) 7.2
+- **Autenticação:** [NextAuth.js v5](https://authjs.dev/) (Beta)
+- **Estilização:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **UI Components:** Radix UI, Lucide React, Shadcn/UI (padrões)
+- **Funcionalidades:** 
+  - Kanban Drag & Drop (@dnd-kit)
+  - Editor de Texto Rico (TipTap)
+  - Gráficos (Recharts)
+  - PWA (Progressive Web App)
 
-```bash
-# Instalar dependências
-npm install
+## 🏗️ Arquitetura
 
-# Desenvolvimento
-npm run dev
+O sistema utiliza **Server Actions** para comunicação direta com o banco de dados, eliminando a necessidade de uma API REST separada para a maioria das operações.
 
-# Build de produção
-npm run build
-
-# Iniciar produção
-npm start
-```
-
-A aplicação estará disponível em **http://localhost:3000**
-
-## 📁 Estrutura do Projeto
+### Estrutura de Pastas
 
 ```
 frontend-nextjs/
-├── app/                      # App Router (Next.js 15)
-│   ├── (auth)/              # Rotas públicas (Login, Registro)
-│   ├── (dashboard)/         # Rotas protegidas (Dashboard, Clientes, etc.)
-│   ├── layout.js            # Layout raiz
-│   ├── page.jsx             # Página inicial (redirect)
-│   └── globals.css          # Estilos globais
-├── components/              # Componentes React
-│   ├── ui/                  # Componentes de UI (Radix)
-│   ├── layout/              # Componentes de layout
-│   ├── NotificationBell.jsx # Sino de notificações (WebSocket)
-│   └── Layout.jsx           # Layout principal com sidebar
-├── services/                # Serviços de API
-│   ├── api.js              # Cliente Axios
-│   ├── authService.js      # Autenticação
-│   └── *.service.js        # Outros serviços
-├── hooks/                   # Custom Hooks
-│   └── useWebSocket.js     # Hook para WebSocket/STOMP
-├── lib/                     # Utilitários
-│   └── utils.js            # Funções auxiliares
-├── middleware.js            # Middleware de autenticação
-└── .env.local              # Variáveis de ambiente
+├── actions/                 # Server Actions (Lógica de Backend)
+│   ├── auth.ts             # Autenticação (Login, Registro)
+│   ├── project.ts          # CRUD de Projetos
+│   ├── task.ts             # Gestão de Tarefas
+│   └── stage.ts            # Movimentação de Stages
+├── app/                     # Next.js App Router
+│   ├── (auth)/             # Rotas públicas
+│   ├── (dashboard)/        # Rotas protegidas da aplicação
+│   └── api/                # Route Handlers (se necessário)
+├── prisma/                  # Schema do Banco de Dados
+│   └── schema.prisma       # Definição de tabelas e relações
+├── components/              # Componentes React (Server & Client)
+├── lib/                     # Utilitários e Configurações
+└── public/                  # Assets estáticos
 ```
 
-## 🔧 Configuração
+## 🛠️ Configuração e Instalação
 
-### Variáveis de Ambiente
+### Pré-requisitos
 
-Crie um arquivo `.env.local`:
+- Node.js 20+
+- PostgreSQL (Local ou Cloud/Supabase)
 
-```bash
-NEXT_PUBLIC_API_URL=http://localhost:8080
-```
+### Passo a Passo
 
-### Backend
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/Italo520/ERP_ArchFlow_Arquiteture.git
+   cd ERP_ArchFlow_Arquiteture
+   ```
 
-Certifique-se de que o backend esteja configurado com:
-- CORS habilitado para `http://localhost:3000`
-- Endpoint WebSocket em `/ws`
-- Endpoints de API em `/api/v1/*`
+2. **Instale as dependências**
+   ```bash
+   npm install
+   ```
 
-## ✨ Funcionalidades
+3. **Configure as Variáveis de Ambiente**
+   Crie um arquivo `.env` na raiz do projeto:
 
-### ✅ Implementadas
+   ```env
+   # Banco de Dados (PostgreSQL)
+   DATABASE_URL="postgresql://user:password@localhost:5432/archflow?schema=public"
 
-- **Autenticação**
-  - Login/Registro
-  - Proteção de rotas via middleware
-  - Armazenamento seguro com cookies
+   # NextAuth
+   AUTH_SECRET="sua-chave-secreta-aqui" # Gere com: openssl rand -base64 32
+   ```
 
-- **Dashboard Financeiro**
-  - Gráficos com Recharts
-  - Métricas em tempo real
-  - Visão geral de receitas/despesas
+4. **Inicialize o Banco de Dados (Prisma)**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
 
-- **Gestão de Projetos**
-  - Kanban com drag-and-drop (@dnd-kit)
-  - Visualização de detalhes
-  - Status e progresso
+5. **Inicie o Servidor de Desenvolvimento**
+   ```bash
+   npm run dev
+   ```
+   Acesse: `http://localhost:3000`
 
-- **Clientes e Documentos**
-  - CRUD completo
-  - Upload de arquivos
-  - Busca e filtros
+## ✨ Funcionalidades Atuais
 
-- **Agenda/Cronograma**
-  - Visualização de tarefas
-  - Datas e prazos
+- **Gestão de Projetos:** Criação, listagem e detalhamento de projetos arquitetônicos.
+- **Kanban Board:** Movimentação de tarefas entre estágios (To Do, In Progress, Done) com persistência via Server Actions.
+- **Tarefas:** Criação, edição e exclusão de tarefas com prioridades e prazos.
+- **Autenticação Segura:** Login e Registro com validação e sessões persistentes via NextAuth v5.
+- **Dashboard:** Visão geral (em desenvolvimento).
 
-- **Notificações em Tempo Real** ⭐ NOVO!
-  - WebSocket/STOMP
-  - Sino de notificações com contador
-  - Notificações do navegador
-  - Reconexão automática
+## 🚧 Status do Projeto
 
-## 🔌 WebSocket (Notificações)
+⚠️ **Em Migração Ativa**
 
-### Como Funciona
-
-O sistema usa **STOMP** sobre **SockJS** para comunicação em tempo real com o backend.
-
-**Hook:** `useWebSocket.js`
-```javascript
-const { notifications, isConnected, unreadCount } = useWebSocket();
-```
-
-**Componente:** `NotificationBell.jsx`
-- Exibe contador de não lidas
-- Dropdown com lista de notificações
-- Indicador de conexão (verde/cinza)
-
-### Endpoints Subscritos
-
-- `/user/queue/notifications` - Notificações específicas do usuário
-- `/topic/notifications` - Notificações gerais (broadcast)
-
-### Como Testar
-
-1. Fazer login na aplicação
-2. Abrir console do navegador (F12)
-3. Verificar mensagem: `"WebSocket connected!"`
-4. Enviar notificação do backend
-5. Observar atualização em tempo real
-
-## 🧪 Testes
-
-Veja o guia completo em [TESTING_GUIDE.md](./TESTING_GUIDE.md)
-
-**Checklist rápido:**
-- [ ] Login/Logout funcionando
-- [ ] Rotas protegidas
-- [ ] Navegação entre páginas
-- [ ] Dashboard carrega dados
-- [ ] Kanban drag-and-drop
-- [ ] CRUD de clientes/documentos
-- [ ] Notificações em tempo real (WebSocket)
-- [ ] Responsividade (mobile/tablet/desktop)
-
-## 🛠️ Tecnologias
-
-- **Framework:** Next.js 16.1.1 (App Router)
-- **React:** 19.1.1
-- **Styling:** Tailwind CSS
-- **UI Components:** Radix UI
-- **Charts:** Recharts
-- **Drag & Drop:** @dnd-kit
-- **Rich Text:** TipTap
-- **HTTP Client:** Axios
-- **WebSocket:** STOMP.js + SockJS
-- **State:** React Hooks + Context
-
-## 📝 Scripts
-
-```bash
-# Desenvolvimento com hot reload
-npm run dev
-
-# Build de produção
-npm run build
-
-# Rodar build de produção
-npm start
-
-# Linting
-npm run lint
-```
-
-## 🚨 Troubleshooting
-
-### Build falha
-```bash
-rm -rf .next node_modules
-npm install
-npm run build
-```
-
-### WebSocket não conecta
-- Verificar se backend está rodando
-- Verificar endpoint `/ws` no backend
-- Verificar logs do console (F12)
-- Verificar token de autenticação nos cookies
-
-### Páginas em branco
-- Abrir console (F12) e verificar erros
-- Verificar se backend está respondendo
-- Verificar variável `NEXT_PUBLIC_API_URL`
-
-## 📄 Documentação Adicional
-
-- [Guia de Testes](./TESTING_GUIDE.md)
-- [Walkthrough da Migração](/.gemini/antigravity/brain/.../walkthrough.md)
-
-## 🎯 Próximos Passos
-
-- [ ] Testes automatizados (Jest, Cypress)
-- [ ] Deploy em produção (Vercel/servidor)
-- [ ] Otimização de imagens (next/image)
-- [ ] Internacionalização (i18n)
-- [ ] PWA (Service Workers)
-
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-1. Verificar [TESTING_GUIDE.md](./TESTING_GUIDE.md)
-2. Consultar logs do console/network
-3. Verificar status do backend
+O projeto está em fase de transição da arquitetura legada (Java) para Next.js Full Stack. Algumas funcionalidades listadas no PRD (como WebSockets e notificações em tempo real) estão sendo refatoradas para utilizar tecnologias nativas do ecossistema Next.js ou serviços serverless.
 
 ---
-
-**Versão:** 1.0.0  
-**Data:** 04/01/2026  
-**Status:** ✅ Produção
+**Desenvolvido por:** Italo520
