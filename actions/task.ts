@@ -10,7 +10,7 @@ const TaskSchema = z.object({
     title: z.string().min(1, "Título obrigatório"),
     description: z.string().optional(),
     priority: z.nativeEnum(Priority).optional(),
-    dueDate: z.string().optional().transform(str => str ? new Date(str) : null),
+    dueDate: z.coerce.date().optional(),
     projectId: z.string(),
     stageId: z.string(),
     assigneeId: z.string().optional().nullable(),
@@ -46,6 +46,15 @@ export async function createTask(data: z.infer<typeof TaskSchema>) {
         });
     }
 
+    // Get current max position in this stage
+    const lastTask = await prisma.task.findFirst({
+        where: { stageId },
+        orderBy: { position: 'desc' },
+        select: { position: true }
+    });
+
+    const newPosition = (lastTask?.position ?? -1) + 1;
+
     const task = await prisma.task.create({
         data: {
             title,
@@ -59,7 +68,8 @@ export async function createTask(data: z.infer<typeof TaskSchema>) {
             historico: history as any, // Prisma Json handling
             checklist: [],
             attachments: [],
-            comments: []
+            comments: [],
+            position: newPosition
         }
     });
 

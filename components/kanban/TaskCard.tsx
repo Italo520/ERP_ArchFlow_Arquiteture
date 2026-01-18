@@ -6,7 +6,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-export function TaskCard({ task }) {
+export function TaskCard({ task, onClick }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
         id: task.id,
         data: { type: 'Task', task }
@@ -25,6 +25,7 @@ export function TaskCard({ task }) {
             style={style}
             {...attributes}
             {...listeners}
+            onClick={onClick}
             className="group bg-white dark:bg-[#1a202c] rounded-xl border-t-2 border-primary overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col cursor-grab active:cursor-grabbing mb-3"
         >
             <div className="p-3 flex flex-col flex-1 gap-2">
@@ -35,10 +36,13 @@ export function TaskCard({ task }) {
                 {/* Tags / Priority / Metadata Row */}
                 <div className="flex flex-wrap items-center gap-2">
                     {task.priority && (
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${task.priority === 'HIGH' ? 'bg-red-50 text-red-600 border border-red-100' :
-                                task.priority === 'MEDIUM' ? 'bg-orange-50 text-orange-600 border border-orange-100' :
-                                    'bg-green-50 text-green-600 border border-green-100'
+                        <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${task.priority === 'HIGH' ? 'bg-red-50 text-red-600 border border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30' :
+                                task.priority === 'MEDIUM' ? 'bg-orange-50 text-orange-600 border border-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-900/30' :
+                                    'bg-green-50 text-green-600 border border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-900/30'
                             }`}>
+                            <span className="material-symbols-outlined text-[10px]">
+                                {task.priority === 'HIGH' ? 'priority_high' : task.priority === 'MEDIUM' ? 'remove' : 'arrow_downward'}
+                            </span>
                             {task.priority === 'HIGH' ? 'Alta' : task.priority === 'MEDIUM' ? 'Média' : 'Baixa'}
                         </span>
                     )}
