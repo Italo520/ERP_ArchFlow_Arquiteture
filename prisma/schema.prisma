@@ -3,9 +3,10 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
 }
 
+// Enums
 enum Priority {
   LOW
   MEDIUM
@@ -13,45 +14,229 @@ enum Priority {
   URGENT
 }
 
+enum Role {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+enum ClientLegalType {
+  PF
+  PJ
+}
+
+enum ClientCategory {
+  RESIDENTIAL
+  COMMERCIAL
+  INSTITUTIONAL
+  INDUSTRIAL
+  DESIGNER
+}
+
+enum ClientStatus {
+  ACTIVE
+  INACTIVE
+  PROSPECT
+  BLOCKED
+}
+
+enum ContactPreference {
+  EMAIL
+  PHONE
+  WHATSAPP
+}
+
+enum ActivityType {
+  MEETING
+  CALL
+  EMAIL
+  SITE_VISIT
+  DESIGN
+  REVISION
+  APPROVAL
+  ADMIN
+  OTHER
+}
+
+enum ActivityStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum DeliverableType {
+  SKETCH
+  RENDER_3D
+  DRAWING_2D
+  DOCUMENT
+  PDF
+  VIDEO
+  PHOTO
+  OTHER
+}
+
+enum DeliverableStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  APPROVED_WITH_CHANGES
+  REJECTED
+  DELIVERED
+}
+
+enum TimeLogCategory {
+  DESIGN
+  REVIEW
+  MEETING
+  ADMIN
+  DELIVERY
+  OTHER
+}
+
+enum EstimateStatus {
+  DRAFT
+  APPROVED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum BudgetStatus {
+  DRAFT
+  APPROVED
+  ACTIVE
+  EXCEEDED
+  COMPLETED
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  COMMENT
+  APPROVAL_PENDING
+  DEADLINE_APPROACHING
+  PROJECT_UPDATE
+  MENTION
+  SYSTEM
+  INFO
+  WARNING
+  SUCCESS
+  ERROR
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  APPROVE
+  REJECT
+}
+
+enum RelatedEntityType {
+  PROJECT
+  TASK
+  CLIENT
+  ACTIVITY
+  DELIVERABLE
+}
+
+// Models
+
 model User {
   id           String    @id @default(uuid())
   fullName     String    @map("full_name")
   email        String    @unique
   passwordHash String    @map("password_hash")
   createdAt    DateTime  @default(now()) @map("created_at")
-  
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
   // Relations
-  ownedProjects Project[] @relation("ProjectOwner")
-  assignedTasks Task[]    @relation("TaskAssignee")
-  memberships   ProjectMember[]
-  auditLogs     AuditLog[]
-  notifications Notification[]
+  ownedProjects    Project[]       @relation("ProjectOwner")
+  assignedTasks    Task[]          @relation("TaskAssignee")
+  memberships      ProjectMember[]
+  auditLogs        AuditLog[]
+  notifications    Notification[]
+  createdActivity  Activity[]      @relation("ActivityCreator")
+  createdDeliv     Deliverable[]   @relation("DeliverableCreator")
+  approvedDeliv    Deliverable[]   @relation("DeliverableApprover")
+  timeLogs         TimeLog[]
+  clients          Client[]        @relation("ClientOwner")
 
   @@map("users")
 }
 
+model Client {
+  id                 String            @id @default(uuid())
+  name               String
+  email              String            @unique
+  phone              String?
+  website            String?
+  legalType          ClientLegalType?  @map("legal_type")
+  document           String?           @unique
+  razaoSocial        String?           @map("razao_social")
+  inscricaoEstadual  String?           @map("inscricao_estadual")
+  address            Json?
+  geoLocation        Json?             @map("geo_location")
+  category           ClientCategory?
+  status             ClientStatus      @default(PROSPECT)
+  rating             Float?
+  totalSpent         Decimal?          @map("total_spent") @db.Decimal(10, 2)
+  avatar             String?
+  notes              String?           @db.Text
+  contactPreference  ContactPreference? @map("contact_preference")
+  userId             String?           @map("user_id")
+  tags               String[]
+  metadata           Json?
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @default(now()) @updatedAt @map("updated_at")
+  deletedAt          DateTime?         @map("deleted_at")
+  lastInteractionAt  DateTime?         @map("last_interaction_at")
+
+  // Relations
+  owner      User?       @relation("ClientOwner", fields: [userId], references: [id])
+  projects   Project[]
+  activities Activity[]
+  timeLogs   TimeLog[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([document])
+  @@map("clients")
+}
+
 model Project {
-  id          String   @id @default(uuid())
-  name        String
-  clientName  String?  @map("client_name")
-  status      String
-  imageUrl    String?  @map("image_url")
-  createdAt   DateTime @default(now()) @map("created_at")
+  id           String    @id @default(uuid())
+  name         String
+  clientName   String?   @map("client_name")
+  status       String
+  imageUrl     String?   @map("image_url")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
 
   // Architecture Specifics
-  address     String?
-  startDate   DateTime? @map("start_date")
+  address      String?
+  startDate    DateTime? @map("start_date")
   deliveryDate DateTime? @map("delivery_date")
-  totalArea   Float?    @map("total_area")
-  projectType String?   @map("project_type") // e.g., "Residencial", "Comercial"
+  totalArea    Float?    @map("total_area")
+  projectType  String?   @map("project_type")
   
-  ownerId     String   @map("owner_id")
-  owner       User     @relation("ProjectOwner", fields: [ownerId], references: [id])
+  ownerId      String    @map("owner_id")
+  owner        User      @relation("ProjectOwner", fields: [ownerId], references: [id])
 
-  stages      Stage[]
-  tasks       Task[]
-  members     ProjectMember[]
-  auditLogs   AuditLog[]
+  clientId     String?   @map("client_id")
+  client       Client?   @relation(fields: [clientId], references: [id])
+
+  stages       Stage[]
+  tasks        Task[]
+  members      ProjectMember[]
+  auditLogs    AuditLog[]
+  activities   Activity[]
+  deliverables Deliverable[]
+  timeLogs     TimeLog[]
+  
+  estimate     Estimate?
+  budget       Budget?
 
   @@map("projects")
 }
@@ -61,6 +246,7 @@ model Stage {
   name      String
   order     Int      @map("stage_order")
   createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   projectId String   @map("project_id")
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -78,6 +264,8 @@ model Task {
   priority    Priority?
   dueDate     DateTime? @map("due_date")
   createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
   
   // JSONB fields
   tags        String[]  @map("tag")
@@ -96,19 +284,162 @@ model Task {
   assignee    User?     @relation("TaskAssignee", fields: [assigneeId], references: [id])
 
   // Kanban Fields
-  position    Int       @default(0)
-  metadata    Json?     // For architecture specific fields: area, RT, links
-  approvalStatus String? @default("PENDING") // PENDING, APPROVED, REJECTED
+  position       Int       @default(0)
+  metadata       Json?
+  approvalStatus String?   @default("PENDING")
+
+  // Relations
+  activities   Activity[]
+  deliverables Deliverable[]
+  timeLogs     TimeLog[]
 
   @@map("tasks")
 }
 
-// New Tables for Collaboration and Audit
+model Activity {
+  id           String         @id @default(uuid())
+  type         ActivityType
+  title        String
+  description  String?        @db.Text
+  duration     Int?           // in minutes
+  startTime    DateTime       @map("start_time")
+  endTime      DateTime?      @map("end_time")
+  location     String?
+  participants String[]
+  
+  clientId     String?        @map("client_id")
+  client       Client?        @relation(fields: [clientId], references: [id])
+  
+  projectId    String?        @map("project_id")
+  project      Project?       @relation(fields: [projectId], references: [id])
+  
+  taskId       String?        @map("task_id")
+  task         Task?          @relation(fields: [taskId], references: [id])
+  
+  createdById  String         @map("created_by_id")
+  createdBy    User           @relation("ActivityCreator", fields: [createdById], references: [id])
+  
+  attachments  Json[]
+  notes        String?        @db.Text
+  status       ActivityStatus @default(SCHEDULED)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
 
-enum Role {
-  OWNER
-  EDITOR
-  VIEWER
+  @@index([clientId])
+  @@index([projectId])
+  @@index([createdById])
+  @@index([startTime])
+  @@map("activities")
+}
+
+model Deliverable {
+  id            String            @id @default(uuid())
+  name          String
+  type          DeliverableType
+  description   String?           @db.Text
+  fileUrl       String            @map("file_url")
+  fileSize      Int?              @map("file_size")
+  mimeType      String?           @map("mime_type")
+  version       Int               @default(1)
+  status        DeliverableStatus @default(DRAFT)
+  
+  taskId        String            @map("task_id")
+  task          Task              @relation(fields: [taskId], references: [id])
+  
+  projectId     String            @map("project_id")
+  project       Project           @relation(fields: [projectId], references: [id])
+  
+  createdById   String            @map("created_by_id")
+  createdBy     User              @relation("DeliverableCreator", fields: [createdById], references: [id])
+  
+  approvedById  String?           @map("approved_by_id")
+  approvedBy    User?             @relation("DeliverableApprover", fields: [approvedById], references: [id])
+  
+  reviewComments Json[]           @map("review_comments")
+  revisionCount  Int              @default(0) @map("revision_count")
+  dueDates       String[]         @map("due_dates")
+  tags           String[]
+  metadata       Json?
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  deletedAt      DateTime?        @map("deleted_at")
+
+  @@index([projectId])
+  @@index([taskId])
+  @@index([status])
+  @@index([version])
+  @@map("deliverables")
+}
+
+model TimeLog {
+  id          String          @id @default(uuid())
+  duration    Float           // in hours
+  category    TimeLogCategory
+  description String?         @db.Text
+  date        DateTime        @db.Date
+  startTime   DateTime?       @map("start_time") @db.Time
+  endTime     DateTime?       @map("end_time") @db.Time
+  
+  userId      String          @map("user_id")
+  user        User            @relation(fields: [userId], references: [id])
+  
+  projectId   String          @map("project_id")
+  project     Project         @relation(fields: [projectId], references: [id])
+
+  taskId      String?         @map("task_id")
+  task        Task?           @relation(fields: [taskId], references: [id])
+  
+  clientId    String?         @map("client_id")
+  client      Client?         @relation(fields: [clientId], references: [id])
+  
+  billable    Boolean         @default(false)
+  billRate    Decimal?        @map("bill_rate") @db.Decimal(10, 2)
+  invoiceId   String?         @map("invoice_id")
+  tags        String[]
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([date])
+  @@index([billable])
+  @@map("time_logs")
+}
+
+model Estimate {
+  id             String         @id @default(uuid())
+  
+  projectId      String         @unique @map("project_id")
+  project        Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  estimatedHours Float?         @map("estimated_hours")
+  estimatedCost  Decimal?       @map("estimated_cost") @db.Decimal(10, 2)
+  actualHours    Float?         @map("actual_hours")
+  actualCost     Decimal?       @map("actual_cost") @db.Decimal(10, 2)
+  status         EstimateStatus @default(DRAFT)
+  notes          String?        @db.Text
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  @@index([projectId])
+  @@map("estimates")
+}
+
+model Budget {
+  id              String       @id @default(uuid())
+  
+  projectId       String       @unique @map("project_id")
+  project         Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  totalBudget     Decimal      @map("total_budget") @db.Decimal(10, 2)
+  spentAmount     Decimal      @default(0) @map("spent_amount") @db.Decimal(10, 2)
+  remainingAmount Decimal      @default(0) @map("remaining_amount") @db.Decimal(10, 2)
+  budgetBreakdown Json?        @map("budget_breakdown")
+  status          BudgetStatus @default(DRAFT)
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  @@map("budgets")
 }
 
 model ProjectMember {
@@ -126,33 +457,53 @@ model ProjectMember {
   @@map("project_members")
 }
 
-model AuditLog {
-  id        String   @id @default(uuid())
-  action    String
-  entity    String   // "Project", "Task", "User"
-  entityId  String   @map("entity_id")
-  details   Json?
-  createdAt DateTime @default(now()) @map("created_at")
+model Notification {
+  id              String            @id @default(uuid())
+  userId          String            @map("user_id")
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type            NotificationType
+  title           String
+  message         String
+  relatedEntityId String            @map("related_entity_id")
+  relatedEntityType RelatedEntityType @map("related_entity_type")
+  read            Boolean           @default(false)
+  readAt          DateTime?         @map("read_at")
+  actionUrl       String?           @map("action_url")
+  createdAt       DateTime          @default(now()) @map("created_at")
 
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
+  // Legacy fields mapping support (if needed, otherwise remove)
+  link            String?           @ignore 
 
-  projectId String?  @map("project_id")
-  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
-
-  @@map("audit_logs")
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+  @@map("notifications")
 }
 
-model Notification {
-  id        String   @id @default(uuid())
-  type      String   // "INFO", "WARNING", "SUCCESS", "ERROR"
-  message   String
-  link      String?
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at")
+model AuditLog {
+  id         String      @id @default(uuid())
+  userId     String      @map("user_id")
+  user       User        @relation(fields: [userId], references: [id])
+  
+  action     AuditAction
+  entityType String      @map("entity_type") // Explicit string as per subtask 1.1.8
+  entityId   String      @map("entity_id")
+  changes    Json?
+  ipAddress  String?     @map("ip_address")
+  userAgent  String?     @map("user_agent")
+  createdAt  DateTime    @default(now()) @map("created_at")
 
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId  String?     @map("project_id")
+  project    Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
-  @@map("notifications")
+  // Legacy fields mapping support
+  entity    String?     @ignore
+  details   Json?       @ignore
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
 }

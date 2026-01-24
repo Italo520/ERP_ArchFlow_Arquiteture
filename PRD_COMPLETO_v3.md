@@ -306,7 +306,7 @@ archflow/
 ### Status: 60% (base ok, need new models)
 
 #### Subtarefa 1.1.1: Client Model Estendido
-- [ ] **Criar modelo completo de Cliente**
+- [x] **Criar modelo completo de Cliente**
   - [x] Model User básico
   - [ ] Estender com campos arquitetônicos
     - [ ] `id` (UUID)
@@ -332,11 +332,11 @@ archflow/
     - [ ] `metadata` (JSON, for extensibility)
     - [ ] `createdAt`, `updatedAt`, `deletedAt` (soft delete)
     - [ ] `lastInteractionAt` (to detect inactive)
-  - [ ] Adicionar indexes: `email`, `document`, `userId`, `status`, `createdAt`
-  - [ ] Add relations to: Project (1:N), Activity (1:N), TimeLog (1:N)
+  - [x] Adicionar indexes: `email`, `document`, `userId`, `status`, `createdAt`
+  - [x] Add relations to: Project (1:N), Activity (1:N), TimeLog (1:N)
 
 #### Subtarefa 1.1.2: Activity Model
-- [ ] **Rastreamento de atividades do arquiteto**
+- [x] **Rastreamento de atividades do arquiteto**
   - [ ] `id` (UUID)
   - [ ] `type` (enum: MEETING, CALL, EMAIL, SITE_VISIT, DESIGN, REVISION, APPROVAL, ADMIN, OTHER)
   - [ ] `title` (string)
@@ -358,7 +358,7 @@ archflow/
   - [ ] Relations: Client, Project, Task, User
 
 #### Subtarefa 1.1.3: Deliverable Model
-- [ ] **Gestão de entregas de projeto**
+- [x] **Gestão de entregas de projeto**
   - [ ] `id` (UUID)
   - [ ] `name` (string)
   - [ ] `type` (enum: SKETCH, RENDER_3D, DRAWING_2D, DOCUMENT, PDF, VIDEO, PHOTO, OTHER)
@@ -382,7 +382,7 @@ archflow/
   - [ ] Relations: Task, Project, User
 
 #### Subtarefa 1.1.4: TimeLog Model
-- [ ] **Rastreamento de tempo dedicado**
+- [x] **Rastreamento de tempo dedicado**
   - [ ] `id` (UUID)
   - [ ] `duration` (float, em horas)
   - [ ] `category` (enum: DESIGN, REVIEW, MEETING, ADMIN, DELIVERY, OTHER)
@@ -403,7 +403,7 @@ archflow/
   - [ ] Relations: User, Project, Task, Client
 
 #### Subtarefa 1.1.5: Estimate Model
-- [ ] **Estimativas de projeto**
+- [x] **Estimativas de projeto**
   - [ ] `id` (UUID)
   - [ ] `projectId` (FK)
   - [ ] `estimatedHours` (float)
@@ -416,7 +416,7 @@ archflow/
   - [ ] Indexes: `projectId`
 
 #### Subtarefa 1.1.6: Budget Model
-- [ ] **Orçamento por projeto**
+- [x] **Orçamento por projeto**
   - [ ] `id` (UUID)
   - [ ] `projectId` (FK, unique)
   - [ ] `totalBudget` (decimal)
@@ -427,7 +427,7 @@ archflow/
   - [ ] `createdAt`, `updatedAt`
 
 #### Subtarefa 1.1.7: Notification Model
-- [ ] Expandir modelo existente
+- [x] Expandir modelo existente
   - [ ] `id` (UUID)
   - [ ] `userId` (FK)
   - [ ] `type` (enum: TASK_ASSIGNED, COMMENT, APPROVAL_PENDING, DEADLINE_APPROACHING, PROJECT_UPDATE, MENTION, SYSTEM)
@@ -442,7 +442,7 @@ archflow/
   - [ ] Indexes: `userId`, `read`, `createdAt`
 
 #### Subtarefa 1.1.8: AuditLog Model
-- [ ] Expandir para rastrear tudo
+- [x] Expandir para rastrear tudo
   - [ ] `id` (UUID)
   - [ ] `userId` (FK)
   - [ ] `action` (enum: CREATE, UPDATE, DELETE, APPROVE, REJECT)
@@ -455,7 +455,7 @@ archflow/
   - [ ] Indexes: `userId`, `entityType`, `entityId`, `createdAt`
 
 #### Subtarefa 1.1.9: Relations Completas
-- [ ] **Mapear todas as relações**
+- [x] **Mapear todas as relações**
   - [ ] User → Projects (1:N)
   - [ ] User → Tasks (1:N)
   - [ ] User → Activities (1:N)
@@ -480,16 +480,16 @@ archflow/
   - [ ] ProjectMember → Project (N:1)
 
 #### Subtarefa 1.1.10: Validações em Prisma
-- [ ] **Cascade delete rules**
+- [x] **Cascade delete rules**
   - [ ] Deletar Cliente → Deletar Activities, TimeLogs (soft delete Projects)
   - [ ] Deletar Project → Deletar Tasks, Deliverables, Budget, Estimate (soft)
   - [ ] Deletar Task → Deletar Deliverables, Activities, TimeLogs (soft)
-- [ ] **Unique constraints**
+- [x] **Unique constraints**
   - [ ] Client.email
   - [ ] Client.document
   - [ ] User.email
   - [ ] Project.id per client combo (opcional)
-- [ ] **Default values**
+- [x] **Default values**
   - [ ] Client.status = "PROSPECT"
   - [ ] Activity.status = "SCHEDULED"
   - [ ] Deliverable.status = "DRAFT"
@@ -500,14 +500,14 @@ archflow/
 ### Status: 0% (TODO)
 
 #### Subtarefa 1.2.1: Criar Migration Inicial
-- [ ] **`prisma/migrations/add_core_models`**
+- [x] **`prisma/migrations/add_core_models`**
   - [ ] Executar `npx prisma migrate dev --name add_core_models`
   - [ ] Verificar SQL gerado
   - [ ] Testar localmente
   - [ ] Backup do banco antes de executar em staging
 
 #### Subtarefa 1.2.2: Criar Migration para Soft Deletes
-- [ ] **Adicionar `deletedAt` aos models**
+- [x] **Adicionar `deletedAt` aos models**
   - [ ] User, Project, Client, Task, Deliverable, TimeLog
   - [ ] `npx prisma migrate dev --name add_soft_deletes`
 
@@ -535,7 +535,7 @@ archflow/
   - [ ] Executar: `npx prisma db seed`
 
 #### Subtarefa 1.2.4: Validar Schema
-- [ ] **`npx prisma validate`** ✓
+- [x] **`npx prisma validate`** ✓
 - [ ] **`npx prisma introspect`** - se houver BD existente
 - [ ] Verificar tipos TypeScript gerados
 - [ ] Compilar TypeScript sem erros
@@ -570,7 +570,7 @@ archflow/
 ### Status: 30% (basic structure exists)
 
 #### Subtarefa 1.4.1: Auth Server Actions
-- [ ] **`app/actions/auth.ts`** - MELHORAR existente
+- [x] **`app/actions/auth.ts`** - MELHORAR existente
   - [ ] `signUp(email, password, name)` - Registrar
   - [ ] `signIn(email, password)` - Login
   - [ ] `signOut()` - Logout
@@ -580,7 +580,7 @@ archflow/
   - [ ] `updateProfile(data)` - Atualizar perfil
 
 #### Subtarefa 1.4.2: Client Server Actions
-- [ ] **`app/actions/client.ts`** - NOVO arquivo
+- [x] **`app/actions/client.ts`** - NOVO arquivo
   - [ ] `createClient(formData)` - Criar novo cliente
   - [ ] `getClientById(id)` - Recuperar cliente específico
   - [ ] `listClients(filters, pagination)` - Listar com filtros
@@ -597,29 +597,29 @@ archflow/
   - [ ] Todas as ações CRUD básicas
 
 #### Subtarefa 1.4.4: Activity Server Actions
-- [ ] **`app/actions/activity.ts`** - NOVO arquivo
+- [x] **`app/actions/activity.ts`** - NOVO arquivo
   - [ ] Todas as ações de atividades
 
 #### Subtarefa 1.4.5: TimeLog Server Actions
-- [ ] **`app/actions/timeLog.ts`** - NOVO arquivo
+- [x] **`app/actions/timeLog.ts`** - NOVO arquivo
   - [ ] Todas as ações de time tracking
 
 #### Subtarefa 1.4.6: Deliverable Server Actions
-- [ ] **`app/actions/deliverable.ts`** - NOVO arquivo
+- [x] **`app/actions/deliverable.ts`** - NOVO arquivo
   - [ ] Todas as ações de deliverables
 
 #### Subtarefa 1.4.7: Error Handling & Validation
-- [ ] **`lib/validations.ts`** - Schemas Zod centralizados
+- [x] **`lib/validations.ts`** - Schemas Zod centralizados
 - [ ] **Error boundaries em Server Actions**
 
 ## 1.5 Middleware e Guards
 ### Status: 20% (basic exists)
 
 #### Subtarefa 1.5.1: Auth Middleware
-- [ ] **`middleware.ts`** - Melhorar existente
+- [x] **`middleware.ts`** - Melhorar existente
 
 #### Subtarefa 1.5.2: Permission Checks
-- [ ] **`lib/permissions.ts`** - NOVO arquivo
+- [x] **`lib/permissions.ts`** - NOVO arquivo
 
 #### Subtarefa 1.5.3: API Route Protection
 - [ ] **Em cada `app/api/` route**
@@ -628,16 +628,16 @@ archflow/
 ### Status: 0% (TODO)
 
 #### Subtarefa 1.6.1: Setup Jest + RTL
-- [ ] **`jest.config.js` + `jest.setup.js`**
+- [x] **`jest.config.js` + `jest.setup.js`**
 
 #### Subtarefa 1.6.2: Testes de Validação
-- [ ] **`tests/unit/validations.test.ts`**
+- [x] **`tests/unit/validations.test.ts`**
 
 #### Subtarefa 1.6.3: Testes de Server Actions
-- [ ] **`tests/unit/actions.test.ts`**
+- [x] **`tests/unit/actions.test.ts`**
 
 #### Subtarefa 1.6.4: Testes de Permissions
-- [ ] **`tests/unit/permissions.test.ts`**
+- [x] **`tests/unit/permissions.test.ts`**
 
 ---
 

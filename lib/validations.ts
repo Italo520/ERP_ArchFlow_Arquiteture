@@ -1,0 +1,109 @@
+import { z } from "zod";
+import {
+    ClientLegalType,
+    ClientCategory,
+    ClientStatus,
+    ContactPreference,
+    ActivityType,
+    ActivityStatus,
+    TimeLogCategory,
+    DeliverableType,
+    DeliverableStatus
+} from "@prisma/client";
+
+// --- Enums as Zod Enums ---
+export const ClientLegalTypeEnum = z.nativeEnum(ClientLegalType);
+export const ClientCategoryEnum = z.nativeEnum(ClientCategory);
+export const ClientStatusEnum = z.nativeEnum(ClientStatus);
+export const ContactPreferenceEnum = z.nativeEnum(ContactPreference);
+export const ActivityTypeEnum = z.nativeEnum(ActivityType);
+export const ActivityStatusEnum = z.nativeEnum(ActivityStatus);
+export const TimeLogCategoryEnum = z.nativeEnum(TimeLogCategory);
+export const DeliverableTypeEnum = z.nativeEnum(DeliverableType);
+export const DeliverableStatusEnum = z.nativeEnum(DeliverableStatus);
+
+// --- Client Schemas ---
+export const clientSchema = z.object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Invalid email address"),
+    phone: z.string().optional().nullable(),
+    website: z.string().url("Invalid URL").optional().nullable().or(z.literal("")),
+    legalType: ClientLegalTypeEnum.optional().nullable(),
+    document: z.string().optional().nullable(), // CPF/CNPJ validation could be added here
+    razaoSocial: z.string().optional().nullable(),
+    inscricaoEstadual: z.string().optional().nullable(),
+    address: z.any().optional().nullable(), // refined later if needed with z.object
+    geoLocation: z.any().optional().nullable(),
+    category: ClientCategoryEnum.optional().nullable(),
+    status: ClientStatusEnum.default(ClientStatus.PROSPECT),
+    notes: z.string().optional().nullable(),
+    contactPreference: ContactPreferenceEnum.optional().nullable(),
+    tags: z.array(z.string()).optional(),
+    metadata: z.any().optional().nullable(),
+});
+
+export const updateClientSchema = clientSchema.partial().extend({
+    id: z.string().uuid(),
+});
+
+// --- Activity Schemas ---
+export const activitySchema = z.object({
+    type: ActivityTypeEnum,
+    title: z.string().min(2, "Title is required"),
+    description: z.string().optional().nullable(),
+    duration: z.number().int().nonnegative().optional().nullable(), // minutes
+    startTime: z.coerce.date(),
+    endTime: z.coerce.date().optional().nullable(),
+    location: z.string().optional().nullable(),
+    participants: z.array(z.string()).optional(),
+    clientId: z.string().uuid().optional().nullable(),
+    projectId: z.string().uuid().optional().nullable(),
+    taskId: z.string().uuid().optional().nullable(),
+    status: ActivityStatusEnum.default(ActivityStatus.SCHEDULED),
+    notes: z.string().optional().nullable(),
+    attachments: z.array(z.any()).optional(),
+});
+
+export const updateActivitySchema = activitySchema.partial().extend({
+    id: z.string().uuid(),
+});
+
+// --- TimeLog Schemas ---
+export const timeLogSchema = z.object({
+    duration: z.number().positive("Duration must be positive"), // hours
+    category: TimeLogCategoryEnum,
+    description: z.string().optional().nullable(),
+    date: z.coerce.date(),
+    startTime: z.coerce.date().optional().nullable(),
+    endTime: z.coerce.date().optional().nullable(),
+    projectId: z.string().uuid(),
+    taskId: z.string().uuid().optional().nullable(),
+    clientId: z.string().uuid().optional().nullable(),
+    billable: z.boolean().default(false),
+    billRate: z.number().nonnegative().optional().nullable(),
+    tags: z.array(z.string()).optional(),
+});
+
+export const updateTimeLogSchema = timeLogSchema.partial().extend({
+    id: z.string().uuid(),
+});
+
+// --- Deliverable Schemas ---
+export const deliverableSchema = z.object({
+    name: z.string().min(2, "Name is required"),
+    type: DeliverableTypeEnum,
+    description: z.string().optional().nullable(),
+    fileUrl: z.string().url("File URL is required"),
+    fileSize: z.number().int().nonnegative().optional().nullable(),
+    mimeType: z.string().optional().nullable(),
+    version: z.number().int().positive().default(1),
+    status: DeliverableStatusEnum.default(DeliverableStatus.DRAFT),
+    taskId: z.string().uuid(),
+    projectId: z.string().uuid(),
+    dueDates: z.array(z.string()).optional(),
+    tags: z.array(z.string()).optional(),
+});
+
+export const updateDeliverableSchema = deliverableSchema.partial().extend({
+    id: z.string().uuid(),
+});
