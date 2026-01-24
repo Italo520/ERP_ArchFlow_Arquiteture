@@ -309,230 +309,230 @@ archflow/
 - [x] **Criar modelo completo de Cliente**
   - [x] Model User básico
   - [ ] Estender com campos arquitetônicos
-    - [ ] `id` (UUID)
-    - [ ] `name` (string, required)
-    - [ ] `email` (string, unique)
-    - [ ] `phone` (string)
-    - [ ] `website` (string, nullable)
-    - [ ] `legalType` (enum: PF, PJ)
-    - [ ] `document` (CPF/CNPJ, unique, validated)
-    - [ ] `razaoSocial` (string, for PJ)
-    - [ ] `inscricaoEstadual` (string, nullable)
-    - [ ] `address` (JSON: rua, numero, cep, cidade, estado, complemento)
-    - [ ] `geoLocation` (JSON: lat, lng, for maps)
-    - [ ] `category` (enum: RESIDENTIAL, COMMERCIAL, INSTITUTIONAL, INDUSTRIAL, DESIGNER)
-    - [ ] `status` (enum: ACTIVE, INACTIVE, PROSPECT, BLOCKED)
-    - [ ] `rating` (float, 0-5)
-    - [ ] `totalSpent` (decimal, calculated)
-    - [ ] `avatar` (string, url)
-    - [ ] `notes` (text)
-    - [ ] `contactPreference` (enum: EMAIL, PHONE, WHATSAPP)
-    - [ ] `userId` (FK to User who owns the client record)
-    - [ ] `tags` (string[], for categorization)
-    - [ ] `metadata` (JSON, for extensibility)
-    - [ ] `createdAt`, `updatedAt`, `deletedAt` (soft delete)
-    - [ ] `lastInteractionAt` (to detect inactive)
+    - [x] `id` (UUID)
+    - [x] `name` (string, required)
+    - [x] `email` (string, unique)
+    - [x] `phone` (string)
+    - [x] `website` (string, nullable)
+    - [x] `legalType` (enum: PF, PJ)
+    - [x] `document` (CPF/CNPJ, unique, validated)
+    - [x] `razaoSocial` (string, for PJ)
+    - [x] `inscricaoEstadual` (string, nullable)
+    - [x] `address` (JSON: rua, numero, cep, cidade, estado, complemento)
+    - [x] `geoLocation` (JSON: lat, lng, for maps)
+    - [x] `category` (enum: RESIDENTIAL, COMMERCIAL, INSTITUTIONAL, INDUSTRIAL, DESIGNER)
+    - [x] `status` (enum: ACTIVE, INACTIVE, PROSPECT, BLOCKED)
+    - [x] `rating` (float, 0-5)
+    - [x] `totalSpent` (decimal, calculated)
+    - [x] `avatar` (string, url)
+    - [x] `notes` (text)
+    - [x] `contactPreference` (enum: EMAIL, PHONE, WHATSAPP)
+    - [x] `userId` (FK to User who owns the client record)
+    - [x] `tags` (string[], for categorization)
+    - [x] `metadata` (JSON, for extensibility)
+    - [x] `createdAt`, `updatedAt`, `deletedAt` (soft delete)
+    - [x] `lastInteractionAt` (to detect inactive)
   - [x] Adicionar indexes: `email`, `document`, `userId`, `status`, `createdAt`
   - [x] Add relations to: Project (1:N), Activity (1:N), TimeLog (1:N)
 
 #### Subtarefa 1.1.2: Activity Model
 - [x] **Rastreamento de atividades do arquiteto**
-  - [ ] `id` (UUID)
-  - [ ] `type` (enum: MEETING, CALL, EMAIL, SITE_VISIT, DESIGN, REVISION, APPROVAL, ADMIN, OTHER)
-  - [ ] `title` (string)
-  - [ ] `description` (text)
-  - [ ] `duration` (int, em minutos)
-  - [ ] `startTime` (datetime)
-  - [ ] `endTime` (datetime)
-  - [ ] `location` (string, nullable)
-  - [ ] `participants` (string[], array de IDs de usuários)
-  - [ ] `clientId` (FK)
-  - [ ] `projectId` (FK, nullable)
-  - [ ] `taskId` (FK, nullable)
-  - [ ] `createdById` (FK to User)
-  - [ ] `attachments` (JSON[], file references)
-  - [ ] `notes` (text)
-  - [ ] `status` (enum: SCHEDULED, COMPLETED, CANCELLED)
-  - [ ] `createdAt`, `updatedAt`
-  - [ ] Indexes: `clientId`, `projectId`, `createdById`, `startTime`
-  - [ ] Relations: Client, Project, Task, User
+  - [x] `id` (UUID)
+  - [x] `type` (enum: MEETING, CALL, EMAIL, SITE_VISIT, DESIGN, REVISION, APPROVAL, ADMIN, OTHER)
+  - [x] `title` (string)
+  - [x] `description` (text)
+  - [x] `duration` (int, em minutos)
+  - [x] `startTime` (datetime)
+  - [x] `endTime` (datetime)
+  - [x] `location` (string, nullable)
+  - [x] `participants` (string[], array de IDs de usuários)
+  - [x] `clientId` (FK)
+  - [x] `projectId` (FK, nullable)
+  - [x] `taskId` (FK, nullable)
+  - [x] `createdById` (FK to User)
+  - [x] `attachments` (JSON[], file references)
+  - [x] `notes` (text)
+  - [x] `status` (enum: SCHEDULED, COMPLETED, CANCELLED)
+  - [x] `createdAt`, `updatedAt`
+  - [x] Indexes: `clientId`, `projectId`, `createdById`, `startTime`
+  - [x] Relations: Client, Project, Task, User
 
 #### Subtarefa 1.1.3: Deliverable Model
 - [x] **Gestão de entregas de projeto**
-  - [ ] `id` (UUID)
-  - [ ] `name` (string)
-  - [ ] `type` (enum: SKETCH, RENDER_3D, DRAWING_2D, DOCUMENT, PDF, VIDEO, PHOTO, OTHER)
-  - [ ] `description` (text)
-  - [ ] `fileUrl` (string)
-  - [ ] `fileSize` (int, em bytes)
-  - [ ] `mimeType` (string)
-  - [ ] `version` (int, starts at 1)
-  - [ ] `status` (enum: DRAFT, PENDING_REVIEW, APPROVED, APPROVED_WITH_CHANGES, REJECTED, DELIVERED)
-  - [ ] `taskId` (FK)
-  - [ ] `projectId` (FK)
-  - [ ] `createdById` (FK to User)
-  - [ ] `approvedById` (FK, nullable)
-  - [ ] `reviewComments` (JSON[], with timestamps)
-  - [ ] `revisionCount` (int)
-  - [ ] `dueDates` (string[], milestones)
-  - [ ] `tags` (string[])
-  - [ ] `metadata` (JSON, for specific types)
-  - [ ] `createdAt`, `updatedAt`, `deletedAt`
-  - [ ] Indexes: `projectId`, `taskId`, `status`, `version`
-  - [ ] Relations: Task, Project, User
+  - [x] `id` (UUID)
+  - [x] `name` (string)
+  - [x] `type` (enum: SKETCH, RENDER_3D, DRAWING_2D, DOCUMENT, PDF, VIDEO, PHOTO, OTHER)
+  - [x] `description` (text)
+  - [x] `fileUrl` (string)
+  - [x] `fileSize` (int, em bytes)
+  - [x] `mimeType` (string)
+  - [x] `version` (int, starts at 1)
+  - [x] `status` (enum: DRAFT, PENDING_REVIEW, APPROVED, APPROVED_WITH_CHANGES, REJECTED, DELIVERED)
+  - [x] `taskId` (FK)
+  - [x] `projectId` (FK)
+  - [x] `createdById` (FK to User)
+  - [x] `approvedById` (FK, nullable)
+  - [x] `reviewComments` (JSON[], with timestamps)
+  - [x] `revisionCount` (int)
+  - [x] `dueDates` (string[], milestones)
+  - [x] `tags` (string[])
+  - [x] `metadata` (JSON, for specific types)
+  - [x] `createdAt`, `updatedAt`, `deletedAt`
+  - [x] Indexes: `projectId`, `taskId`, `status`, `version`
+  - [x] Relations: Task, Project, User
 
 #### Subtarefa 1.1.4: TimeLog Model
 - [x] **Rastreamento de tempo dedicado**
-  - [ ] `id` (UUID)
-  - [ ] `duration` (float, em horas)
-  - [ ] `category` (enum: DESIGN, REVIEW, MEETING, ADMIN, DELIVERY, OTHER)
-  - [ ] `description` (text)
-  - [ ] `date` (date)
-  - [ ] `startTime` (time, optional)
-  - [ ] `endTime` (time, optional)
-  - [ ] `userId` (FK)
-  - [ ] `projectId` (FK)
-  - [ ] `taskId` (FK, nullable)
-  - [ ] `clientId` (FK, nullable)
-  - [ ] `billable` (boolean)
-  - [ ] `billRate` (decimal, hourly rate)
-  - [ ] `invoiceId` (FK, nullable)
-  - [ ] `tags` (string[])
-  - [ ] `createdAt`, `updatedAt`
-  - [ ] Indexes: `userId`, `projectId`, `date`, `billable`
-  - [ ] Relations: User, Project, Task, Client
+  - [x] `id` (UUID)
+  - [x] `duration` (float, em horas)
+  - [x] `category` (enum: DESIGN, REVIEW, MEETING, ADMIN, DELIVERY, OTHER)
+  - [x] `description` (text)
+  - [x] `date` (date)
+  - [x] `startTime` (time, optional)
+  - [x] `endTime` (time, optional)
+  - [x] `userId` (FK)
+  - [x] `projectId` (FK)
+  - [x] `taskId` (FK, nullable)
+  - [x] `clientId` (FK, nullable)
+  - [x] `billable` (boolean)
+  - [x] `billRate` (decimal, hourly rate)
+  - [x] `invoiceId` (FK, nullable)
+  - [x] `tags` (string[])
+  - [x] `createdAt`, `updatedAt`
+  - [x] Indexes: `userId`, `projectId`, `date`, `billable`
+  - [x] Relations: User, Project, Task, Client
 
 #### Subtarefa 1.1.5: Estimate Model
 - [x] **Estimativas de projeto**
-  - [ ] `id` (UUID)
-  - [ ] `projectId` (FK)
-  - [ ] `estimatedHours` (float)
-  - [ ] `estimatedCost` (decimal)
-  - [ ] `actualHours` (float, calculated)
-  - [ ] `actualCost` (decimal, calculated)
-  - [ ] `status` (enum: DRAFT, APPROVED, IN_PROGRESS, COMPLETED)
-  - [ ] `notes` (text)
-  - [ ] `createdAt`, `updatedAt`
-  - [ ] Indexes: `projectId`
+  - [x] `id` (UUID)
+  - [x] `projectId` (FK)
+  - [x] `estimatedHours` (float)
+  - [x] `estimatedCost` (decimal)
+  - [x] `actualHours` (float, calculated)
+  - [x] `actualCost` (decimal, calculated)
+  - [x] `status` (enum: DRAFT, APPROVED, IN_PROGRESS, COMPLETED)
+  - [x] `notes` (text)
+  - [x] `createdAt`, `updatedAt`
+  - [x] Indexes: `projectId`
 
 #### Subtarefa 1.1.6: Budget Model
 - [x] **Orçamento por projeto**
-  - [ ] `id` (UUID)
-  - [ ] `projectId` (FK, unique)
-  - [ ] `totalBudget` (decimal)
-  - [ ] `spentAmount` (decimal, calculated)
-  - [ ] `remainingAmount` (decimal, calculated)
-  - [ ] `budgetBreakdown` (JSON: {phase: amount})
-  - [ ] `status` (enum: DRAFT, APPROVED, ACTIVE, EXCEEDED, COMPLETED)
-  - [ ] `createdAt`, `updatedAt`
+  - [x] `id` (UUID)
+  - [x] `projectId` (FK, unique)
+  - [x] `totalBudget` (decimal)
+  - [x] `spentAmount` (decimal, calculated)
+  - [x] `remainingAmount` (decimal, calculated)
+  - [x] `budgetBreakdown` (JSON: {phase: amount})
+  - [x] `status` (enum: DRAFT, APPROVED, ACTIVE, EXCEEDED, COMPLETED)
+  - [x] `createdAt`, `updatedAt`
 
 #### Subtarefa 1.1.7: Notification Model
 - [x] Expandir modelo existente
-  - [ ] `id` (UUID)
-  - [ ] `userId` (FK)
-  - [ ] `type` (enum: TASK_ASSIGNED, COMMENT, APPROVAL_PENDING, DEADLINE_APPROACHING, PROJECT_UPDATE, MENTION, SYSTEM)
-  - [ ] `title` (string)
-  - [ ] `message` (text)
-  - [ ] `relatedEntityId` (string, id do objeto - project, task, etc)
-  - [ ] `relatedEntityType` (enum: PROJECT, TASK, CLIENT, ACTIVITY, DELIVERABLE)
-  - [ ] `read` (boolean)
-  - [ ] `readAt` (datetime, nullable)
-  - [ ] `actionUrl` (string, link para abrir notificação)
-  - [ ] `createdAt`
-  - [ ] Indexes: `userId`, `read`, `createdAt`
+  - [x] `id` (UUID)
+  - [x] `userId` (FK)
+  - [x] `type` (enum: TASK_ASSIGNED, COMMENT, APPROVAL_PENDING, DEADLINE_APPROACHING, PROJECT_UPDATE, MENTION, SYSTEM)
+  - [x] `title` (string)
+  - [x] `message` (text)
+  - [x] `relatedEntityId` (string, id do objeto - project, task, etc)
+  - [x] `relatedEntityType` (enum: PROJECT, TASK, CLIENT, ACTIVITY, DELIVERABLE)
+  - [x] `read` (boolean)
+  - [x] `readAt` (datetime, nullable)
+  - [x] `actionUrl` (string, link para abrir notificação)
+  - [x] `createdAt`
+  - [x] Indexes: `userId`, `read`, `createdAt`
 
 #### Subtarefa 1.1.8: AuditLog Model
 - [x] Expandir para rastrear tudo
-  - [ ] `id` (UUID)
-  - [ ] `userId` (FK)
-  - [ ] `action` (enum: CREATE, UPDATE, DELETE, APPROVE, REJECT)
-  - [ ] `entityType` (string: "Project", "Task", "Client", etc)
-  - [ ] `entityId` (string)
-  - [ ] `changes` (JSON: {field: {oldValue, newValue}})
-  - [ ] `ipAddress` (string)
-  - [ ] `userAgent` (string)
-  - [ ] `createdAt`
-  - [ ] Indexes: `userId`, `entityType`, `entityId`, `createdAt`
+  - [x] `id` (UUID)
+  - [x] `userId` (FK)
+  - [x] `action` (enum: CREATE, UPDATE, DELETE, APPROVE, REJECT)
+  - [x] `entityType` (string: "Project", "Task", "Client", etc)
+  - [x] `entityId` (string)
+  - [x] `changes` (JSON: {field: {oldValue, newValue}})
+  - [x] `ipAddress` (string)
+  - [x] `userAgent` (string)
+  - [x] `createdAt`
+  - [x] Indexes: `userId`, `entityType`, `entityId`, `createdAt`
 
 #### Subtarefa 1.1.9: Relations Completas
 - [x] **Mapear todas as relações**
-  - [ ] User → Projects (1:N)
-  - [ ] User → Tasks (1:N)
-  - [ ] User → Activities (1:N)
-  - [ ] User → TimeLogs (1:N)
-  - [ ] Client → Projects (1:N)
-  - [ ] Client → Activities (1:N)
-  - [ ] Client → TimeLogs (1:N)
-  - [ ] Project → Tasks (1:N)
-  - [ ] Project → Deliverables (1:N)
-  - [ ] Project → Activities (1:N)
-  - [ ] Project → Budget (1:1)
-  - [ ] Project → Estimate (1:1)
-  - [ ] Project → TimeLogs (1:N)
-  - [ ] Project → Stages (1:N)
-  - [ ] Task → Deliverables (1:N)
-  - [ ] Task → Activities (1:N)
-  - [ ] Task → TimeLogs (1:N)
-  - [ ] Task → Comments (1:N)
-  - [ ] Deliverable → Reviews (1:N, comments)
-  - [ ] User → ProjectMembers (1:N, para colaboração)
-  - [ ] ProjectMember → User (N:1)
-  - [ ] ProjectMember → Project (N:1)
+  - [x] User → Projects (1:N)
+  - [x] User → Tasks (1:N)
+  - [x] User → Activities (1:N)
+  - [x] User → TimeLogs (1:N)
+  - [x] Client → Projects (1:N)
+  - [x] Client → Activities (1:N)
+  - [x] Client → TimeLogs (1:N)
+  - [x] Project → Tasks (1:N)
+  - [x] Project → Deliverables (1:N)
+  - [x] Project → Activities (1:N)
+  - [x] Project → Budget (1:1)
+  - [x] Project → Estimate (1:1)
+  - [x] Project → TimeLogs (1:N)
+  - [x] Project → Stages (1:N)
+  - [x] Task → Deliverables (1:N)
+  - [x] Task → Activities (1:N)
+  - [x] Task → TimeLogs (1:N)
+  - [x] Task → Comments (1:N)
+  - [x] Deliverable → Reviews (1:N, comments)
+  - [x] User → ProjectMembers (1:N, para colaboração)
+  - [x] ProjectMember → User (N:1)
+  - [x] ProjectMember → Project (N:1)
 
 #### Subtarefa 1.1.10: Validações em Prisma
 - [x] **Cascade delete rules**
-  - [ ] Deletar Cliente → Deletar Activities, TimeLogs (soft delete Projects)
-  - [ ] Deletar Project → Deletar Tasks, Deliverables, Budget, Estimate (soft)
-  - [ ] Deletar Task → Deletar Deliverables, Activities, TimeLogs (soft)
+  - [x] Deletar Cliente → Deletar Activities, TimeLogs (soft delete Projects)
+  - [x] Deletar Project → Deletar Tasks, Deliverables, Budget, Estimate (soft)
+  - [x] Deletar Task → Deletar Deliverables, Activities, TimeLogs (soft)
 - [x] **Unique constraints**
-  - [ ] Client.email
-  - [ ] Client.document
-  - [ ] User.email
-  - [ ] Project.id per client combo (opcional)
+  - [x] Client.email
+  - [x] Client.document
+  - [x] User.email
+  - [x] Project.id per client combo (opcional)
 - [x] **Default values**
-  - [ ] Client.status = "PROSPECT"
-  - [ ] Activity.status = "SCHEDULED"
-  - [ ] Deliverable.status = "DRAFT"
-  - [ ] Deliverable.version = 1
-  - [ ] Project.progress = 0
+  - [x] Client.status = "PROSPECT"
+  - [x] Activity.status = "SCHEDULED"
+  - [x] Deliverable.status = "DRAFT"
+  - [x] Deliverable.version = 1
+  - [x] Project.progress = 0
 
 ## 1.2 Prisma Migrations
 ### Status: 0% (TODO)
 
 #### Subtarefa 1.2.1: Criar Migration Inicial
 - [x] **`prisma/migrations/add_core_models`**
-  - [ ] Executar `npx prisma migrate dev --name add_core_models`
-  - [ ] Verificar SQL gerado
-  - [ ] Testar localmente
+  - [x] Executar `npx prisma migrate dev --name add_core_models`
+  - [x] Verificar SQL gerado
+  - [x] Testar localmente
   - [ ] Backup do banco antes de executar em staging
 
 #### Subtarefa 1.2.2: Criar Migration para Soft Deletes
 - [x] **Adicionar `deletedAt` aos models**
-  - [ ] User, Project, Client, Task, Deliverable, TimeLog
-  - [ ] `npx prisma migrate dev --name add_soft_deletes`
+  - [x] User, Project, Client, Task, Deliverable, TimeLog
+  - [x] `npx prisma migrate dev --name add_soft_deletes` (incluído em add_core_models)
 
 #### Subtarefa 1.2.3: Criar Seed Script
 - [ ] **`prisma/seed.ts`**
-  - [ ] Limpar dados existentes (truncate)
-  - [ ] Criar 3-5 usuários de teste
-    - [ ] Admin, Editor, Viewer roles
-    - [ ] Email: admin@archflow.local, etc
-    - [ ] Senhas: temporárias (dev only)
-  - [ ] Criar 10-15 clientes fictícios
+  - [x] Limpar dados existentes (truncate)
+  - [x] Criar 3-5 usuários de teste
+    - [x] Admin, Editor, Viewer roles
+    - [x] Email: admin@archflow.local, etc
+    - [x] Senhas: temporárias (dev only)
+  - [x] Criar 10-15 clientes fictícios
     - [ ] Mix de PF e PJ
     - [ ] Diferentes categorias (residential, commercial, etc)
     - [ ] Diferentes status (active, prospect, inactive)
-  - [ ] Criar 15-20 projetos relacionados
-    - [ ] Diferentes tipos (residencial, comercial, reforma)
-    - [ ] Diferentes status (conceitual, executivo, finalizado)
-    - [ ] Diferentes clientes
-    - [ ] Com áreas, andares, ambientes
-  - [ ] Criar 30-50 tasks relacionadas aos projetos
-    - [ ] Diferentes stages (briefing, design, revision, etc)
-    - [ ] Diferentes assignees
-    - [ ] Diferentes prioridades
-  - [ ] Criar activities, time logs, deliverables de exemplo
-  - [ ] Executar: `npx prisma db seed`
+  - [x] Criar 15-20 projetos relacionados
+    - [x] Diferentes tipos (residencial, comercial, reforma)
+    - [x] Diferentes status (conceitual, executivo, finalizado)
+    - [x] Diferentes clientes
+    - [x] Com áreas, andares, ambientes
+  - [x] Criar 30-50 tasks relacionadas aos projetos
+    - [x] Diferentes stages (briefing, design, revision, etc)
+    - [x] Diferentes assignees
+    - [x] Diferentes prioridades
+  - [x] Criar activities, time logs, deliverables de exemplo
+  - [x] Executar: `npx prisma db seed`
 
 #### Subtarefa 1.2.4: Validar Schema
 - [x] **`npx prisma validate`** ✓
@@ -544,7 +544,7 @@ archflow/
 ### Status: 0% (TODO)
 
 #### Subtarefa 1.3.1: Adicionar Índices Críticos
-- [ ] **Em schema.prisma**
+- [x] **Em schema.prisma**
   ```prisma
   model Client {
     // ... fields
@@ -555,37 +555,37 @@ archflow/
     @@unique([email])
   }
   ```
-- [ ] Migração: `npx prisma migrate dev --name add_performance_indexes`
+- [x] Migração: `npx prisma migrate dev --name add_performance_indexes`
 - [ ] Testar query performance em staging
 
 #### Subtarefa 1.3.2: Otimizar Queries
-- [ ] **Usar `select` para reduzir dados transferidos**
-- [ ] Documentar padrão em `lib/db.ts`
+- [ ] **Usar `select` para reduzir dados transferidos** (Melhoria Futura)
+- [ ] Documentar padrão em `lib/db.ts` (Melhoria Futura)
 
 #### Subtarefa 1.3.3: N+1 Query Prevention
-- [ ] **Usar `include` com cuidado**
-- [ ] **Batch queries when possible**
+- [ ] **Usar `include` com cuidado** (Melhoria Futura)
+- [ ] **Batch queries when possible** (Melhoria Futura)
 
 ## 1.4 Server Actions Fundamentais
 ### Status: 30% (basic structure exists)
 
 #### Subtarefa 1.4.1: Auth Server Actions
 - [x] **`app/actions/auth.ts`** - MELHORAR existente
-  - [ ] `signUp(email, password, name)` - Registrar
-  - [ ] `signIn(email, password)` - Login
-  - [ ] `signOut()` - Logout
+  - [x] `signUp(email, password, name)` - Registrar
+  - [x] `signIn(email, password)` - Login
+  - [x] `signOut()` - Logout
   - [ ] `resetPassword(email)` - Solicitar reset
   - [ ] `updatePassword(token, newPassword)` - Confirmar reset
-  - [ ] `getCurrentUser()` - Get user da session
-  - [ ] `updateProfile(data)` - Atualizar perfil
+  - [x] `getCurrentUser()` - Get user da session
+  - [x] `updateProfile(data)` - Atualizar perfil
 
 #### Subtarefa 1.4.2: Client Server Actions
 - [x] **`app/actions/client.ts`** - NOVO arquivo
-  - [ ] `createClient(formData)` - Criar novo cliente
-  - [ ] `getClientById(id)` - Recuperar cliente específico
-  - [ ] `listClients(filters, pagination)` - Listar com filtros
-  - [ ] `updateClient(id, data)` - Atualizar cliente
-  - [ ] `softDeleteClient(id)` - Deletar (soft)
+  - [x] `createClient(formData)` - Criar novo cliente
+  - [x] `getClientById(id)` - Recuperar cliente específico
+  - [x] `listClients(filters, pagination)` - Listar com filtros
+  - [x] `updateClient(id, data)` - Atualizar cliente
+  - [x] `softDeleteClient(id)` - Deletar (soft)
   - [ ] `restoreClient(id)` - Restaurar cliente deletado
   - [ ] `getClientProjects(clientId)` - Projects do cliente
   - [ ] `getClientStats(clientId)` - Estatísticas
@@ -593,24 +593,24 @@ archflow/
   - [ ] `exportClientsCSV(filters)` - Export para CSV
 
 #### Subtarefa 1.4.3: Project Server Actions
-- [ ] **`app/actions/project.ts`** - EXPANDIR existente
-  - [ ] Todas as ações CRUD básicas
+- [x] **`app/actions/project.ts`** - EXPANDIR existente
+  - [x] Todas as ações CRUD básicas
 
 #### Subtarefa 1.4.4: Activity Server Actions
 - [x] **`app/actions/activity.ts`** - NOVO arquivo
-  - [ ] Todas as ações de atividades
+  - [x] Todas as ações de atividades
 
 #### Subtarefa 1.4.5: TimeLog Server Actions
 - [x] **`app/actions/timeLog.ts`** - NOVO arquivo
-  - [ ] Todas as ações de time tracking
+  - [x] Todas as ações de time tracking
 
 #### Subtarefa 1.4.6: Deliverable Server Actions
 - [x] **`app/actions/deliverable.ts`** - NOVO arquivo
-  - [ ] Todas as ações de deliverables
+  - [x] Todas as ações de deliverables
 
 #### Subtarefa 1.4.7: Error Handling & Validation
 - [x] **`lib/validations.ts`** - Schemas Zod centralizados
-- [ ] **Error boundaries em Server Actions**
+- [ ] **Error boundaries em Server Actions** (Melhoria Futura)
 
 ## 1.5 Middleware e Guards
 ### Status: 20% (basic exists)
@@ -622,7 +622,7 @@ archflow/
 - [x] **`lib/permissions.ts`** - NOVO arquivo
 
 #### Subtarefa 1.5.3: API Route Protection
-- [ ] **Em cada `app/api/` route**
+- [x] **Em cada `app/api/` route**
 
 ## 1.6 Testes Unitários - Fase 1
 ### Status: 0% (TODO)
