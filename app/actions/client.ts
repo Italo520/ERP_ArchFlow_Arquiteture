@@ -83,11 +83,19 @@ export async function softDeleteClient(id: string) {
     }
 }
 
-export async function listClients(
-    query?: string,
-    page: number = 1,
-    limit: number = 10
-) {
+export async function listClients({
+    query,
+    status,
+    tags,
+    page = 1,
+    limit = 10,
+}: {
+    query?: string;
+    status?: string;
+    tags?: string[];
+    page?: number;
+    limit?: number;
+}) {
     try {
         const skip = (page - 1) * limit;
 
@@ -103,12 +111,27 @@ export async function listClients(
             ];
         }
 
+        if (status && status !== "ALL") {
+            where.status = status;
+        }
+
+        if (tags && tags.length > 0) {
+            where.tags = {
+                hasSome: tags,
+            };
+        }
+
         const [clients, total] = await prisma.$transaction([
             prisma.client.findMany({
                 where,
                 skip,
                 take: limit,
                 orderBy: { createdAt: "desc" },
+                include: {
+                    _count: {
+                        select: { projects: true, activities: true },
+                    },
+                },
             }),
             prisma.client.count({ where }),
         ]);
@@ -119,10 +142,33 @@ export async function listClients(
                 total,
                 page,
                 totalPages: Math.ceil(total / limit),
+                hasMore: page < Math.ceil(total / limit),
             },
         };
     } catch (error) {
         console.error("Failed to list clients:", error);
         return { error: "Failed to list clients." };
+    }
+}
+
+export async function getClientStats() {
+    try {
+        const [total, active, newThisMonth] = await prisma.$transaction([
+            prisma.client.count({ where: { deletedAt: null } }),
+            prisma.client.count({ where: { deletedAt: null, status: "ACTIVE" } }),
+            prisma.client.count({
+                where: {
+                    deletedAt: null,
+                    createdAt: {
+                        gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+                    },
+                },
+            }),
+        ]);
+
+        return { total, active, newThisMonth };
+    } catch (error) {
+        console.error("Failed to get client stats:", error);
+        return { total: 0, active: 0, newThisMonth: 0 };
     }
 }

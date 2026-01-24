@@ -17,6 +17,8 @@ import { updateStage } from '@/actions/stage';
 export function KanbanColumn({ stage, tasks, projectId, onTaskClick }) {
     const [isAdding, setIsAdding] = useState(false);
     const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [stageName, setStageName] = useState(stage.name);
     const [isPending, startTransition] = useTransition();
 
     const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
@@ -57,9 +59,6 @@ export function KanbanColumn({ stage, tasks, projectId, onTaskClick }) {
             }
         });
     };
-
-    const [isEditingName, setIsEditingName] = useState(false);
-    const [stageName, setStageName] = useState(stage.name);
 
     // Update local state if prop changes
     // useEffect(() => setStageName(stage.name), [stage.name]); 

@@ -30,6 +30,7 @@ describe("Client Actions", () => {
         const clientData = {
             name: "Test Corp",
             email: "test@corp.com",
+            status: "PROSPECT" as const,
         };
 
         mockPrisma.client.create.mockResolvedValue({
@@ -74,6 +75,7 @@ describe("Client Actions", () => {
         const invalidData = {
             name: "Test Corp",
             email: "invalid-email",
+            status: "PROSPECT" as const,
         };
 
         const result = await createClient(invalidData); // Zod caught this

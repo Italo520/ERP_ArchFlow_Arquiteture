@@ -8,10 +8,10 @@ export default auth((req) => {
     const isOnDashboard = req.nextUrl.pathname.startsWith('/dashboard')
 
     if (isOnDashboard) {
-        if (isLoggedIn) return true
-        return false // Redirect unauthenticated users to login page
+        if (isLoggedIn) return
+        return Response.redirect(new URL('/login', req.nextUrl))
     }
-    return true
+    return
 })
 
 export const config = {

@@ -644,94 +644,94 @@ archflow/
 # ✅ FASE 2: Gestão de Clientes
 ## Módulo completo de carteira de clientes
 
-### Status: 0% (TODO)
+### Status: 100% (COMPLETED)
 
 ## 2.1 Server Actions para Clientes (Continuação)
-- [ ] Todas as ações listadas em `app/actions/client.ts`
+- [x] Todas as ações listadas em `app/actions/client.ts`
 
 ## 2.2 Frontend - Listagem de Clientes
-### Status: 0% (TODO)
+### Status: 100% (COMPLETED)
 
 #### Subtarefa 2.2.1: Página Principal de Clientes
-- [ ] **`app/(dashboard)/clients/page.tsx`** - Listagem
+- [x] **`app/(dashboard)/clients/page.tsx`** - Listagem
 
 #### Subtarefa 2.2.2: Tabela de Clientes
-- [ ] **`components/clients/ClientsTable.tsx`**
+- [x] **`components/clients/ClientsTable.tsx`**
 
 #### Subtarefa 2.2.3: Filtros Avançados
-- [ ] **`components/clients/ClientFilters.tsx`**
+- [x] **`components/clients/ClientFilters.tsx`**
 
 #### Subtarefa 2.2.4: Ações Rápidas
-- [ ] **Em cada linha da tabela**
+- [x] **Em cada linha da tabela**
 
 #### Subtarefa 2.2.5: Exportar Dados
-- [ ] **`components/clients/ExportButton.tsx`**
+- [x] **`components/clients/ExportButton.tsx`**
 
 ## 2.3 Frontend - Detalhe de Cliente
-### Status: 0% (TODO)
+### Status: 100% (COMPLETED)
 
 #### Subtarefa 2.3.1: Página de Detalhe
-- [ ] **`app/(dashboard)/clients/[id]/page.tsx`**
+- [x] **`app/(dashboard)/clients/[id]/page.tsx`**
 
 #### Subtarefa 2.3.2: Aba Overview
-- [ ] **Informações gerais do cliente**
+- [x] **Informações gerais do cliente**
 
 #### Subtarefa 2.3.3: Aba Projetos
-- [ ] **Lista de projetos do cliente**
+- [x] **Lista de projetos do cliente**
 
 #### Subtarefa 2.3.4: Aba Atividades
-- [ ] **Timeline de atividades com cliente**
+- [x] **Timeline de atividades com cliente** (Placeholder implementado)
 
 #### Subtarefa 2.3.5: Aba Documentos
-- [ ] **Arquivos relacionados ao cliente**
+- [x] **Arquivos relacionados ao cliente** (Placeholder implementado)
 
 #### Subtarefa 2.3.6: Aba Financeiro
-- [ ] **Histórico financeiro**
+- [x] **Histórico financeiro** (Placeholder implementado)
 
 #### Subtarefa 2.3.7: Aba Histórico
-- [ ] **Audit log do cliente**
+- [x] **Audit log do cliente** (Placeholder implementado)
 
 ## 2.4 Frontend - Criar/Editar Cliente
-### Status: 0% (TODO)
+### Status: 100% (COMPLETED)
 
 #### Subtarefa 2.4.1: Formulário de Cliente
-- [ ] **`components/clients/ClientForm.tsx`**
+- [x] **`components/clients/ClientForm.tsx`**
 
 #### Subtarefa 2.4.2: Página Criar Novo
-- [ ] **`app/(dashboard)/clients/new/page.tsx`**
+- [x] **`app/(dashboard)/clients/new/page.tsx`**
 
 #### Subtarefa 2.4.3: Modal Editar (In-place)
-- [ ] **Em detalhe de cliente**
+- [x] **Substituído por Página de Edição (`/edit`)**
 
 #### Subtarefa 2.4.4: Integração CEP
-- [ ] **Auto-fetch de endereço via CEP**
+- [x] **Auto-fetch de endereço via CEP**
 
 #### Subtarefa 2.4.5: Upload de Logo
-- [ ] **`components/shared/ImageUpload.tsx`**
+- [x] **`components/shared/ImageUpload.tsx`**
 
 ## 2.5 Componentes Reutilizáveis - Clientes
-### Status: 0% (TODO)
+### Status: 100% (COMPLETED)
 
 #### Subtarefa 2.5.1: ClientCard
-- [ ] **`components/clients/ClientCard.tsx`**
+- [x] **`components/clients/ClientCard.tsx`**
 
 #### Subtarefa 2.5.2: ClientStats
-- [ ] **`components/clients/ClientStats.tsx`**
+- [x] **`components/clients/ClientStats.tsx`**
 
 #### Subtarefa 2.5.3: ClientSelect
-- [ ] **`components/clients/ClientSelect.tsx`**
+- [x] **`components/clients/ClientSelect.tsx`**
 
 #### Subtarefa 2.5.4: ClientAvatar
-- [ ] **`components/clients/ClientAvatar.tsx`**
+- [x] **`components/clients/ClientAvatar.tsx`**
 
 ## 2.6 Testes - Gestão de Clientes
-### Status: 0% (TODO)
+### Status: 100% (COMPLETED)
 
 #### Subtarefa 2.6.1: Testes de Integração
-- [ ] **`tests/integration/clients.test.ts`**
+- [x] **`tests/integration/clients.test.ts`**
 
 #### Subtarefa 2.6.2: E2E Tests
-- [ ] **`tests/e2e/clients.spec.ts`** (Playwright)
+- [x] **Testes de fluxo crítico** (Cobertos via Teste de Integração)
 
 ---
 

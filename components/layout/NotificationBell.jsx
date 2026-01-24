@@ -10,21 +10,6 @@ const NotificationBell = () => {
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
 
-    // Carrega notificações iniciais
-    useEffect(() => {
-        loadNotifications();
-        loadUnreadCount();
-
-        // Fechar dropdown ao clicar fora
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
     const loadNotifications = async () => {
         try {
             const data = await NotificationService.getNotifications();
@@ -43,6 +28,22 @@ const NotificationBell = () => {
         }
     };
 
+    // Carrega notificações iniciais
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => {
+        loadNotifications();
+        loadUnreadCount();
+
+        // Fechar dropdown ao clicar fora
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     // WebSocket Handler - Temporarily disabled due to legacy backend removal
     // useWebSocket('/user/queue/notifications', handleNewNotification);
     const { notifications: wsNotifications } = useWebSocket();
@@ -50,6 +51,7 @@ const NotificationBell = () => {
     // Sync WS notifications if necessary, but for now just relying on REST or empty.
     useEffect(() => {
         if (wsNotifications.length > 0) {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             setNotifications(prev => [...prev, ...wsNotifications]);
         }
     }, [wsNotifications]);

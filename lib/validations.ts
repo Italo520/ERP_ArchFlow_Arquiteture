@@ -23,16 +23,28 @@ export const DeliverableTypeEnum = z.nativeEnum(DeliverableType);
 export const DeliverableStatusEnum = z.nativeEnum(DeliverableStatus);
 
 // --- Client Schemas ---
+// --- Address Schema ---
+export const addressSchema = z.object({
+    cep: z.string().optional().or(z.literal("")),
+    street: z.string().optional().or(z.literal("")),
+    number: z.string().optional().or(z.literal("")),
+    complement: z.string().optional().or(z.literal("")),
+    neighborhood: z.string().optional().or(z.literal("")),
+    city: z.string().optional().or(z.literal("")),
+    state: z.string().optional().or(z.literal("")),
+});
+
+// --- Client Schemas ---
 export const clientSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Invalid email address"),
     phone: z.string().optional().nullable(),
     website: z.string().url("Invalid URL").optional().nullable().or(z.literal("")),
     legalType: ClientLegalTypeEnum.optional().nullable(),
-    document: z.string().optional().nullable(), // CPF/CNPJ validation could be added here
+    document: z.string().optional().nullable(),
     razaoSocial: z.string().optional().nullable(),
     inscricaoEstadual: z.string().optional().nullable(),
-    address: z.any().optional().nullable(), // refined later if needed with z.object
+    address: addressSchema.optional().nullable(),
     geoLocation: z.any().optional().nullable(),
     category: ClientCategoryEnum.optional().nullable(),
     status: ClientStatusEnum.default(ClientStatus.PROSPECT),
