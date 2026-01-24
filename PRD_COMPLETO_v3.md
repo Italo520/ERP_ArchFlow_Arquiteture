@@ -740,7 +740,371 @@ archflow/
 
 ### Status: 40% (structure ok, need expansion)
 
-(Segue padrão similar às Phases 1 e 2, com foco em campos arquitetônicos específicos)
+**Objetivo:** Expandir Gestão de Projetos com funcionalidades específicas para arquitetura
+
+## 3.1 Server Actions para Projetos (Expansão)
+### Status: 30% (CRUD básico existe)
+
+#### Subtarefa 3.1.1: Expandir Project Model com Campos Arquitetônicos
+- [ ] **Adicionar campos ao schema Prisma** (`prisma/schema.prisma`)
+  - [ ] `architecturalStyle` (enum: MODERNISTA, CLASSICO, CONTEMPORANEO, ORGANICO, MINIMALISTA, OTHER)
+  - [ ] `constructionType` (enum: ALVENARIA, STEEL_FRAME, CONCRETO_ARMADO, MADEIRA, HIBRIDA, OTHER)
+  - [ ] `totalArea` (float, em m²)
+  - [ ] `numberOfFloors` (int)
+  - [ ] `numberOfRooms` (int)
+  - [ ] `hasBasement` (boolean)
+  - [ ] `hasGarage` (boolean)
+  - [ ] `parkingSpots` (int, nullable)
+  - [ ] `landscapingArea` (float, nullable)
+  - [ ] `environmentalLicenseRequired` (boolean)
+  - [ ] `plannedCost` (decimal, estimativa de custo)
+  - [ ] `actualCost` (decimal, custo real, calculated)
+  - [ ] `startDate` (date)
+  - [ ] `estimatedEndDate` (date)
+  - [ ] `actualEndDate` (date, nullable)
+  - [ ] `phases` (JSON array: {name, order, startDate, endDate, status})
+  - [ ] `deliverables` (relation to Deliverable model)
+  - [ ] `attachedDocuments` (JSON array: file URLs for permits, licenses, etc)
+  - [ ] `projectStages` (relation: Briefing → Design → Revision → Execution → Completion)
+  - [ ] `associatedArchitects` (array de user IDs)
+  - [ ] `projectTags` (string array: RESIDENCIAL, COMERCIAL, REFORMA, NOVO, etc)
+  - [ ] `visibility` (enum: PRIVATE, TEAM, CLIENT, PUBLIC)
+  - [ ] Novo Migration: `npx prisma migrate dev --name expand_project_architecture_fields`
+
+#### Subtarefa 3.1.2: Project Server Actions - Operações Avançadas
+- [ ] **`app/actions/project.ts`** - Expandir com novas ações
+  - [ ] `updateProjectPhase(projectId, phaseId, data)` - Atualizar fase do projeto
+  - [ ] `addProjectPhase(projectId, phaseData)` - Adicionar nova fase
+  - [ ] `completeProjectPhase(projectId, phaseId)` - Marcar fase como completa
+  - [ ] `uploadProjectDocument(projectId, file, docType)` - Upload de documentos
+  - [ ] `listProjectDocuments(projectId)` - Listar documentos do projeto
+  - [ ] `deleteProjectDocument(projectId, documentId)` - Remover documento
+  - [ ] `associateArchitectToProject(projectId, userId, role)` - Adicionar arquiteto ao projeto
+  - [ ] `removeArchitectFromProject(projectId, userId)` - Remover arquiteto
+  - [ ] `getProjectTimeline(projectId)` - Retornar timeline do projeto
+  - [ ] `getProjectBudgetStatus(projectId)` - Status do orçamento
+  - [ ] `updateProjectProgress(projectId, progress)` - Atualizar progresso
+  - [ ] `getProjectMetrics(projectId)` - Métricas do projeto (horas, custos, avanço)
+  - [ ] `duplicateProject(projectId, newName)` - Duplicar projeto (template)
+  - [ ] `bulkUpdateProjects(filters, updates)` - Atualização em massa
+  - [ ] `exportProjectData(projectId, format)` - Export PDF/Excel
+
+#### Subtarefa 3.1.3: Validações para Projetos Arquitetônicos
+- [ ] **`lib/validations.ts`** - Adicionar schemas Zod
+  - [ ] `projectArchitectureSchema` - Validar campos arquitetônicos
+  - [ ] `projectPhaseSchema` - Validar fases do projeto
+  - [ ] `projectDocumentSchema` - Validar documentos
+  - [ ] Validações customizadas:
+    - [ ] `estimatedEndDate` must be after `startDate`
+    - [ ] `totalArea` must be > 0
+    - [ ] `numberOfFloors` must be >= 1 if project type is não-residencial
+
+#### Subtarefa 3.1.4: Relations e Queries Otimizadas
+- [ ] **`lib/db.ts`** - Helpers para queries complexas
+  - [ ] `getProjectWithAllRelations(projectId)` - Project + Tasks + Deliverables + Activities
+  - [ ] `getProjectProgressWithTimeLogs(projectId)` - Progress calculado com base em time logs
+  - [ ] `getProjectsGroupedByPhase(clientId)` - Agrupar projetos por fase
+  - [ ] `getProjectsNearDeadline(daysThreshold)` - Projetos próximos de deadline
+  - [ ] `calculateProjectMetrics(projectId)` - Calcular KPIs do projeto
+
+## 3.2 Frontend - Listagem de Projetos (Expansão)
+### Status: 40% (página básica existe)
+
+#### Subtarefa 3.2.1: Componente Kanban de Projetos
+- [ ] **`components/projects/ProjectKanban.tsx`** - NOVO
+  - [ ] Quadro Kanban por fase do projeto
+  - [ ] Colunas: Briefing, Design, Revision, Execution, Completed
+  - [ ] Drag & Drop entre colunas (@dnd-kit)
+  - [ ] Card do projeto com:
+    - [ ] Imagem/thumbnail
+    - [ ] Nome do projeto
+    - [ ] Cliente
+    - [ ] Data de entrega (com badge de status)
+    - [ ] Progresso (% completo)
+    - [ ] Arquiteto responsável
+    - [ ] Menu de ações
+  - [ ] Filtros: Por Cliente, Por Arquiteto, Por Status
+  - [ ] Busca por nome/descrição
+
+#### Subtarefa 3.2.2: Tabela de Projetos Melhorada
+- [ ] **`components/projects/ProjectsTable.tsx`** - EXPANDIR
+  - [ ] Colunas adicionais:
+    - [ ] Nome do Projeto
+    - [ ] Cliente
+    - [ ] Fase Atual
+    - [ ] Data de Entrega
+    - [ ] Progresso (%)
+    - [ ] Orçamento Utilizado
+    - [ ] Arquiteto Responsável
+    - [ ] Status (On Track, At Risk, Delayed)
+  - [ ] Ações: Ver Detalhe, Editar, Duplicar, Arquivar, Deletar
+  - [ ] Sorting por todas as colunas
+  - [ ] Filtros avançados (ver 3.2.3)
+
+#### Subtarefa 3.2.3: Filtros Avançados para Projetos
+- [ ] **`components/projects/ProjectFilters.tsx`** - NOVO
+  - [ ] Filtro por Cliente (dropdown com search)
+  - [ ] Filtro por Fase (checkboxes: Briefing, Design, Revision, etc)
+  - [ ] Filtro por Status (On Track, At Risk, Delayed, Completed)
+  - [ ] Filtro por Data (Range picker: Data de Início e Fim)
+  - [ ] Filtro por Arquiteto Responsável
+  - [ ] Filtro por Tipo (Residencial, Comercial, Reforma, etc)
+  - [ ] Filtro por Orçamento (Min/Max)
+  - [ ] Filtro por Visibilidade (Private, Team, Client, Public)
+  - [ ] "Limpar Filtros" button
+  - [ ] "Salvar Filtro" como preset
+
+#### Subtarefa 3.2.4: View Toggle (Tabela vs Kanban)
+- [ ] **`app/(dashboard)/projects/page.tsx`** - Melhorar
+  - [ ] Toggle buttons: "Lista" vs "Kanban"
+  - [ ] Estado persistido em localStorage (view preference)
+  - [ ] Ambas views mostram os mesmos projetos
+
+#### Subtarefa 3.2.5: Ações Rápidas em Projetos
+- [ ] **Context menu/dropdown em cada linha/card**
+  - [ ] Ver Detalhe
+  - [ ] Editar Informações
+  - [ ] Duplicar Projeto
+  - [ ] Compartilhar com Cliente
+  - [ ] Gerar Relatório
+  - [ ] Arquivar
+  - [ ] Deletar
+
+#### Subtarefa 3.2.6: Exportar Dados de Projetos
+- [ ] **`components/projects/ExportButton.tsx`** - NOVO
+  - [ ] Export para Excel (XLSX)
+  - [ ] Export para PDF com relatório
+  - [ ] Campos selecionáveis (que incluir no export)
+
+## 3.3 Frontend - Detalhe de Projeto
+### Status: 20% (estrutura básica existe)
+
+#### Subtarefa 3.3.1: Página Principal de Detalhe
+- [ ] **`app/(dashboard)/projects/[id]/page.tsx`** - Expandir
+  - [ ] Hero section com imagem do projeto
+  - [ ] Header com título, cliente, status
+  - [ ] Progress bar visual (% completo)
+  - [ ] Tabs de navegação:
+    - [ ] Overview (0%)
+    - [ ] Fases (0%)
+    - [ ] Tasks/Atividades (0%)
+    - [ ] Deliverables (0%)
+    - [ ] Documentos (0%)
+    - [ ] Financeiro (0%)
+    - [ ] Equipe (0%)
+    - [ ] Histórico (0%)
+
+#### Subtarefa 3.3.2: Aba Overview
+- [ ] **`components/projects/ProjectOverview.tsx`** - NOVO
+  - [ ] Informações gerais do projeto
+    - [ ] Nome, Descrição
+    - [ ] Cliente
+    - [ ] Tipo de Obra (Residencial, Comercial, etc)
+    - [ ] Estilo Arquitetônico
+    - [ ] Tipo de Construção
+    - [ ] Área Total
+    - [ ] Número de Andares
+    - [ ] Data de Início
+    - [ ] Data Estimada de Conclusão
+  - [ ] Cards com métricas:
+    - [ ] Progresso geral
+    - [ ] Orçamento (utilizado vs total)
+    - [ ] Tempo dedicado (horas)
+    - [ ] Número de tarefas (total vs concluído)
+  - [ ] Timeline visual das fases
+  - [ ] Equipe envolvida
+
+#### Subtarefa 3.3.3: Aba Fases
+- [ ] **`components/projects/ProjectPhasesTab.tsx`** - NOVO
+  - [ ] Lista de fases do projeto
+  - [ ] Para cada fase:
+    - [ ] Nome da fase
+    - [ ] Data de início
+    - [ ] Data de término
+    - [ ] Status (Pending, In Progress, Completed)
+    - [ ] Progresso (%)
+    - [ ] Ações: Editar, Completar, Deletar
+  - [ ] "Adicionar Nova Fase" button
+  - [ ] Modal/formulário para criar/editar fase
+
+#### Subtarefa 3.3.4: Aba Tasks/Atividades
+- [ ] **`components/projects/ProjectTasksTab.tsx`** - NOVO
+  - [ ] Lista de tasks do projeto
+  - [ ] Filtro por fase
+  - [ ] Ordenação por prioridade, data de entrega, responsável
+  - [ ] Card de task com:
+    - [ ] Título
+    - [ ] Responsável
+    - [ ] Prioridade
+    - [ ] Data de entrega
+    - [ ] Status
+  - [ ] "Criar Nova Task" button
+
+#### Subtarefa 3.3.5: Aba Deliverables
+- [ ] **`components/projects/ProjectDeliverablesTab.tsx`** - NOVO
+  - [ ] Grid/Galeria de deliverables
+  - [ ] Para cada deliverable:
+    - [ ] Thumbnail de preview
+    - [ ] Nome
+    - [ ] Tipo (Sketch, Render 3D, Drawing 2D, etc)
+    - [ ] Status (Draft, Pending Review, Approved, Delivered)
+    - [ ] Versão
+    - [ ] Data de criação
+    - [ ] Ações: Download, Preview, Delete, Upload Nova Versão
+
+#### Subtarefa 3.3.6: Aba Documentos
+- [ ] **`components/projects/ProjectDocumentsTab.tsx`** - NOVO
+  - [ ] Upload de documentos (drag & drop)
+  - [ ] Lista de documentos com:
+    - [ ] Nome
+    - [ ] Tipo (License, Permit, Contract, etc)
+    - [ ] Data de upload
+    - [ ] Tamanho
+    - [ ] Ações: Download, Preview, Delete
+
+#### Subtarefa 3.3.7: Aba Financeiro
+- [ ] **`components/projects/ProjectFinancialTab.tsx`** - NOVO
+  - [ ] Orçamento:
+    - [ ] Valor total planejado
+    - [ ] Valor gasto até agora
+    - [ ] Valor restante
+    - [ ] % Utilizado (barra visual)
+  - [ ] Breakdown por categoria
+  - [ ] Histórico de gastos (tabela)
+  - [ ] Gráfico de evolução de custos
+
+#### Subtarefa 3.3.8: Aba Equipe
+- [ ] **`components/projects/ProjectTeamTab.tsx`** - NOVO
+  - [ ] Lista de arquitetos/membros do projeto
+  - [ ] Para cada membro:
+    - [ ] Avatar
+    - [ ] Nome
+    - [ ] Email
+    - [ ] Role (Arquiteto Responsável, Collaborador, etc)
+    - [ ] Horas dedicadas
+    - [ ] Ações: Remover, Mudar Role
+  - [ ] "Adicionar Membro" button
+
+#### Subtarefa 3.3.9: Aba Histórico
+- [ ] **`components/projects/ProjectHistoryTab.tsx`** - NOVO
+  - [ ] Audit log completo
+  - [ ] Timeline de mudanças (últimas 50 ações)
+  - [ ] Para cada ação:
+    - [ ] Timestamp
+    - [ ] Usuário que fez a ação
+    - [ ] O que foi alterado
+    - [ ] Valores antigo vs novo (se aplicável)
+
+## 3.4 Frontend - Criar/Editar Projeto
+### Status: 10% (formulário básico existe)
+
+#### Subtarefa 3.4.1: Formulário de Projeto Expandido
+- [ ] **`components/projects/ProjectForm.tsx`** - EXPANDIR
+  - [ ] **Seção 1: Informações Básicas**
+    - [ ] Nome do projeto (required)
+    - [ ] Descrição (textarea)
+    - [ ] Cliente (select - component ClientSelect)
+    - [ ] Tipo de Obra (enum select)
+    - [ ] Visibilidade (Private, Team, Client, Public)
+  - [ ] **Seção 2: Detalhes Arquitetônicos**
+    - [ ] Estilo Arquitetônico
+    - [ ] Tipo de Construção
+    - [ ] Área Total (m²)
+    - [ ] Número de Andares
+    - [ ] Número de Cômodos
+    - [ ] Tem Porão? (checkbox)
+    - [ ] Tem Garagem? (checkbox)
+    - [ ] Número de Vagas de Garagem
+    - [ ] Área de Paisagismo
+  - [ ] **Seção 3: Licenças e Documentação**
+    - [ ] Licença Ambiental Necessária? (checkbox)
+    - [ ] Pode fazer upload de documentos
+  - [ ] **Seção 4: Datas e Orçamento**
+    - [ ] Data de Início (date picker)
+    - [ ] Data Estimada de Conclusão
+    - [ ] Orçamento Planejado (decimal)
+  - [ ] **Seção 5: Fases Iniciais**
+    - [ ] Pode adicionar fases neste formulário ou depois
+  - [ ] **Validações:**
+    - [ ] Nome é obrigatório
+    - [ ] Cliente deve ser selecionado
+    - [ ] Data de fim deve ser depois da data de início
+    - [ ] Área total deve ser > 0
+    - [ ] Orçamento deve ser >= 0
+  - [ ] **Ações:**
+    - [ ] "Salvar Rascunho" (salva com status DRAFT)
+    - [ ] "Publicar" (salva como ACTIVE)
+    - [ ] "Cancelar"
+
+#### Subtarefa 3.4.2: Página Criar Novo Projeto
+- [ ] **`app/(dashboard)/projects/new/page.tsx`** - Expandir
+  - [ ] Usar ProjectForm
+  - [ ] Após criar, redireciona para `/projects/[id]`
+
+#### Subtarefa 3.4.3: Página Editar Projeto
+- [ ] **`app/(dashboard)/projects/[id]/edit/page.tsx`** - NOVO
+  - [ ] Usa ProjectForm com dados pré-preenchidos
+  - [ ] Após salvar, volta para `/projects/[id]`
+
+#### Subtarefa 3.4.4: Modal Duplicar Projeto
+- [ ] **`components/projects/DuplicateProjectModal.tsx`** - NOVO
+  - [ ] Pede novo nome para o projeto duplicado
+  - [ ] Opção para incluir fases/tasks ou começar em branco
+  - [ ] Cria novo projeto com as configurações do original
+
+#### Subtarefa 3.4.5: Upload de Imagem de Projeto
+- [ ] **Usar componente `ImageUpload` existente**
+  - [ ] Upload de thumbnail do projeto
+  - [ ] Preview de imagem
+
+## 3.5 Componentes Reutilizáveis - Projetos
+### Status: 10%
+
+#### Subtarefa 3.5.1: ProjectCard
+- [ ] **`components/projects/ProjectCard.tsx`** - NOVO
+  - [ ] Card compacto do projeto
+  - [ ] Thumbnail
+  - [ ] Nome e cliente
+  - [ ] Fase atual
+  - [ ] Progress bar
+  - [ ] Status visual
+  - [ ] Menu de ações
+
+#### Subtarefa 3.5.2: ProjectStats
+- [ ] **`components/projects/ProjectStats.tsx`** - NOVO
+  - [ ] Card com estatísticas do projeto
+  - [ ] Exibir: Progresso, Orçamento, Horas, Tarefas
+
+#### Subtarefa 3.5.3: ProjectSelect
+- [ ] **`components/projects/ProjectSelect.tsx`** - NOVO
+  - [ ] Select/Dropdown para escolher projeto
+  - [ ] Com search
+  - [ ] Filtragem por cliente
+  - [ ] Agrupado por cliente (opcional)
+
+#### Subtarefa 3.5.4: ProjectPhaseTimeline
+- [ ] **`components/projects/ProjectPhaseTimeline.tsx`** - NOVO
+  - [ ] Timeline visual das fases
+  - [ ] Mostra início e fim de cada fase
+  - [ ] Status visual (completo, em progresso, futuro)
+
+## 3.6 Testes - Gestão de Projetos
+### Status: 0%
+
+#### Subtarefa 3.6.1: Testes de Integração - Projetos
+- [ ] **`tests/integration/projects.test.ts`** - NOVO
+  - [ ] Testes de CRUD de projetos
+  - [ ] Testes de atualização de fases
+  - [ ] Testes de upload de documentos
+  - [ ] Testes de cálculo de progresso
+
+#### Subtarefa 3.6.2: Testes E2E - Fluxo de Projeto
+- [ ] **`tests/e2e/project-flow.spec.ts`** - NOVO (Playwright)
+  - [ ] Criar novo projeto
+  - [ ] Adicionar fases
+  - [ ] Atualizar status
+  - [ ] Upload de deliverable
+  - [ ] Compartilhar com cliente
 
 ---
 
@@ -749,25 +1113,728 @@ archflow/
 
 ### Status: 0% (TODO)
 
-(Activity Calendar, Time Logging, Activity Analytics)
+**Objetivo:** Sistema completo de tracking de atividades e time logging
+
+## 4.1 Server Actions para Atividades
+### Status: 0%
+
+#### Subtarefa 4.1.1: Activity Server Actions - Core
+- [ ] **`app/actions/activity.ts`** - NOVO
+  - [ ] `createActivity(data)` - Criar atividade
+  - [ ] `getActivityById(id)` - Recuperar atividade
+  - [ ] `listActivities(filters, pagination)` - Listar com filtros
+  - [ ] `updateActivity(id, data)` - Atualizar
+  - [ ] `deleteActivity(id)` - Deletar (soft)
+  - [ ] `completeActivity(id)` - Marcar como completa
+  - [ ] `listActivitiesByDate(date)` - Atividades de um dia
+  - [ ] `listActivitiesByProject(projectId)` - Atividades de um projeto
+  - [ ] `listActivitiesByClient(clientId)` - Atividades com um cliente
+  - [ ] `addParticipant(activityId, userId)` - Adicionar participante
+  - [ ] `removeParticipant(activityId, userId)` - Remover participante
+
+#### Subtarefa 4.1.2: TimeLog Server Actions
+- [ ] **`app/actions/timeLog.ts`** - NOVO
+  - [ ] `createTimeLog(data)` - Criar registro de tempo
+  - [ ] `startTimeLog(projectId, taskId, category)` - Iniciar timer
+  - [ ] `stopTimeLog(timeLogId)` - Parar timer
+  - [ ] `updateTimeLog(id, data)` - Atualizar
+  - [ ] `deleteTimeLog(id)` - Deletar
+  - [ ] `listTimeLogs(filters)` - Listar com filtros
+  - [ ] `getTimeLogsByUser(userId, dateRange)` - Logs do usuário em período
+  - [ ] `getTimeLogsByProject(projectId)` - Logs de um projeto
+  - [ ] `getTimeLogsByTask(taskId)` - Logs de uma task
+  - [ ] `calculateTotalHours(filters)` - Total de horas em período
+  - [ ] `calculateBillableHours(filters)` - Horas faturáveis
+  - [ ] `generateTimesheet(userId, startDate, endDate)` - Gerar timesheet
+
+#### Subtarefa 4.1.3: Activity Validações
+- [ ] **`lib/validations.ts`** - Adicionar schemas
+  - [ ] `activitySchema` - Validação básica
+  - [ ] `timeLogSchema` - Validação de time log
+  - [ ] Validações:
+    - [ ] `endTime` deve ser depois de `startTime`
+    - [ ] `duration` (em TimeLog) deve ser > 0
+    - [ ] `description` pode ser vazio mas não null
+
+#### Subtarefa 4.1.4: Queries Otimizadas para Analytics
+- [ ] **`lib/db.ts`** - Helpers para relatórios
+  - [ ] `getActivityMetricsByUser(userId, dateRange)` - Estatísticas por usuário
+  - [ ] `getActivityMetricsByProject(projectId)` - Estatísticas por projeto
+  - [ ] `getActivityMetricsByClient(clientId)` - Estatísticas por cliente
+  - [ ] `getProductivityTrends(userId, period)` - Tendências de produtividade
+  - [ ] `getMostProductiveHours(userId)` - Horas mais produtivas
+
+## 4.2 Frontend - Página de Atividades
+### Status: 0%
+
+#### Subtarefa 4.2.1: Página Principal de Atividades
+- [ ] **`app/(dashboard)/activities/page.tsx`** - NOVO
+  - [ ] Vista de calendário (Calendar component)
+  - [ ] Seletor de período (dia, semana, mês)
+  - [ ] Lista de atividades do período
+
+#### Subtarefa 4.2.2: Calendário de Atividades
+- [ ] **`components/activities/ActivityCalendar.tsx`** - NOVO
+  - [ ] Calendário mensal interativo
+  - [ ] Hover mostra atividades do dia
+  - [ ] Clique abre dia em detalhe
+  - [ ] Indicadores de dias com atividades (cor ou ícone)
+  - [ ] Navegação entre meses
+
+#### Subtarefa 4.2.3: Lista de Atividades Diárias
+- [ ] **`components/activities/ActivityList.tsx`** - NOVO
+  - [ ] Lista de atividades de um dia/período
+  - [ ] Para cada atividade:
+    - [ ] Horário (startTime - endTime)
+    - [ ] Tipo de atividade (ícone + label)
+    - [ ] Título
+    - [ ] Participantes (avatares)
+    - [ ] Projeto/Cliente relacionado
+    - [ ] Menu de ações
+  - [ ] Ordenação por horário
+  - [ ] Cor de fundo por tipo de atividade
+
+#### Subtarefa 4.2.4: Criar/Editar Atividade
+- [ ] **`components/activities/ActivityForm.tsx`** - NOVO
+  - [ ] Campos:
+    - [ ] Tipo de Atividade (select)
+    - [ ] Título
+    - [ ] Descrição
+    - [ ] Data
+    - [ ] Horário Início
+    - [ ] Horário Fim
+    - [ ] Local (texto)
+    - [ ] Projeto (select ProjectSelect)
+    - [ ] Cliente (select ClientSelect)
+    - [ ] Task relacionada (select)
+    - [ ] Participantes (multi-select)
+    - [ ] Anexos (file upload)
+  - [ ] Validações
+  - [ ] "Salvar" e "Cancelar"
+
+#### Subtarefa 4.2.5: Modal/Dialog Criar Atividade Rápida
+- [ ] **`components/activities/QuickActivityModal.tsx`** - NOVO
+  - [ ] Formulário simplificado (apenas campos essenciais)
+  - [ ] Abre ao clicar em um dia no calendário
+  - [ ] Pré-preenche data
+
+## 4.3 Frontend - Time Tracking
+### Status: 0%
+
+#### Subtarefa 4.3.1: Página de Time Tracking
+- [ ] **`app/(dashboard)/time-tracking/page.tsx`** - NOVO
+  - [ ] Timer digital
+  - [ ] Seletor de projeto/task
+  - [ ] Descrição da atividade
+  - [ ] Botões: Start, Stop, Pause, Resume
+  - [ ] Histórico de time logs
+  - [ ] Total de horas no período
+
+#### Subtarefa 4.3.2: Componente Timer
+- [ ] **`components/activities/Timer.tsx`** - NOVO
+  - [ ] Display digital: HH:MM:SS
+  - [ ] Buttons: Start, Stop, Pause, Resume
+  - [ ] Som ao completar (opcional)
+  - [ ] Auto-save a cada 5 segundos (draft)
+  - [ ] Permite sair da página sem perder timer (localStorage)
+
+#### Subtarefa 4.3.3: Form de Registro Manual
+- [ ] **`components/activities/ManualTimeLogForm.tsx`** - NOVO
+  - [ ] Campos:
+    - [ ] Data
+    - [ ] Hora Início
+    - [ ] Hora Fim (auto-calcula duração)
+    - [ ] Categoria (enum)
+    - [ ] Descrição
+    - [ ] Projeto
+    - [ ] Task
+    - [ ] Cliente
+    - [ ] Faturável? (checkbox)
+  - [ ] "Salvar Log"
+
+#### Subtarefa 4.3.4: Lista de Time Logs (Timesheet)
+- [ ] **`components/activities/TimesheetTable.tsx`** - NOVO
+  - [ ] Tabela com time logs
+  - [ ] Colunas:
+    - [ ] Data
+    - [ ] Início
+    - [ ] Fim
+    - [ ] Duração
+    - [ ] Projeto
+    - [ ] Task
+    - [ ] Categoria
+    - [ ] Faturável (sim/não)
+    - [ ] Ações (editar, deletar)
+  - [ ] Subtotal por dia
+  - [ ] Total no período
+  - [ ] Filtros: Período, Projeto, Task, Categoria
+
+## 4.4 Frontend - Relatórios de Atividades
+### Status: 0%
+
+#### Subtarefa 4.4.1: Dashboard de Atividades
+- [ ] **`components/activities/ActivityDashboard.tsx`** - NOVO
+  - [ ] Cards com KPIs:
+    - [ ] Total de horas no período
+    - [ ] Horas faturáveis
+    - [ ] Horas por categoria (gráfico pizza)
+    - [ ] Atividades completadas vs planejadas
+  - [ ] Gráfico de tempo por projeto
+  - [ ] Gráfico de produtividade por dia
+  - [ ] Atividades mais frequentes
+
+#### Subtarefa 4.4.2: Relatório de Produtividade
+- [ ] **`components/activities/ProductivityReport.tsx`** - NOVO
+  - [ ] Período selecionável
+  - [ ] Comparação com período anterior
+  - [ ] Métricas:
+    - [ ] Horas totais
+    - [ ] Horas por projeto
+    - [ ] Horas por cliente
+    - [ ] Horas por tipo de atividade
+  - [ ] Gráficos de tendência
+  - [ ] Export para PDF
+
+## 4.5 Componentes Reutilizáveis - Atividades
+### Status: 0%
+
+#### Subtarefa 4.5.1: ActivityCard
+- [ ] **`components/activities/ActivityCard.tsx`** - NOVO
+  - [ ] Card compacto de atividade
+  - [ ] Horário
+  - [ ] Tipo (ícone)
+  - [ ] Título
+  - [ ] Projeto
+
+#### Subtarefa 4.5.2: ActivityIcon
+- [ ] **`components/activities/ActivityIcon.tsx`** - NOVO
+  - [ ] Ícone baseado no tipo de atividade
+  - [ ] Cores consistentes por tipo
+
+## 4.6 Testes - Atividades
+### Status: 0%
+
+#### Subtarefa 4.6.1: Testes de Server Actions
+- [ ] **`tests/unit/activities.test.ts`** - NOVO
+  - [ ] Criar atividade
+  - [ ] Atualizar atividade
+  - [ ] Deletar atividade
+  - [ ] Listar com filtros
+
+#### Subtarefa 4.6.2: Testes de Time Tracking
+- [ ] **`tests/integration/time-tracking.test.ts`** - NOVO
+  - [ ] Timer start/stop
+  - [ ] Cálculo de duração
+  - [ ] Manual time log
+
+#### Subtarefa 4.6.3: Testes E2E
+- [ ] **`tests/e2e/activity-flow.spec.ts`** - NOVO (Playwright)
+  - [ ] Criar atividade via calendário
+  - [ ] Iniciar timer e parar
+  - [ ] Registrar manual log
+  - [ ] Visualizar timesheet
 
 ---
 
 # ✅ FASE 5: Dashboard e Relatórios
 ## Visão consolidada de KPIs e métricas
 
-### Status: 20% (Dashboard exists, need expansion)
+### Status: 20% (Dashboard básico existe)
 
-(KPI Cards, Charts, Reports, Analytics)
+**Objetivo:** Dashboard executivo com relatórios de negócio e produtividade
+
+**⚠️ NOTA IMPORTANTE:** A aba de Projects deve ter um **Kanban de Projetos** DENTRO dela, não substituindo o Dashboard.
+
+## 5.1 Página Principal - Dashboard
+### Status: 20%
+
+#### Subtarefa 5.1.1: Dashboard Layout
+- [ ] **`app/(dashboard)/dashboard/page.tsx`** - Expandir
+  - [ ] **Header com saudação** e data
+  - [ ] **Seção 1: KPIs do Negócio**
+    - [ ] 4 cards em grid:
+      - [ ] Total de Clientes
+      - [ ] Total de Projetos Ativos
+      - [ ] Receita Mês Atual
+      - [ ] Taxa de Conclusão de Projetos
+  - [ ] **Seção 2: Projetos e Atividades**
+    - [ ] 2 colunas:
+      - [ ] À Esquerda: Projetos próximos de deadline
+      - [ ] À Direita: Atividades de hoje
+  - [ ] **Seção 3: Gráficos de Análise**
+    - [ ] 2x2 grid:
+      - [ ] Tempo dedicado por projeto (pie chart)
+      - [ ] Evolução de receita (line chart)
+      - [ ] Produtividade (bar chart)
+      - [ ] Status dos projetos (progress indicator)
+  - [ ] **Seção 4: Relatório Executivo**
+    - [ ] Cards com resumo do mês
+
+#### Subtarefa 5.1.2: KPI Cards
+- [ ] **`components/dashboard/KPICard.tsx`** - NOVO
+  - [ ] Exibir valor, label, tendência (↑↓)
+  - [ ] Cor baseada em status
+  - [ ] Opcional: link para detalhes
+
+#### Subtarefa 5.1.3: Projeto Próximos de Deadline
+- [ ] **`components/dashboard/DeadlineAlerts.tsx`** - NOVO
+  - [ ] Lista dos 5 projetos com deadline mais próximo
+  - [ ] Para cada: Nome, Cliente, Data, dias restantes
+  - [ ] Badge de urgência (verde, amarelo, vermelho)
+  - [ ] Link para projeto
+
+#### Subtarefa 5.1.4: Atividades de Hoje
+- [ ] **`components/dashboard/TodayActivities.tsx`** - NOVO
+  - [ ] Lista de atividades agendadas para hoje
+  - [ ] Horário, tipo, título, participante
+  - [ ] Filtro "Próximas 8 horas"
+
+## 5.2 Dashboard - Gráficos e Visualizações
+### Status: 10%
+
+#### Subtarefa 5.2.1: Gráfico - Tempo por Projeto
+- [ ] **`components/dashboard/TimeByProjectChart.tsx`** - NOVO
+  - [ ] Pie chart com Recharts
+  - [ ] Mostra distribuição de horas por projeto
+  - [ ] Top 5 + Others
+  - [ ] Legenda com cores
+
+#### Subtarefa 5.2.2: Gráfico - Receita Mensal
+- [ ] **`components/dashboard/RevenueChart.tsx`** - NOVO
+  - [ ] Line chart com Recharts
+  - [ ] Últimos 12 meses
+  - [ ] Tooltip com detalhes
+  - [ ] Legenda: Planejado vs Real
+
+#### Subtarefa 5.2.3: Gráfico - Produtividade Semanal
+- [ ] **`components/dashboard/ProductivityChart.tsx`** - NOVO
+  - [ ] Bar chart dos últimos 7 dias
+  - [ ] Horas por dia
+  - [ ] Cores: Horas normais, extras
+
+#### Subtarefa 5.2.4: Gráfico - Status dos Projetos
+- [ ] **`components/dashboard/ProjectStatusChart.tsx`** - NOVO
+  - [ ] Horizontal bar stack
+  - [ ] Estados: On Track, At Risk, Delayed, Completed
+  - [ ] Percentual e número de projetos
+
+#### Subtarefa 5.2.5: Componente Genérico de Gráfico
+- [ ] **`components/dashboard/Chart.tsx`** - NOVO (wrapper)
+  - [ ] Wrapper para todos os gráficos
+  - [ ] Loading state
+  - [ ] Error handling
+  - [ ] Responsividade
+
+## 5.3 Página de Relatórios
+### Status: 0%
+
+#### Subtarefa 5.3.1: Página Principal de Relatórios
+- [ ] **`app/(dashboard)/reports/page.tsx`** - NOVO
+  - [ ] Seletor de tipo de relatório (dropdown)
+  - [ ] Filtros de período
+  - [ ] Botão para gerar/visualizar
+  - [ ] Histórico de relatórios gerados
+
+#### Subtarefa 5.3.2: Relatório de Negócio
+- [ ] **`components/reports/BusinessReport.tsx`** - NOVO
+  - [ ] Período selecionável
+  - [ ] Seções:
+    - [ ] Resumo executivo
+    - [ ] Métricas de clientes (novos, ativos, inativos)
+    - [ ] Métricas de projetos (total, completos, em progresso)
+    - [ ] Receita (planejada vs realizada)
+    - [ ] Lucratividade (margem)
+    - [ ] Tempo médio de projeto
+  - [ ] Gráficos
+  - [ ] Comparação com período anterior
+  - [ ] Export para PDF
+
+#### Subtarefa 5.3.3: Relatório de Produtividade
+- [ ] **`components/reports/ProductivityReport.tsx`** - NOVO
+  - [ ] Período selecionável
+  - [ ] Por usuário ou por projeto
+  - [ ] Seções:
+    - [ ] Total de horas
+    - [ ] Distribuição por categoria
+    - [ ] Distribuição por projeto
+    - [ ] Horas faturáveis vs não-faturáveis
+    - [ ] Taxa de utilização (% do tempo)
+  - [ ] Gráficos
+  - [ ] Ranking (mais produtivos)
+  - [ ] Export para PDF
+
+#### Subtarefa 5.3.4: Relatório Financeiro
+- [ ] **`components/reports/FinancialReport.tsx`** - NOVO
+  - [ ] Período selecionável
+  - [ ] Seções:
+    - [ ] Receita total
+    - [ ] Custos (salários, overhead, etc)
+    - [ ] Lucro bruto e líquido
+    - [ ] Margem de lucro
+    - [ ] Análise por cliente
+    - [ ] Análise por projeto
+    - [ ] Contas a receber
+  - [ ] Gráficos
+  - [ ] Previsão (forecast)
+  - [ ] Export para PDF/Excel
+
+#### Subtarefa 5.3.5: Relatório de Clientes
+- [ ] **`components/reports/ClientReport.tsx`** - NOVO
+  - [ ] Período selecionável
+  - [ ] Seções:
+    - [ ] Total de clientes
+    - [ ] Clientes novos vs retorno
+    - [ ] Cliente com maior receita
+    - [ ] Taxa de satisfação (se houver avaliações)
+    - [ ] Projetos por cliente
+    - [ ] Tempo médio de relacionamento
+  - [ ] Gráficos
+  - [ ] Ranking de clientes
+  - [ ] Export para PDF
+
+## 5.4 Filtros e Controles de Dashboard
+### Status: 0%
+
+#### Subtarefa 5.4.1: Período Seletor
+- [ ] **`components/dashboard/PeriodSelector.tsx`** - NOVO
+  - [ ] Presets: Hoje, Semana, Mês, Trimestre, Ano
+  - [ ] Custom date range picker
+  - [ ] Comparação com período anterior (checkbox)
+
+#### Subtarefa 5.4.2: Filtro de Projeto
+- [ ] **`components/dashboard/ProjectFilter.tsx`** - NOVO
+  - [ ] Multi-select de projetos
+  - [ ] Afetar gráficos em tempo real
+
+#### Subtarefa 5.4.3: Filtro de Usuário
+- [ ] **`components/dashboard/UserFilter.tsx`** - NOVO
+  - [ ] Multi-select de usuários
+  - [ ] Para relatórios de produtividade
+
+## 5.5 Exportação de Relatórios
+### Status: 0%
+
+#### Subtarefa 5.5.1: Export para PDF
+- [ ] **`lib/export-pdf.ts`** - NOVO
+  - [ ] Usar biblioteca como PDFKit ou pdfLib
+  - [ ] Gerar PDF com formatação profissional
+  - [ ] Incluir logo, data, assinatura digital (opcional)
+
+#### Subtarefa 5.5.2: Export para Excel
+- [ ] **`lib/export-excel.ts`** - NOVO
+  - [ ] Usar XLSX library
+  - [ ] Múltiplas abas com diferentes dados
+  - [ ] Formatação: cores, bordas, números
+
+#### Subtarefa 5.5.3: Componente Export Buttons
+- [ ] **`components/shared/ExportButtons.tsx`** - NOVO
+  - [ ] Buttons para PDF, Excel, Email
+  - [ ] Mostrar status de progresso
+
+#### Subtarefa 5.5.4: Enviar por Email
+- [ ] **`app/actions/email.ts`** - Expandir
+  - [ ] `sendReportEmail(userId, reportType, data)` - Enviar relatório por email
+  - [ ] Usar Resend API
+  - [ ] Template de email profissional
+
+## 5.6 Real-time Updates
+### Status: 0%
+
+#### Subtarefa 5.6.1: Refresh Automático
+- [ ] **Dashboard atualiza a cada X segundos** (configurável)
+  - [ ] Usar React Query com polling
+  - [ ] Ou WebSocket se houver Supabase Realtime
+
+#### Subtarefa 5.6.2: Notificações de Eventos
+- [ ] **Quando há mudanças em tempo real**
+  - [ ] Toast notification
+  - [ ] Ex: "Novo projeto criado", "Projeto completado"
+
+## 5.7 Testes - Dashboard e Relatórios
+### Status: 0%
+
+#### Subtarefa 5.7.1: Testes de Componentes
+- [ ] **`tests/unit/dashboard-components.test.ts`** - NOVO
+  - [ ] Testes de KPI Card
+  - [ ] Testes de gráficos
+  - [ ] Testes de filtros
+
+#### Subtarefa 5.7.2: Testes de Integração
+- [ ] **`tests/integration/dashboard.test.ts`** - NOVO
+  - [ ] Carregamento de dados do dashboard
+  - [ ] Filtros funcionam corretamente
+  - [ ] Relatórios são gerados
+
+#### Subtarefa 5.7.3: Testes E2E
+- [ ] **`tests/e2e/dashboard-flow.spec.ts`** - NOVO (Playwright)
+  - [ ] Navegar para dashboard
+  - [ ] Filtrar por período
+  - [ ] Gerar relatório
+  - [ ] Export para PDF
 
 ---
 
 # ✅ FASE 6: Colaboração e Comunicação
 ## Ferramentas de trabalho em equipe
 
-### Status: 30% (Comments exist, need enhancement)
+### Status: 30% (Comments existem)
 
-(Comments, Notifications, Client Portal, Email Integration)
+**Objetivo:** Sistema de comunicação integrado para projeto e cliente portal
+
+## 6.1 Sistema de Comentários (Expandir)
+### Status: 30%
+
+#### Subtarefa 6.1.1: Comment Model Expandido
+- [ ] **Verificar schema Prisma para Comment**
+  - [ ] Se já existe, expandir com:
+    - [ ] `mentions` (array de user IDs) - para @mentions
+    - [ ] `reactions` (JSON: {emoji: [userIds]}) - para emoji reactions
+    - [ ] `resolved` (boolean) - para threads resolvidas
+    - [ ] `attachments` (JSON array) - para arquivos anexados
+  - [ ] Migration se necessário
+
+#### Subtarefa 6.1.2: Comment Server Actions
+- [ ] **`app/actions/comment.ts`** - NOVO ou EXPANDIR
+  - [ ] `createComment(entityType, entityId, content, mentions, attachments)`
+  - [ ] `updateComment(commentId, content)`
+  - [ ] `deleteComment(commentId)`
+  - [ ] `resolveComment(commentId)`
+  - [ ] `addReaction(commentId, emoji, userId)`
+  - [ ] `removeReaction(commentId, emoji, userId)`
+  - [ ] `listComments(entityType, entityId)`
+  - [ ] Validação de mentions
+
+#### Subtarefa 6.1.3: Comment UI Components
+- [ ] **`components/comments/CommentThread.tsx`** - NOVO
+  - [ ] Thread de comentários
+  - [ ] Exibir comentários em ordem cronológica
+  - [ ] Para cada comentário:
+    - [ ] Avatar do autor
+    - [ ] Nome e data
+    - [ ] Conteúdo (com markdown suporte)
+    - [ ] Mentions (@username) highlighted
+    - [ ] Reactions (emoji picker)
+    - [ ] Edit/Delete actions (só para autor)
+    - [ ] Attachments
+  - [ ] "Resolve thread" button
+  - [ ] Badge indicando se resolvido
+
+#### Subtarefa 6.1.4: Comment Input
+- [ ] **`components/comments/CommentInput.tsx`** - NOVO
+  - [ ] Textarea com auto-resize
+  - [ ] Markdown preview
+  - [ ] Mention suggestions (@usuario)
+  - [ ] File upload (attachment)
+  - [ ] Emoji picker
+  - [ ] "Send" button
+  - [ ] "Cancel" button
+
+#### Subtarefa 6.1.5: Mentions Autocomplete
+- [ ] **`components/shared/MentionsAutocomplete.tsx`** - NOVO
+  - [ ] Aparecer ao digitar @
+  - [ ] Listar usuários disponíveis
+  - [ ] Busca por nome
+  - [ ] Enter/click para inserir
+
+#### Subtarefa 6.1.6: Emoji Picker
+- [ ] **`components/shared/EmojiPicker.tsx`** - NOVO
+  - [ ] Ou usar biblioteca existente (emoji-picker-react)
+  - [ ] Selecionar emoji para reaction
+  - [ ] Recentes / Favoritos
+
+## 6.2 Sistema de Notificações (Expandir)
+### Status: 10% (modelo existe)
+
+#### Subtarefa 6.2.1: Notification Bell
+- [ ] **`components/shared/NotificationBell.tsx`** - NOVO
+  - [ ] Ícone de sino no header
+  - [ ] Badge com número de notificações não lidas
+  - [ ] Dropdown com últimas notificações
+  - [ ] Marca como lida ao clicar
+  - [ ] Link para ver todas
+
+#### Subtarefa 6.2.2: Notifications Page
+- [ ] **`app/(dashboard)/notifications/page.tsx`** - NOVO
+  - [ ] Lista completa de notificações
+  - [ ] Filtro por tipo
+  - [ ] Search
+  - [ ] Mark as read/unread
+  - [ ] Delete notification
+
+#### Subtarefa 6.2.3: Notification Types
+- [ ] **Expandir tipos de notificação** em Notification model
+  - Já tem: TASK_ASSIGNED, COMMENT, APPROVAL_PENDING, DEADLINE_APPROACHING, PROJECT_UPDATE, MENTION, SYSTEM
+  - Adicionar:
+    - [ ] DELIVERABLE_SUBMITTED
+    - [ ] DELIVERABLE_APPROVED
+    - [ ] DELIVERABLE_REJECTED
+    - [ ] TIME_LOG_ADDED
+    - [ ] PROJECT_COMPLETED
+    - [ ] CLIENT_MESSAGE
+    - [ ] INVITATION (para portal)
+
+#### Subtarefa 6.2.4: Email Notifications (opcional)
+- [ ] **`app/actions/notification.ts`** - Adicionar
+  - [ ] `sendEmailNotification(userId, type, data)` - Enviar via Resend
+  - [ ] Templates de email por tipo
+  - [ ] User preference para receber email de cada tipo
+  - [ ] Daily digest option
+
+#### Subtarefa 6.2.5: In-App Toast Notifications
+- [ ] **Usar Sonner (já configurado)**
+  - [ ] Toast ao criar/atualizar/deletar entidades
+  - [ ] Toast ao receber comment/mention
+
+## 6.3 Portal do Cliente
+### Status: 0%
+
+**NOTA:** Portal é acesso separado para clientes verem apenas seus projetos
+
+#### Subtarefa 6.3.1: Autenticação Portal (Client Portal)
+- [ ] **`app/(client)/login/page.tsx`** - NOVO
+  - [ ] Login simples para clientes
+  - [ ] Email + Código (sem password)
+  - [ ] Enviar código por email (Resend)
+  - [ ] Validar código
+  - [ ] Criar session separada do portal
+
+#### Subtarefa 6.3.2: Middleware para Portal
+- [ ] **`middleware.ts`** - Adicionar
+  - [ ] Detectar se /client/* routes
+  - [ ] Validar se usuário tem acesso (é cliente ou tem permissão)
+  - [ ] Proteger dados: cliente vê apenas seus dados
+
+#### Subtarefa 6.3.3: Dashboard do Portal
+- [ ] **`app/(client)/dashboard/page.tsx`** - NOVO
+  - [ ] Seus projetos (cards/tabela)
+  - [ ] Status de cada projeto
+  - [ ] Últimas atualizações
+  - [ ] Mensagens/comments não lidos
+
+#### Subtarefa 6.3.4: Detalhe de Projeto - Portal Cliente
+- [ ] **`app/(client)/projects/[id]/page.tsx`** - NOVO
+  - [ ] Informações do projeto (read-only)
+  - [ ] Timeline/fases
+  - [ ] Deliverables (com previews)
+  - [ ] Documentos compartilhados
+  - [ ] Comments/mensagens
+  - [ ] Sem acesso a: atividades, time logs, financeiro
+
+#### Subtarefa 6.3.5: Compartilhar Projeto com Cliente
+- [ ] **Server Action:**
+  - [ ] `shareProjectWithClient(projectId, clientId)` - Cria invite
+  - [ ] Cliente recebe email com link de acesso
+  - [ ] Link leva a portal com autenticação
+
+#### Subtarefa 6.3.6: Permissões no Portal
+- [ ] **`lib/permissions.ts`** - Adicionar lógica
+  - [ ] Cliente vê apenas seus projetos
+  - [ ] Cliente não vê seção de financeiro
+  - [ ] Cliente pode comentar (pode ser desabilitado)
+  - [ ] Cliente não pode editar informações do projeto
+
+#### Subtarefa 6.3.7: Layout do Portal
+- [ ] **`app/(client)/layout.tsx`** - NOVO
+  - [ ] Header simplificado
+  - [ ] Sem sidebar de navegação complexa
+  - [ ] Apenas: Meus Projetos, Mensagens, Perfil, Logout
+
+## 6.4 Notificações por Email
+### Status: 0%
+
+#### Subtarefa 6.4.1: Email Templates
+- [ ] **`components/email/` - Múltiplos arquivos** - NOVO
+  - [ ] `CommentNotificationEmail.tsx` - Quando mencionado em comment
+  - [ ] `TaskAssignedEmail.tsx` - Task nova atribuída
+  - [ ] `DeadlineReminderEmail.tsx` - Lembrete de deadline
+  - [ ] `ProjectUpdateEmail.tsx` - Atualização geral de projeto
+  - [ ] `ClientInviteEmail.tsx` - Invite para portal
+  - [ ] Cada template com design profissional
+
+#### Subtarefa 6.4.2: Email Preferences
+- [ ] **`app/(dashboard)/settings/email-preferences/page.tsx`** - NOVO
+  - [ ] Checkboxes para cada tipo de notificação
+  - [ ] Daily digest option
+  - [ ] Weekly summary option
+  - [ ] Salvar preferências
+
+#### Subtarefa 6.4.3: Cron Job para Digest
+- [ ] **`app/api/cron/daily-digest.ts`** - NOVO
+  - [ ] Executar via Vercel Cron (triggers diariamente)
+  - [ ] Coletar eventos do dia de cada usuário
+  - [ ] Enviar email com resumo
+  - [ ] URL: `/api/cron/daily-digest` (requer token secreto)
+
+## 6.5 Sistema de Convites
+### Status: 0%
+
+#### Subtarefa 6.5.1: Invite Model
+- [ ] **Adicionar ao schema Prisma:**
+  - [ ] `id` (UUID)
+  - [ ] `email` (string)
+  - [ ] `inviteType` (enum: TEAM_MEMBER, CLIENT, COLLABORATOR)
+  - [ ] `projectId` (FK, nullable - se é convite para projeto)
+  - [ ] `createdById` (FK - quem convidou)
+  - [ ] `token` (unique - para validar link)
+  - [ ] `expiresAt` (datetime - expira em 7 dias)
+  - [ ] `acceptedAt` (datetime, nullable - se aceitou)
+  - [ ] `createdAt`
+
+#### Subtarefa 6.5.2: Invite Actions
+- [ ] **`app/actions/invite.ts`** - NOVO
+  - [ ] `sendInvite(email, type, projectId)` - Enviar convite
+  - [ ] `acceptInvite(token)` - Aceitar convite (auth necessária)
+  - [ ] `rejectInvite(token)` - Rejeitar
+  - [ ] `listPendingInvites(userId)` - Meus convites pendentes
+  - [ ] `cancelInvite(inviteId)` - Quem convidou pode cancelar
+
+#### Subtarefa 6.5.3: Invite Pages
+- [ ] **`app/(client)/invite/[token]/page.tsx`** - NOVO
+  - [ ] Validar token
+  - [ ] Exibir informações do convite
+  - [ ] Buttons: "Aceitar" e "Rejeitar"
+  - [ ] Se aceitar: criar user (se não existe) e adicionar ao projeto
+
+## 6.6 Activity Feed (Integração)
+### Status: 0%
+
+#### Subtarefa 6.6.1: Feed de Atividades do Projeto
+- [ ] **`components/projects/ProjectActivityFeed.tsx`** - NOVO
+  - [ ] Timeline de eventos do projeto
+  - [ ] Eventos: task criada, comentário, deliverable, fase completa
+  - [ ] Cada evento tem: ícone, descrição, timestamp, autor
+  - [ ] Ordenado por data (mais recente primeiro)
+  - [ ] Pagination se muitos eventos
+
+#### Subtarefa 6.6.2: Activity Log Model
+- [ ] **Verificar se existe `AuditLog` model**
+  - [ ] Se sim, usar para Activity Feed
+  - [ ] Se não, criar Activity model similar
+
+## 6.7 Testes - Colaboração
+### Status: 0%
+
+#### Subtarefa 6.7.1: Testes de Comments
+- [ ] **`tests/unit/comments.test.ts`** - NOVO
+  - [ ] Criar comment
+  - [ ] Editar comment
+  - [ ] Deletar comment
+  - [ ] Reactions
+
+#### Subtarefa 6.7.2: Testes de Portal Client
+- [ ] **`tests/integration/client-portal.test.ts`** - NOVO
+  - [ ] Login do cliente
+  - [ ] Ver projetos
+  - [ ] Ver detalhes (sem dados sensíveis)
+  - [ ] Comentar em projeto
+
+#### Subtarefa 6.7.3: Testes E2E - Colaboração
+- [ ] **`tests/e2e/collaboration-flow.spec.ts`** - NOVO (Playwright)
+  - [ ] Criar comment em projeto
+  - [ ] @mention outro usuário
+  - [ ] Receber notificação
+  - [ ] Cliente receber invite
+  - [ ] Cliente acessar portal
 
 ---
 
