@@ -13,7 +13,7 @@ import ProjectTeamTab from '@/components/projects/ProjectTeamTab';
 import { ProjectOverview } from '@/components/projects/ProjectOverview';
 
 
-export default async function ProjectPage({ params }) {
+export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
     // Fetch project with stages and tasks

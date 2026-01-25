@@ -50,7 +50,7 @@ export async function getProjectById(id: string) {
                 members: {
                     include: {
                         user: {
-                            select: { id: true, fullName: true, email: true, avatar: true }
+                            select: { id: true, fullName: true, email: true }
                         }
                     }
                 },
@@ -123,8 +123,7 @@ export async function listProjects(filters?: { clientId?: string; status?: strin
             orderBy: { updatedAt: "desc" },
             include: {
                 client: { select: { name: true } },
-                owner: { select: { fullName: true } },
-                phases: true, // Needed for progress calculation
+                owner: { select: { fullName: true } }
             }
         });
         return { success: true, data: projects };
