@@ -1,10 +1,26 @@
 import React from 'react';
-import { getUserProjects } from '@/actions/project';
-import ProjectList from '@/components/dashboard/ProjectList';
+import { listProjects } from '@/app/actions/project';
+import ProjectFilters from '@/components/projects/ProjectFilters';
+import ProjectsTable from '@/components/projects/ProjectsTable';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
-export default async function ProjectsPage() {
-    const projects = await getUserProjects();
+export default async function ProjectsPage({ searchParams }: { searchParams: { q?: string; status?: string; clientId?: string } }) {
+    // Note: listProjects needs to support these new filters if we want server-side filtering.
+    // Ideally we update listProjects to accept a search term and more status.
+    const filters = {
+        clientId: searchParams.clientId,
+        status: searchParams.status === 'ALL' ? undefined : searchParams.status
+    };
+
+    const result = await listProjects(filters);
+    let projects = result.success ? result.data || [] : [];
+
+    // Client-side search for MVP if not in API
+    if (searchParams.q) {
+        const q = searchParams.q.toLowerCase();
+        projects = projects.filter((p: any) => p.name.toLowerCase().includes(q));
+    }
 
     return (
         <div className="p-6 lg:p-10 max-w-[1400px] mx-auto min-h-screen">
@@ -12,18 +28,21 @@ export default async function ProjectsPage() {
                 <div className="flex flex-col gap-2">
                     <h1 className="text-slate-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Projetos</h1>
                     <p className="text-slate-500 dark:text-[#95c6a9] text-base font-normal leading-normal max-w-2xl">
-                        Todos os seus projetos em um só lugar.
+                        Gerencie seus projetos arquitetônicos, fases e cronogramas.
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Link href="/projects/new" className="flex items-center justify-center rounded-lg h-10 px-4 bg-primary text-[#122118] text-sm font-bold hover:bg-[#1bc65f] transition-colors shadow-lg shadow-primary/20">
-                        <span className="material-symbols-outlined mr-2 text-[18px]">add</span>
-                        <span>Novo Projeto</span>
+                    <Link href="/projects/new">
+                        <Button className="font-bold shadow-lg shadow-primary/20">
+                            <span className="material-symbols-outlined mr-2 text-[18px]">add</span>
+                            Novo Projeto
+                        </Button>
                     </Link>
                 </div>
             </div>
 
-            <ProjectList projects={projects} />
+            <ProjectFilters />
+            <ProjectsTable projects={projects} />
         </div>
     );
 }

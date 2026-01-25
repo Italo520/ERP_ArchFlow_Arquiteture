@@ -8,7 +8,10 @@ import {
     ActivityStatus,
     TimeLogCategory,
     DeliverableType,
-    DeliverableStatus
+    DeliverableStatus,
+    ArchitecturalStyle,
+    ConstructionType,
+    ProjectVisibility
 } from "@prisma/client";
 
 // --- Enums as Zod Enums ---
@@ -21,6 +24,9 @@ export const ActivityStatusEnum = z.nativeEnum(ActivityStatus);
 export const TimeLogCategoryEnum = z.nativeEnum(TimeLogCategory);
 export const DeliverableTypeEnum = z.nativeEnum(DeliverableType);
 export const DeliverableStatusEnum = z.nativeEnum(DeliverableStatus);
+export const ArchitecturalStyleEnum = z.nativeEnum(ArchitecturalStyle);
+export const ConstructionTypeEnum = z.nativeEnum(ConstructionType);
+export const ProjectVisibilityEnum = z.nativeEnum(ProjectVisibility);
 
 // --- Client Schemas ---
 // --- Address Schema ---
@@ -118,4 +124,49 @@ export const deliverableSchema = z.object({
 
 export const updateDeliverableSchema = deliverableSchema.partial().extend({
     id: z.string().uuid(),
+});
+
+// --- Project Schemas ---
+export const projectArchitectureSchema = z.object({
+    architecturalStyle: ArchitecturalStyleEnum.optional().nullable(),
+    constructionType: ConstructionTypeEnum.optional().nullable(),
+    numberOfFloors: z.number().int().nonnegative().optional().nullable(),
+    numberOfRooms: z.number().int().nonnegative().optional().nullable(),
+    hasBasement: z.boolean().default(false),
+    hasGarage: z.boolean().default(false),
+    parkingSpots: z.number().int().nonnegative().optional().nullable(),
+    landscapingArea: z.number().nonnegative().optional().nullable(),
+    environmentalLicenseRequired: z.boolean().default(false),
+    projectTags: z.array(z.string()).optional(),
+    visibility: ProjectVisibilityEnum.default(ProjectVisibility.TEAM),
+});
+
+export const projectPhaseSchema = z.object({
+    name: z.string().min(2),
+    order: z.number().int(),
+    startDate: z.coerce.date().optional().nullable(),
+    endDate: z.coerce.date().optional().nullable(),
+    status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]).default("PENDING"),
+});
+
+export const projectSchema = z.object({
+    name: z.string().min(2, "Project name is required"),
+    status: z.string().default("PLANNING"),
+    clientId: z.string().uuid().optional().nullable(),
+    projectType: z.string().optional().nullable(),
+    address: z.string().optional().nullable(),
+    startDate: z.coerce.date().optional().nullable(),
+    deliveryDate: z.coerce.date().optional().nullable(), // Legacy field map
+    estimatedEndDate: z.coerce.date().optional().nullable(),
+    actualEndDate: z.coerce.date().optional().nullable(),
+    totalArea: z.number().nonnegative().optional().nullable(),
+    plannedCost: z.number().optional().nullable(), // Decimal handled as number in Zod input
+    // Spread architectural fields
+    ...projectArchitectureSchema.shape,
+    phases: z.array(projectPhaseSchema).optional(),
+});
+
+export const updateProjectSchema = projectSchema.partial().extend({
+    id: z.string().uuid(),
+    phases: z.array(projectPhaseSchema).optional(),
 });

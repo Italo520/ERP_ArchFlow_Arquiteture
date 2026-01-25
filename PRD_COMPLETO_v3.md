@@ -746,58 +746,58 @@ archflow/
 ### Status: 30% (CRUD básico existe)
 
 #### Subtarefa 3.1.1: Expandir Project Model com Campos Arquitetônicos
-- [ ] **Adicionar campos ao schema Prisma** (`prisma/schema.prisma`)
-  - [ ] `architecturalStyle` (enum: MODERNISTA, CLASSICO, CONTEMPORANEO, ORGANICO, MINIMALISTA, OTHER)
-  - [ ] `constructionType` (enum: ALVENARIA, STEEL_FRAME, CONCRETO_ARMADO, MADEIRA, HIBRIDA, OTHER)
-  - [ ] `totalArea` (float, em m²)
-  - [ ] `numberOfFloors` (int)
-  - [ ] `numberOfRooms` (int)
-  - [ ] `hasBasement` (boolean)
-  - [ ] `hasGarage` (boolean)
-  - [ ] `parkingSpots` (int, nullable)
-  - [ ] `landscapingArea` (float, nullable)
-  - [ ] `environmentalLicenseRequired` (boolean)
-  - [ ] `plannedCost` (decimal, estimativa de custo)
-  - [ ] `actualCost` (decimal, custo real, calculated)
-  - [ ] `startDate` (date)
-  - [ ] `estimatedEndDate` (date)
-  - [ ] `actualEndDate` (date, nullable)
-  - [ ] `phases` (JSON array: {name, order, startDate, endDate, status})
-  - [ ] `deliverables` (relation to Deliverable model)
-  - [ ] `attachedDocuments` (JSON array: file URLs for permits, licenses, etc)
-  - [ ] `projectStages` (relation: Briefing → Design → Revision → Execution → Completion)
-  - [ ] `associatedArchitects` (array de user IDs)
-  - [ ] `projectTags` (string array: RESIDENCIAL, COMERCIAL, REFORMA, NOVO, etc)
-  - [ ] `visibility` (enum: PRIVATE, TEAM, CLIENT, PUBLIC)
-  - [ ] Novo Migration: `npx prisma migrate dev --name expand_project_architecture_fields`
+- [x] **Adicionar campos ao schema Prisma** (`prisma/schema.prisma`)
+  - [x] `architecturalStyle` (enum: MODERNISTA, CLASSICO, CONTEMPORANEO, ORGANICO, MINIMALISTA, OTHER)
+  - [x] `constructionType` (enum: ALVENARIA, STEEL_FRAME, CONCRETO_ARMADO, MADEIRA, HIBRIDA, OTHER)
+  - [x] `totalArea` (float, em m²)
+  - [x] `numberOfFloors` (int)
+  - [x] `numberOfRooms` (int)
+  - [x] `hasBasement` (boolean)
+  - [x] `hasGarage` (boolean)
+  - [x] `parkingSpots` (int, nullable)
+  - [x] `landscapingArea` (float, nullable)
+  - [x] `environmentalLicenseRequired` (boolean)
+  - [x] `plannedCost` (decimal, estimativa de custo)
+  - [x] `actualCost` (decimal, custo real, calculated)
+  - [x] `startDate` (date)
+  - [x] `estimatedEndDate` (date)
+  - [x] `actualEndDate` (date, nullable)
+  - [x] `phases` (JSON array: {name, order, startDate, endDate, status})
+  - [x] `deliverables` (relation to Deliverable model)
+  - [x] `attachedDocuments` (JSON array: file URLs for permits, licenses, etc)
+  - [x] `projectStages` (relation: Briefing → Design → Revision → Execution → Completion)
+  - [x] `associatedArchitects` (array de user IDs)
+  - [x] `projectTags` (string array: RESIDENCIAL, COMERCIAL, REFORMA, NOVO, etc)
+  - [x] `visibility` (enum: PRIVATE, TEAM, CLIENT, PUBLIC)
+  - [x] Novo Migration: `npx prisma migrate dev --name expand_project_architecture_fields`
 
 #### Subtarefa 3.1.2: Project Server Actions - Operações Avançadas
-- [ ] **`app/actions/project.ts`** - Expandir com novas ações
-  - [ ] `updateProjectPhase(projectId, phaseId, data)` - Atualizar fase do projeto
-  - [ ] `addProjectPhase(projectId, phaseData)` - Adicionar nova fase
-  - [ ] `completeProjectPhase(projectId, phaseId)` - Marcar fase como completa
-  - [ ] `uploadProjectDocument(projectId, file, docType)` - Upload de documentos
-  - [ ] `listProjectDocuments(projectId)` - Listar documentos do projeto
-  - [ ] `deleteProjectDocument(projectId, documentId)` - Remover documento
-  - [ ] `associateArchitectToProject(projectId, userId, role)` - Adicionar arquiteto ao projeto
-  - [ ] `removeArchitectFromProject(projectId, userId)` - Remover arquiteto
-  - [ ] `getProjectTimeline(projectId)` - Retornar timeline do projeto
-  - [ ] `getProjectBudgetStatus(projectId)` - Status do orçamento
-  - [ ] `updateProjectProgress(projectId, progress)` - Atualizar progresso
-  - [ ] `getProjectMetrics(projectId)` - Métricas do projeto (horas, custos, avanço)
-  - [ ] `duplicateProject(projectId, newName)` - Duplicar projeto (template)
-  - [ ] `bulkUpdateProjects(filters, updates)` - Atualização em massa
-  - [ ] `exportProjectData(projectId, format)` - Export PDF/Excel
+- [x] **`app/actions/project.ts`** - Expandir com novas ações
+  - [x] `updateProjectPhase(projectId, phaseId, data)` - Atualizar fase do projeto
+  - [x] `addProjectPhase(projectId, phaseData)` - Adicionar nova fase
+  - [x] `completeProjectPhase(projectId, phaseId)` - Marcar fase como completa
+  - [x] `uploadProjectDocument(projectId, file, docType)` - Upload de documentos
+  - [x] `listProjectDocuments(projectId)` - Listar documentos do projeto
+  - [x] `deleteProjectDocument(projectId, documentId)` - Remover documento
+  - [x] `associateArchitectToProject(projectId, userId, role)` - Adicionar arquiteto ao projeto
+  - [x] `removeArchitectFromProject(projectId, userId)` - Remover arquiteto
+  - [x] `getProjectTimeline(projectId)` - Retornar timeline do projeto
+  - [x] `getProjectBudgetStatus(projectId)` - Status do orçamento
+  - [x] `updateProjectProgress(projectId, progress)` - Atualizar progresso
+  - [x] `getProjectMetrics(projectId)` - Métricas do projeto (horas, custos, avanço)
+  - [x] `duplicateProject(projectId, newName)` - Duplicar projeto (template)
+  - [x] `bulkUpdateProjects(filters, updates)` - Atualização em massa
+  - [x] `exportProjectData(projectId, format)` - Export PDF/Excel
 
 #### Subtarefa 3.1.3: Validações para Projetos Arquitetônicos
-- [ ] **`lib/validations.ts`** - Adicionar schemas Zod
-  - [ ] `projectArchitectureSchema` - Validar campos arquitetônicos
-  - [ ] `projectPhaseSchema` - Validar fases do projeto
-  - [ ] `projectDocumentSchema` - Validar documentos
-  - [ ] Validações customizadas:
-    - [ ] `estimatedEndDate` must be after `startDate`
-    - [ ] `totalArea` must be > 0
-    - [ ] `numberOfFloors` must be >= 1 if project type is não-residencial
+- [x] **`lib/validations.ts`** - Adicionar schemas Zod
+  - [x] `projectArchitectureSchema` - Validar campos arquitetônicos
+  - [x] `projectPhaseSchema` - Validar fases do projeto
+  - [x] `projectDocumentSchema` - Validar documentos
+  - [x] Validações customizadas:
+    - [x] `estimatedEndDate` must be after `startDate`
+    - [x] `totalArea` must be > 0
+    - [x] `numberOfFloors` must be >= 1 if project type is não-residencial
 
 #### Subtarefa 3.1.4: Relations e Queries Otimizadas
 - [ ] **`lib/db.ts`** - Helpers para queries complexas
@@ -811,48 +811,48 @@ archflow/
 ### Status: 40% (página básica existe)
 
 #### Subtarefa 3.2.1: Componente Kanban de Projetos
-- [ ] **`components/projects/ProjectKanban.tsx`** - NOVO
-  - [ ] Quadro Kanban por fase do projeto
-  - [ ] Colunas: Briefing, Design, Revision, Execution, Completed
-  - [ ] Drag & Drop entre colunas (@dnd-kit)
-  - [ ] Card do projeto com:
-    - [ ] Imagem/thumbnail
-    - [ ] Nome do projeto
-    - [ ] Cliente
-    - [ ] Data de entrega (com badge de status)
-    - [ ] Progresso (% completo)
-    - [ ] Arquiteto responsável
-    - [ ] Menu de ações
-  - [ ] Filtros: Por Cliente, Por Arquiteto, Por Status
-  - [ ] Busca por nome/descrição
+- [x] **`components/projects/ProjectKanban.tsx`** - NOVO
+  - [x] Quadro Kanban por fase do projeto
+  - [x] Colunas: Briefing, Design, Revision, Execution, Completed
+  - [x] Drag & Drop entre colunas (@dnd-kit)
+  - [x] Card do projeto com:
+    - [x] Imagem/thumbnail
+    - [x] Nome do projeto
+    - [x] Cliente
+    - [x] Data de entrega (com badge de status)
+    - [x] Progresso (% completo)
+    - [x] Arquiteto responsável
+    - [x] Menu de ações
+  - [x] Filtros: Por Cliente, Por Arquiteto, Por Status
+  - [x] Busca por nome/descrição
 
 #### Subtarefa 3.2.2: Tabela de Projetos Melhorada
-- [ ] **`components/projects/ProjectsTable.tsx`** - EXPANDIR
-  - [ ] Colunas adicionais:
-    - [ ] Nome do Projeto
-    - [ ] Cliente
-    - [ ] Fase Atual
-    - [ ] Data de Entrega
-    - [ ] Progresso (%)
-    - [ ] Orçamento Utilizado
-    - [ ] Arquiteto Responsável
-    - [ ] Status (On Track, At Risk, Delayed)
-  - [ ] Ações: Ver Detalhe, Editar, Duplicar, Arquivar, Deletar
-  - [ ] Sorting por todas as colunas
-  - [ ] Filtros avançados (ver 3.2.3)
+- [x] **`components/projects/ProjectsTable.tsx`** - EXPANDIR
+  - [x] Colunas adicionais:
+    - [x] Nome do Projeto
+    - [x] Cliente
+    - [x] Fase Atual
+    - [x] Data de Entrega
+    - [x] Progresso (%)
+    - [x] Orçamento Utilizado
+    - [x] Arquiteto Responsável
+    - [x] Status (On Track, At Risk, Delayed)
+  - [x] Ações: Ver Detalhe, Editar, Duplicar, Arquivar, Deletar
+  - [x] Sorting por todas as colunas
+  - [x] Filtros avançados (ver 3.2.3)
 
 #### Subtarefa 3.2.3: Filtros Avançados para Projetos
-- [ ] **`components/projects/ProjectFilters.tsx`** - NOVO
-  - [ ] Filtro por Cliente (dropdown com search)
-  - [ ] Filtro por Fase (checkboxes: Briefing, Design, Revision, etc)
-  - [ ] Filtro por Status (On Track, At Risk, Delayed, Completed)
-  - [ ] Filtro por Data (Range picker: Data de Início e Fim)
-  - [ ] Filtro por Arquiteto Responsável
-  - [ ] Filtro por Tipo (Residencial, Comercial, Reforma, etc)
-  - [ ] Filtro por Orçamento (Min/Max)
-  - [ ] Filtro por Visibilidade (Private, Team, Client, Public)
-  - [ ] "Limpar Filtros" button
-  - [ ] "Salvar Filtro" como preset
+- [x] **`components/projects/ProjectFilters.tsx`** - NOVO
+  - [x] Filtro por Cliente (dropdown com search)
+  - [x] Filtro por Fase (checkboxes: Briefing, Design, Revision, etc)
+  - [x] Filtro por Status (On Track, At Risk, Delayed, Completed)
+  - [x] Filtro por Data (Range picker: Data de Início e Fim)
+  - [x] Filtro por Arquiteto Responsável
+  - [x] Filtro por Tipo (Residencial, Comercial, Reforma, etc)
+  - [x] Filtro por Orçamento (Min/Max)
+  - [x] Filtro por Visibilidade (Private, Team, Client, Public)
+  - [x] "Limpar Filtros" button
+  - [x] "Salvar Filtro" como preset
 
 #### Subtarefa 3.2.4: View Toggle (Tabela vs Kanban)
 - [ ] **`app/(dashboard)/projects/page.tsx`** - Melhorar
@@ -880,19 +880,19 @@ archflow/
 ### Status: 20% (estrutura básica existe)
 
 #### Subtarefa 3.3.1: Página Principal de Detalhe
-- [ ] **`app/(dashboard)/projects/[id]/page.tsx`** - Expandir
-  - [ ] Hero section com imagem do projeto
-  - [ ] Header com título, cliente, status
-  - [ ] Progress bar visual (% completo)
-  - [ ] Tabs de navegação:
-    - [ ] Overview (0%)
-    - [ ] Fases (0%)
-    - [ ] Tasks/Atividades (0%)
-    - [ ] Deliverables (0%)
-    - [ ] Documentos (0%)
-    - [ ] Financeiro (0%)
-    - [ ] Equipe (0%)
-    - [ ] Histórico (0%)
+- [x] **`app/(dashboard)/projects/[id]/page.tsx`** - Expandir
+  - [x] Hero section com imagem do projeto
+  - [x] Header com título, cliente, status
+  - [x] Progress bar visual (% completo)
+  - [x] Tabs de navegação:
+    - [x] Overview (0%)
+    - [x] Fases (0%)
+    - [x] Tasks/Atividades (0%)
+    - [x] Deliverables (0%)
+    - [x] Documentos (0%)
+    - [x] Financeiro (0%)
+    - [x] Equipe (0%)
+    - [x] Histórico (0%)
 
 #### Subtarefa 3.3.2: Aba Overview
 - [ ] **`components/projects/ProjectOverview.tsx`** - NOVO
@@ -999,47 +999,47 @@ archflow/
 ### Status: 10% (formulário básico existe)
 
 #### Subtarefa 3.4.1: Formulário de Projeto Expandido
-- [ ] **`components/projects/ProjectForm.tsx`** - EXPANDIR
-  - [ ] **Seção 1: Informações Básicas**
-    - [ ] Nome do projeto (required)
-    - [ ] Descrição (textarea)
-    - [ ] Cliente (select - component ClientSelect)
-    - [ ] Tipo de Obra (enum select)
-    - [ ] Visibilidade (Private, Team, Client, Public)
-  - [ ] **Seção 2: Detalhes Arquitetônicos**
-    - [ ] Estilo Arquitetônico
-    - [ ] Tipo de Construção
-    - [ ] Área Total (m²)
-    - [ ] Número de Andares
-    - [ ] Número de Cômodos
-    - [ ] Tem Porão? (checkbox)
-    - [ ] Tem Garagem? (checkbox)
-    - [ ] Número de Vagas de Garagem
-    - [ ] Área de Paisagismo
-  - [ ] **Seção 3: Licenças e Documentação**
-    - [ ] Licença Ambiental Necessária? (checkbox)
-    - [ ] Pode fazer upload de documentos
-  - [ ] **Seção 4: Datas e Orçamento**
-    - [ ] Data de Início (date picker)
-    - [ ] Data Estimada de Conclusão
-    - [ ] Orçamento Planejado (decimal)
-  - [ ] **Seção 5: Fases Iniciais**
-    - [ ] Pode adicionar fases neste formulário ou depois
-  - [ ] **Validações:**
-    - [ ] Nome é obrigatório
-    - [ ] Cliente deve ser selecionado
-    - [ ] Data de fim deve ser depois da data de início
-    - [ ] Área total deve ser > 0
-    - [ ] Orçamento deve ser >= 0
-  - [ ] **Ações:**
-    - [ ] "Salvar Rascunho" (salva com status DRAFT)
-    - [ ] "Publicar" (salva como ACTIVE)
-    - [ ] "Cancelar"
+- [x] **`components/projects/ProjectForm.tsx`** - EXPANDIR
+  - [x] **Seção 1: Informações Básicas**
+    - [x] Nome do projeto (required)
+    - [x] Descrição (textarea)
+    - [x] Cliente (select - component ClientSelect)
+    - [x] Tipo de Obra (enum select)
+    - [x] Visibilidade (Private, Team, Client, Public)
+  - [x] **Seção 2: Detalhes Arquitetônicos**
+    - [x] Estilo Arquitetônico
+    - [x] Tipo de Construção
+    - [x] Área Total (m²)
+    - [x] Número de Andares
+    - [x] Número de Cômodos
+    - [x] Tem Porão? (checkbox)
+    - [x] Tem Garagem? (checkbox)
+    - [x] Número de Vagas de Garagem
+    - [x] Área de Paisagismo
+  - [x] **Seção 3: Licenças e Documentação**
+    - [x] Licença Ambiental Necessária? (checkbox)
+    - [x] Pode fazer upload de documentos
+  - [x] **Seção 4: Datas e Orçamento**
+    - [x] Data de Início (date picker)
+    - [x] Data Estimada de Conclusão
+    - [x] Orçamento Planejado (decimal)
+  - [x] **Seção 5: Fases Iniciais**
+    - [x] Pode adicionar fases neste formulário ou depois
+  - [x] **Validações:**
+    - [x] Nome é obrigatório
+    - [x] Cliente deve ser selecionado
+    - [x] Data de fim deve ser depois da data de início
+    - [x] Área total deve ser > 0
+    - [x] Orçamento deve ser >= 0
+  - [x] **Ações:**
+    - [x] "Salvar Rascunho" (salva com status DRAFT)
+    - [x] "Publicar" (salva como ACTIVE)
+    - [x] "Cancelar"
 
 #### Subtarefa 3.4.2: Página Criar Novo Projeto
-- [ ] **`app/(dashboard)/projects/new/page.tsx`** - Expandir
-  - [ ] Usar ProjectForm
-  - [ ] Após criar, redireciona para `/projects/[id]`
+- [x] **`app/(dashboard)/projects/new/page.tsx`** - Expandir
+  - [x] Usar ProjectForm
+  - [x] Após criar, redireciona para `/projects/[id]`
 
 #### Subtarefa 3.4.3: Página Editar Projeto
 - [ ] **`app/(dashboard)/projects/[id]/edit/page.tsx`** - NOVO
