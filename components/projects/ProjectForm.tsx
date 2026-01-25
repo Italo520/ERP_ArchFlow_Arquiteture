@@ -24,6 +24,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ImageUpload } from "@/components/shared/ImageUpload";
 
 type ProjectFormProps = {
     initialData?: Partial<z.infer<typeof projectSchema>> & { id?: string };
@@ -35,8 +36,7 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // @ts-ignore
-    const form = useForm({
+    const form = useForm<z.infer<typeof projectSchema>>({
         resolver: zodResolver(projectSchema),
         defaultValues: {
             name: initialData?.name || "",
@@ -44,7 +44,9 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
             clientId: initialData?.clientId || "",
             projectType: initialData?.projectType || "",
             address: initialData?.address || "",
+            // @ts-ignore
             startDate: initialData?.startDate ? new Date(initialData.startDate) : undefined,
+            // @ts-ignore
             estimatedEndDate: initialData?.estimatedEndDate ? new Date(initialData.estimatedEndDate) : undefined,
             totalArea: initialData?.totalArea || 0,
             plannedCost: initialData?.plannedCost || 0,
@@ -66,10 +68,8 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
         try {
             let result;
             if (isEditing && initialData?.id) {
-                // @ts-ignore
                 result = await updateProject(initialData.id, data);
             } else {
-                // @ts-ignore
                 result = await createProject(data);
             }
 
@@ -106,46 +106,62 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
                         <CardHeader>
                             <CardTitle>Dados Gerais</CardTitle>
                         </CardHeader>
-                        <CardContent className="grid gap-6 md:grid-cols-2">
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Nome do Projeto</Label>
-                                <Input id="name" {...form.register("name")} />
-                                {form.formState.errors.name && <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>}
+                        <CardContent className="space-y-6">
+                            <div className="flex flex-col gap-2">
+                                <Label>Imagem de Capa / Thumbnail</Label>
+                                <ImageUpload
+                                    // @ts-ignore
+                                    value={form.watch("thumbnailUrl")}
+                                    // @ts-ignore
+                                    onChange={(url) => form.setValue("thumbnailUrl", url)}
+                                    label="Upload Thumbnail"
+                                />
                             </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="status">Status</Label>
-                                <Select onValueChange={(val: string) => form.setValue("status", val)} defaultValue={form.getValues("status")}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Selecione o status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="PLANNING">Planejamento</SelectItem>
-                                        <SelectItem value="IN_PROGRESS">Em Andamento</SelectItem>
-                                        <SelectItem value="COMPLETED">Concluído</SelectItem>
-                                        <SelectItem value="ON_HOLD">Pausado</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            <div className="grid gap-6 md:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label htmlFor="name">Nome do Projeto</Label>
+                                    <Input id="name" {...form.register("name")} />
+                                    {form.formState.errors.name && <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>}
+                                </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="projectType">Tipo de Obra</Label>
-                                <Input id="projectType" {...form.register("projectType")} placeholder="Ex: Residencial Unifamiliar" />
-                            </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="status">Status</Label>
+                                    <Select
+                                        onValueChange={(val: string) => form.setValue("status", val)}
+                                        defaultValue={form.getValues("status")}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecione o status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="PLANNING">Planejamento</SelectItem>
+                                            <SelectItem value="IN_PROGRESS">Em Andamento</SelectItem>
+                                            <SelectItem value="COMPLETED">Concluído</SelectItem>
+                                            <SelectItem value="ON_HOLD">Pausado</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="address">Endereço</Label>
-                                <Input id="address" {...form.register("address")} />
-                            </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="projectType">Tipo de Obra</Label>
+                                    <Input id="projectType" {...form.register("projectType")} placeholder="Ex: Residencial Unifamiliar" />
+                                </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="startDate">Data de Início</Label>
-                                <Input type="date" id="startDate" {...form.register("startDate")} />
-                            </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="address">Endereço</Label>
+                                    <Input id="address" {...form.register("address")} />
+                                </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="estimatedEndDate">Previsão de Entrega</Label>
-                                <Input type="date" id="estimatedEndDate" {...form.register("estimatedEndDate")} />
+                                <div className="space-y-2">
+                                    <Label htmlFor="startDate">Data de Início</Label>
+                                    <Input type="date" id="startDate" {...form.register("startDate")} />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="estimatedEndDate">Previsão de Entrega</Label>
+                                    <Input type="date" id="estimatedEndDate" {...form.register("estimatedEndDate")} />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -160,7 +176,10 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
                             <div className="grid gap-6 md:grid-cols-2">
                                 <div className="space-y-2">
                                     <Label>Estilo Arquitetônico</Label>
-                                    <Select onValueChange={(val: string) => form.setValue("architecturalStyle", val as any)} defaultValue={form.getValues("architecturalStyle") || undefined}>
+                                    <Select
+                                        onValueChange={(val: string) => form.setValue("architecturalStyle", val as any)}
+                                        defaultValue={form.getValues("architecturalStyle") || undefined}
+                                    >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Selecione o estilo" />
                                         </SelectTrigger>
@@ -174,7 +193,10 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
 
                                 <div className="space-y-2">
                                     <Label>Tipo Construtivo</Label>
-                                    <Select onValueChange={(val: string) => form.setValue("constructionType", val as any)} defaultValue={form.getValues("constructionType") || undefined}>
+                                    <Select
+                                        onValueChange={(val: string) => form.setValue("constructionType", val as any)}
+                                        defaultValue={form.getValues("constructionType") || undefined}
+                                    >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Selecione o tipo" />
                                         </SelectTrigger>
@@ -230,7 +252,8 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
                                     <Checkbox
                                         id="hasBasement"
                                         checked={form.watch("hasBasement")}
-                                        onCheckedChange={(checked: any) => form.setValue("hasBasement", checked === true)}
+                                        // @ts-ignore
+                                        onCheckedChange={(checked) => form.setValue("hasBasement", checked === true)}
                                     />
                                     <Label htmlFor="hasBasement">Possui Subsolo?</Label>
                                 </div>
@@ -239,7 +262,8 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
                                     <Checkbox
                                         id="hasGarage"
                                         checked={form.watch("hasGarage")}
-                                        onCheckedChange={(checked: any) => form.setValue("hasGarage", checked === true)}
+                                        // @ts-ignore
+                                        onCheckedChange={(checked) => form.setValue("hasGarage", checked === true)}
                                     />
                                     <Label htmlFor="hasGarage">Possui Garagem?</Label>
                                 </div>
@@ -248,7 +272,8 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
                                     <Checkbox
                                         id="environmentalLicenseRequired"
                                         checked={form.watch("environmentalLicenseRequired")}
-                                        onCheckedChange={(checked: any) => form.setValue("environmentalLicenseRequired", checked === true)}
+                                        // @ts-ignore
+                                        onCheckedChange={(checked) => form.setValue("environmentalLicenseRequired", checked === true)}
                                     />
                                     <Label htmlFor="environmentalLicenseRequired">Licença Ambiental?</Label>
                                 </div>

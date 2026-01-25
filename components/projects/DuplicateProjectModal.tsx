@@ -14,6 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { duplicateProject } from "@/app/actions/project";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface DuplicateProjectModalProps {
     project: any;
@@ -23,6 +24,8 @@ interface DuplicateProjectModalProps {
 
 export default function DuplicateProjectModal({ project, isOpen, onClose }: DuplicateProjectModalProps) {
     const [newName, setNewName] = useState(`Cópia de ${project.name}`);
+    const [keepPhases, setKeepPhases] = useState(true);
+    const [keepTasks, setKeepTasks] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
@@ -30,7 +33,7 @@ export default function DuplicateProjectModal({ project, isOpen, onClose }: Dupl
         if (!newName.trim()) return;
         setIsLoading(true);
         try {
-            await duplicateProject(project.id, newName);
+            await duplicateProject(project.id, newName, { keepPhases, keepTasks });
             onClose();
             router.refresh();
         } catch (error) {
@@ -60,6 +63,24 @@ export default function DuplicateProjectModal({ project, isOpen, onClose }: Dupl
                             onChange={(e) => setNewName(e.target.value)}
                             className="col-span-3"
                         />
+                    </div>
+                    <div className="flex flex-col gap-3 ml-24">
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="keepPhases"
+                                checked={keepPhases}
+                                onCheckedChange={(checked) => setKeepPhases(checked === true)}
+                            />
+                            <Label htmlFor="keepPhases" className="text-sm font-normal">Manter Fases</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="keepTasks"
+                                checked={keepTasks}
+                                onCheckedChange={(checked) => setKeepTasks(checked === true)}
+                            />
+                            <Label htmlFor="keepTasks" className="text-sm font-normal">Manter Tarefas</Label>
+                        </div>
                     </div>
                 </div>
                 <DialogFooter className="">

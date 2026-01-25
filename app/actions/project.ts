@@ -10,16 +10,19 @@ import { projectSchema, updateProjectSchema, projectPhaseSchema } from "@/lib/va
 // --- CORE CRUD ---
 
 export async function createProject(data: z.infer<typeof projectSchema>) {
+    console.log("SERVER ACTION: createProject started", JSON.stringify(data));
     const session = await auth();
+    console.log("SERVER ACTION: session user", session?.user?.id);
     if (!session?.user?.id) return { error: "Unauthorized" };
 
     const result = projectSchema.safeParse(data);
-
     if (!result.success) {
+        console.log("SERVER ACTION: validation failed", JSON.stringify(result.error.flatten()));
         return { error: result.error.flatten().fieldErrors };
     }
 
     try {
+        console.log("SERVER ACTION: creating project in DB...");
         const project = await (prisma as any).project.create({
             data: {
                 ...result.data,
@@ -27,17 +30,22 @@ export async function createProject(data: z.infer<typeof projectSchema>) {
                 phases: result.data.phases as any, // Cast JSON
             },
         });
+        console.log("SERVER ACTION: project created successfully", project.id);
 
         revalidatePath("/dashboard/projects");
         if (data.clientId) revalidatePath(`/dashboard/clients/${data.clientId}`);
-        return { success: true, data: project };
+
+        const response = { success: true, data: project };
+        console.log("SERVER ACTION: returning response", JSON.stringify(response));
+        return response;
     } catch (error: any) {
-        console.error("Failed to create project:", error);
-        return { error: "Failed to create project." };
+        console.error("SERVER ACTION: DATABASE ERROR", error.message);
+        return { error: "Failed to create project: " + error.message };
     }
 }
 
 export async function getProjectById(id: string) {
+    console.log("SERVER ACTION: getProjectById", id);
     try {
         const project = await (prisma as any).project.findUnique({
             where: { id },
@@ -60,14 +68,16 @@ export async function getProjectById(id: string) {
                 },
             },
         });
+        console.log("SERVER ACTION: returning project", !!project);
         return project;
     } catch (error) {
-        console.error("Failed to get project:", error);
+        console.error("SERVER ACTION: Failed to get project:", error);
         return null;
     }
 }
 
 export async function updateProject(id: string, data: z.infer<typeof updateProjectSchema>) {
+    console.log("SERVER ACTION: updateProject", id, data);
     const session = await auth();
     if (!session?.user?.id) return { error: "Unauthorized" };
 
@@ -85,9 +95,11 @@ export async function updateProject(id: string, data: z.infer<typeof updateProje
 
         revalidatePath("/dashboard/projects");
         revalidatePath(`/dashboard/projects/${id}`);
-        return { success: true, data: project };
+        const response = { success: true, data: project };
+        console.log("SERVER ACTION: returning", response);
+        return response;
     } catch (error) {
-        console.error("Failed to update project:", error);
+        console.error("SERVER ACTION: Failed to update project:", error);
         return { error: "Failed to update project." };
     }
 }
@@ -411,14 +423,19 @@ export async function updateProjectProgress(projectId: string, progress: number)
 
 // --- UTILITIES ---
 
-export async function duplicateProject(projectId: string, newName: string) {
+export async function duplicateProject(projectId: string, newName: string, options?: { keepPhases?: boolean; keepTasks?: boolean }) {
     const session = await auth();
     if (!session?.user?.id) return { error: "Unauthorized" };
 
     try {
         const original = await (prisma as any).project.findUnique({
             where: { id: projectId },
-            include: { phases: true }
+            include: {
+                phases: true,
+                stages: {
+                    include: { tasks: true }
+                }
+            }
         });
 
         if (!original) return { error: "Original project not found" };
@@ -430,11 +447,11 @@ export async function duplicateProject(projectId: string, newName: string) {
                 ...data,
                 name: newName,
                 status: "PLANNING",
-                phases: data.phases as any
+                phases: options?.keepPhases ? data.phases : [],
             }
         });
 
-        revalidatePath("/projects");
+        revalidatePath("/dashboard/projects");
         return { success: true, data: newProject };
     } catch (error) {
         console.error("Failed to duplicate project:", error);
