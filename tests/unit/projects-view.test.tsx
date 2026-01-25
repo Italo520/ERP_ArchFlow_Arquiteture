@@ -5,10 +5,21 @@ import ProjectsView from '@/components/projects/ProjectsView';
 import { useRouter } from 'next/navigation';
 
 // Mock child components to isolate View logic
-jest.mock('@/components/projects/ProjectFilters', () => () => <div data-testid="project-filters">Filters</div>);
-jest.mock('@/components/projects/ProjectsTable', () => () => <div data-testid="projects-table">Table</div>);
-jest.mock('@/components/projects/ProjectKanban', () => () => <div data-testid="project-kanban">Kanban</div>);
-jest.mock('@/components/projects/ExportButton', () => () => <button>Export</button>);
+const MockProjectFilters = () => <div data-testid="project-filters">Filters</div>;
+MockProjectFilters.displayName = 'MockProjectFilters';
+jest.mock('@/components/projects/ProjectFilters', () => MockProjectFilters);
+
+const MockProjectsTable = () => <div data-testid="projects-table">Table</div>;
+MockProjectsTable.displayName = 'MockProjectsTable';
+jest.mock('@/components/projects/ProjectsTable', () => MockProjectsTable);
+
+const MockProjectKanban = () => <div data-testid="project-kanban">Kanban</div>;
+MockProjectKanban.displayName = 'MockProjectKanban';
+jest.mock('@/components/projects/ProjectKanban', () => MockProjectKanban);
+
+const MockExportButton = () => <button>Export</button>;
+MockExportButton.displayName = 'MockExportButton';
+jest.mock('@/components/projects/ExportButton', () => MockExportButton);
 jest.mock('next/navigation', () => ({
     useRouter: jest.fn(),
     useSearchParams: jest.fn(() => ({ get: jest.fn() })),

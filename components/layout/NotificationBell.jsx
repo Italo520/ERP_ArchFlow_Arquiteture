@@ -29,8 +29,8 @@ const NotificationBell = () => {
     };
 
     // Carrega notificações iniciais
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- Valid: Async data loading on mount
         loadNotifications();
         loadUnreadCount();
 
@@ -51,7 +51,7 @@ const NotificationBell = () => {
     // Sync WS notifications if necessary, but for now just relying on REST or empty.
     useEffect(() => {
         if (wsNotifications.length > 0) {
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- Valid: Syncing with external WebSocket data
             setNotifications(prev => [...prev, ...wsNotifications]);
         }
     }, [wsNotifications]);

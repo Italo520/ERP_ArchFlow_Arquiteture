@@ -12,31 +12,37 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
+// Mock history if not present in schema yet
+const MOCK_HISTORY = [
+    {
+        id: 1,
+        type: 'CREATE',
+        user: 'Sócio Diretor',
+        description: 'Projeto criado e orçamento inicial definido.',
+    },
+    {
+        id: 2,
+        type: 'PHASE_COMPLETE',
+        user: 'Arquiteto Responsável',
+        description: 'Fase "Estudo Preliminar" marcada como concluída.',
+        date: new Date(Date.now() - 86400000).toISOString()
+    },
+    {
+        id: 3,
+        type: 'UPLOAD',
+        user: 'Equipe de Design',
+        description: 'Upload de 3 novos renders conceituais.',
+        date: new Date(Date.now() - 172800000).toISOString()
+    }
+];
+
 export default function ProjectHistoryTab({ project }: { project: any }) {
-    // Mock history if not present in schema yet
-    const history = project.history || [
-        {
-            id: 1,
-            type: 'CREATE',
-            user: 'Sócio Diretor',
-            description: 'Projeto criado e orçamento inicial definido.',
-            date: project.createdAt || new Date().toISOString()
-        },
-        {
-            id: 2,
-            type: 'PHASE_COMPLETE',
-            user: 'Arquiteto Responsável',
-            description: 'Fase "Estudo Preliminar" marcada como concluída.',
-            date: new Date(Date.now() - 86400000).toISOString()
-        },
-        {
-            id: 3,
-            type: 'UPLOAD',
-            user: 'Equipe de Design',
-            description: 'Upload de 3 novos renders conceituais.',
-            date: new Date(Date.now() - 172800000).toISOString()
+    const history = project.history || MOCK_HISTORY.map(event => {
+        if (event.id === 1) {
+            return { ...event, date: project.createdAt || new Date().toISOString() };
         }
-    ];
+        return event;
+    });
 
     const getIcon = (type: string) => {
         switch (type) {

@@ -14,14 +14,15 @@ interface ProjectsViewProps {
 }
 
 export default function ProjectsView({ projects }: ProjectsViewProps) {
-    const [viewMode, setViewMode] = useState<'list' | 'kanban'>('list');
-
-    useEffect(() => {
-        const savedMode = localStorage.getItem('projectsViewMode');
-        if (savedMode === 'list' || savedMode === 'kanban') {
-            setViewMode(savedMode);
+    const [viewMode, setViewMode] = useState<'list' | 'kanban'>(() => {
+        if (typeof window !== 'undefined') {
+            const savedMode = localStorage.getItem('projectsViewMode');
+            if (savedMode === 'list' || savedMode === 'kanban') {
+                return savedMode;
+            }
         }
-    }, []);
+        return 'list';
+    });
 
     const handleViewChange = (mode: 'list' | 'kanban') => {
         setViewMode(mode);
