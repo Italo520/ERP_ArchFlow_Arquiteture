@@ -24,6 +24,12 @@ Este documento descreve as implementações realizadas na Fase 3 do ArchFlow, fo
 - Controle de orçamento (Orçado vs Realizado).
 - Métricas de rentabilidade e horas consumidas.
 
+### 5. Segurança e Autenticação (Recuperação de Senha)
+- Fluxo completo de "Esqueci minha senha" com envio de link seguro.
+- Geração de tokens de uso único com expiração de 1 hora.
+- Interface dedicada para redefinição de senha com validação.
+
+
 ## 🛠️ Detalhes Técnicos
 
 ### Server Actions Padronizadas

@@ -559,3 +559,14 @@ model AuditLog {
   @@index([createdAt])
   @@map("audit_logs")
 }
+
+model PasswordResetToken {
+  id      String   @id @default(uuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+  @@map("password_reset_tokens")
+}
+
