@@ -10,6 +10,8 @@ import ProjectPhasesTab from '@/components/projects/ProjectPhasesTab';
 import ProjectDocumentsTab from '@/components/projects/ProjectDocumentsTab';
 import ProjectFinancialTab from '@/components/projects/ProjectFinancialTab';
 import ProjectTeamTab from '@/components/projects/ProjectTeamTab';
+import { ProjectOverview } from '@/components/projects/ProjectOverview';
+
 
 export default async function ProjectPage({ params }) {
     const { id } = await params;
@@ -61,40 +63,7 @@ export default async function ProjectPage({ params }) {
                 </TabsList>
 
                 <TabsContent value="overview" className="flex-1">
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium">Horas Totais</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">{metrics?.totalHours || 0}h</div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium">Progresso</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">{metrics?.progress || 0}%</div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium">Estilo</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold capitalize text-sm">{project.architecturalStyle || 'N/A'}</div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium">Área</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">{project.totalArea || 0} m²</div>
-                            </CardContent>
-                        </Card>
-                    </div>
+                    <ProjectOverview project={project} />
                 </TabsContent>
 
                 <TabsContent value="activities" className="flex-1 h-full min-h-[500px]">

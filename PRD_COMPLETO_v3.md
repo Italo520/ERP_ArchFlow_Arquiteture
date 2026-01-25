@@ -855,26 +855,26 @@ archflow/
   - [x] "Salvar Filtro" como preset
 
 #### Subtarefa 3.2.4: View Toggle (Tabela vs Kanban)
-- [ ] **`app/(dashboard)/projects/page.tsx`** - Melhorar
-  - [ ] Toggle buttons: "Lista" vs "Kanban"
-  - [ ] Estado persistido em localStorage (view preference)
-  - [ ] Ambas views mostram os mesmos projetos
+- [x] **`app/(dashboard)/projects/page.tsx`** - Melhorar
+  - [x] Toggle buttons: "Lista" vs "Kanban"
+  - [x] Estado persistido em localStorage (view preference)
+  - [x] Ambas views mostram os mesmos projetos
 
 #### Subtarefa 3.2.5: Ações Rápidas em Projetos
-- [ ] **Context menu/dropdown em cada linha/card**
-  - [ ] Ver Detalhe
-  - [ ] Editar Informações
-  - [ ] Duplicar Projeto
-  - [ ] Compartilhar com Cliente
-  - [ ] Gerar Relatório
-  - [ ] Arquivar
-  - [ ] Deletar
+- [x] **Context menu/dropdown em cada linha/card**
+  - [x] Ver Detalhe
+  - [x] Editar Informações
+  - [x] Duplicar Projeto
+  - [x] Compartilhar com Cliente
+  - [x] Gerar Relatório
+  - [x] Arquivar
+  - [x] Deletar
 
 #### Subtarefa 3.2.6: Exportar Dados de Projetos
-- [ ] **`components/projects/ExportButton.tsx`** - NOVO
-  - [ ] Export para Excel (XLSX)
-  - [ ] Export para PDF com relatório
-  - [ ] Campos selecionáveis (que incluir no export)
+- [x] **`components/projects/ExportButton.tsx`** - NOVO
+  - [x] Export para Excel (XLSX)
+  - [x] Export para PDF com relatório
+  - [x] Campos selecionáveis (que incluir no export)
 
 ## 3.3 Frontend - Detalhe de Projeto
 ### Status: 20% (estrutura básica existe)
@@ -894,25 +894,25 @@ archflow/
     - [x] Equipe (0%)
     - [x] Histórico (0%)
 
-#### Subtarefa 3.3.2: Aba Overview
-- [ ] **`components/projects/ProjectOverview.tsx`** - NOVO
-  - [ ] Informações gerais do projeto
-    - [ ] Nome, Descrição
-    - [ ] Cliente
-    - [ ] Tipo de Obra (Residencial, Comercial, etc)
-    - [ ] Estilo Arquitetônico
-    - [ ] Tipo de Construção
-    - [ ] Área Total
-    - [ ] Número de Andares
-    - [ ] Data de Início
-    - [ ] Data Estimada de Conclusão
-  - [ ] Cards com métricas:
-    - [ ] Progresso geral
-    - [ ] Orçamento (utilizado vs total)
-    - [ ] Tempo dedicado (horas)
-    - [ ] Número de tarefas (total vs concluído)
-  - [ ] Timeline visual das fases
-  - [ ] Equipe envolvida
+#### Subtarefa 3.3.2: Aba Overview (100%)
+- [x] **`components/projects/ProjectOverview.tsx`** - COMPLETO
+  - [x] Informações gerais do projeto
+    - [x] Nome, Descrição
+    - [x] Cliente
+    - [x] Tipo de Obra (Residencial, Comercial, etc)
+    - [x] Estilo Arquitetônico
+    - [x] Tipo de Construção
+    - [x] Área Total
+    - [x] Número de Andares
+    - [x] Data de Início
+    - [x] Data Estimada de Conclusão
+  - [x] Cards com métricas:
+    - [x] Progresso geral
+    - [x] Orçamento (utilizado vs total)
+    - [x] Tempo dedicado (horas)
+    - [x] Número de tarefas (total vs concluído)
+  - [x] Timeline visual das fases
+  - [x] Equipe envolvida
 
 #### Subtarefa 3.3.3: Aba Fases
 - [ ] **`components/projects/ProjectPhasesTab.tsx`** - NOVO
