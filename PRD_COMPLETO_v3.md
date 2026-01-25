@@ -915,85 +915,85 @@ archflow/
   - [x] Equipe envolvida
 
 #### Subtarefa 3.3.3: Aba Fases
-- [ ] **`components/projects/ProjectPhasesTab.tsx`** - NOVO
-  - [ ] Lista de fases do projeto
-  - [ ] Para cada fase:
-    - [ ] Nome da fase
-    - [ ] Data de início
-    - [ ] Data de término
-    - [ ] Status (Pending, In Progress, Completed)
-    - [ ] Progresso (%)
-    - [ ] Ações: Editar, Completar, Deletar
-  - [ ] "Adicionar Nova Fase" button
-  - [ ] Modal/formulário para criar/editar fase
+- [x] **`components/projects/ProjectPhasesTab.tsx`** - NOVO
+  - [x] Lista de fases do projeto
+  - [x] Para cada fase:
+    - [x] Nome da fase
+    - [x] Data de início
+    - [x] Data de término
+    - [x] Status (Pending, In Progress, Completed)
+    - [x] Progresso (%)
+    - [x] Ações: Editar, Completar, Deletar
+  - [x] "Adicionar Nova Fase" button
+  - [x] Modal/formulário para criar/editar fase
 
 #### Subtarefa 3.3.4: Aba Tasks/Atividades
-- [ ] **`components/projects/ProjectTasksTab.tsx`** - NOVO
-  - [ ] Lista de tasks do projeto
-  - [ ] Filtro por fase
-  - [ ] Ordenação por prioridade, data de entrega, responsável
-  - [ ] Card de task com:
-    - [ ] Título
-    - [ ] Responsável
-    - [ ] Prioridade
-    - [ ] Data de entrega
-    - [ ] Status
-  - [ ] "Criar Nova Task" button
+- [x] **`components/projects/ProjectTasksTab.tsx`** - NOVO
+  - [x] Lista de tasks do projeto
+  - [x] Filtro por fase
+  - [x] Ordenação por prioridade, data de entrega, responsável
+  - [x] Card de task com:
+    - [x] Título
+    - [x] Responsável
+    - [x] Prioridade
+    - [x] Data de entrega
+    - [x] Status
+  - [x] "Criar Nova Task" button
 
 #### Subtarefa 3.3.5: Aba Deliverables
-- [ ] **`components/projects/ProjectDeliverablesTab.tsx`** - NOVO
-  - [ ] Grid/Galeria de deliverables
-  - [ ] Para cada deliverable:
-    - [ ] Thumbnail de preview
-    - [ ] Nome
-    - [ ] Tipo (Sketch, Render 3D, Drawing 2D, etc)
-    - [ ] Status (Draft, Pending Review, Approved, Delivered)
-    - [ ] Versão
-    - [ ] Data de criação
-    - [ ] Ações: Download, Preview, Delete, Upload Nova Versão
+- [x] **`components/projects/ProjectDeliverablesTab.tsx`** - NOVO
+  - [x] Grid/Galeria de deliverables
+  - [x] Para cada deliverable:
+    - [x] Thumbnail de preview
+    - [x] Nome
+    - [x] Tipo (Sketch, Render 3D, Drawing 2D, etc)
+    - [x] Status (Draft, Pending Review, Approved, Delivered)
+    - [x] Versão
+    - [x] Data de criação
+    - [x] Ações: Download, Preview, Delete, Upload Nova Versão
 
 #### Subtarefa 3.3.6: Aba Documentos
-- [ ] **`components/projects/ProjectDocumentsTab.tsx`** - NOVO
-  - [ ] Upload de documentos (drag & drop)
-  - [ ] Lista de documentos com:
-    - [ ] Nome
-    - [ ] Tipo (License, Permit, Contract, etc)
-    - [ ] Data de upload
-    - [ ] Tamanho
-    - [ ] Ações: Download, Preview, Delete
+- [x] **`components/projects/ProjectDocumentsTab.tsx`** - NOVO
+  - [x] Upload de documentos (drag & drop)
+  - [x] Lista de documentos com:
+    - [x] Nome
+    - [x] Tipo (License, Permit, Contract, etc)
+    - [x] Data de upload
+    - [x] Tamanho
+    - [x] Ações: Download, Preview, Delete
 
 #### Subtarefa 3.3.7: Aba Financeiro
-- [ ] **`components/projects/ProjectFinancialTab.tsx`** - NOVO
-  - [ ] Orçamento:
-    - [ ] Valor total planejado
-    - [ ] Valor gasto até agora
-    - [ ] Valor restante
-    - [ ] % Utilizado (barra visual)
-  - [ ] Breakdown por categoria
-  - [ ] Histórico de gastos (tabela)
-  - [ ] Gráfico de evolução de custos
+- [x] **`components/projects/ProjectFinancialTab.tsx`** - NOVO
+  - [x] Orçamento:
+    - [x] Valor total planejado
+    - [x] Valor gasto até agora
+    - [x] Valor restante
+    - [x] % Utilizado (barra visual)
+  - [x] Breakdown por categoria
+  - [x] Histórico de gastos (tabela)
+  - [x] Gráfico de evolução de custos
 
 #### Subtarefa 3.3.8: Aba Equipe
-- [ ] **`components/projects/ProjectTeamTab.tsx`** - NOVO
-  - [ ] Lista de arquitetos/membros do projeto
-  - [ ] Para cada membro:
-    - [ ] Avatar
-    - [ ] Nome
-    - [ ] Email
-    - [ ] Role (Arquiteto Responsável, Collaborador, etc)
-    - [ ] Horas dedicadas
-    - [ ] Ações: Remover, Mudar Role
-  - [ ] "Adicionar Membro" button
+- [x] **`components/projects/ProjectTeamTab.tsx`** - NOVO
+  - [x] Lista de arquitetos/membros do projeto
+  - [x] Para cada membro:
+    - [x] Avatar
+    - [x] Nome
+    - [x] Email
+    - [x] Role (Arquiteto Responsável, Collaborador, etc)
+    - [x] Horas dedicadas
+    - [x] Ações: Remover, Mudar Role
+  - [x] "Adicionar Membro" button
 
 #### Subtarefa 3.3.9: Aba Histórico
-- [ ] **`components/projects/ProjectHistoryTab.tsx`** - NOVO
-  - [ ] Audit log completo
-  - [ ] Timeline de mudanças (últimas 50 ações)
-  - [ ] Para cada ação:
-    - [ ] Timestamp
-    - [ ] Usuário que fez a ação
-    - [ ] O que foi alterado
-    - [ ] Valores antigo vs novo (se aplicável)
+- [x] **`components/projects/ProjectHistoryTab.tsx`** - NOVO
+  - [x] Audit log completo
+  - [x] Timeline de mudanças (últimas 50 ações)
+  - [x] Para cada ação:
+    - [x] Timestamp
+    - [x] Usuário que fez a ação
+    - [x] O que foi alterado
+    - [x] Valores antigo vs novo (se aplicável)
 
 ## 3.4 Frontend - Criar/Editar Projeto
 ### Status: 10% (formulário básico existe)

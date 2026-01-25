@@ -8,8 +8,11 @@ import { addProjectPhase, completeProjectPhase } from "@/app/actions/project";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Circle, Clock } from "lucide-react";
 
+import { ProjectPhasesDialog } from "./ProjectPhasesDialog";
+
 export default function ProjectPhasesTab({ project }: { project: any }) {
     const [isAdding, setIsAdding] = useState(false);
+    const [editingPhase, setEditingPhase] = useState<any>(null);
     const [newPhaseName, setNewPhaseName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
@@ -56,6 +59,13 @@ export default function ProjectPhasesTab({ project }: { project: any }) {
                 </Button>
             </div>
 
+            <ProjectPhasesDialog
+                project={project}
+                phase={editingPhase}
+                isOpen={!!editingPhase}
+                onClose={() => setEditingPhase(null)}
+            />
+
             {isAdding && (
                 <Card className="mb-6">
                     <CardContent className="pt-6 flex gap-4">
@@ -85,12 +95,17 @@ export default function ProjectPhasesTab({ project }: { project: any }) {
                                             <span className={`text-xs px-2 py-1 rounded-full ${isCompleted ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}>
                                                 {isCompleted ? "Concluído" : "Em Andamento"}
                                             </span>
-                                            {!isCompleted && (
-                                                <Button size="sm" variant="ghost" onClick={() => handleCompletePhase(phase.name)} disabled={isLoading}>
-                                                    <CheckCircle2 className="h-4 w-4 mr-1" />
-                                                    Concluir
+                                            <div className="flex items-center gap-2">
+                                                <Button size="sm" variant="ghost" onClick={() => setEditingPhase(phase)}>
+                                                    Editar
                                                 </Button>
-                                            )}
+                                                {!isCompleted && (
+                                                    <Button size="sm" variant="ghost" onClick={() => handleCompletePhase(phase.name)} disabled={isLoading}>
+                                                        <CheckCircle2 className="h-4 w-4 mr-1" />
+                                                        Concluir
+                                                    </Button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </CardHeader>
