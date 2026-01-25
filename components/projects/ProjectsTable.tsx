@@ -235,6 +235,12 @@ export default function ProjectsTable({ projects }: { projects: Project[] }) {
                                             <DropdownMenuItem onClick={() => setProjectToDuplicate(project)}>
                                                 <Copy className="mr-2 h-4 w-4" /> Duplicar
                                             </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => alert("Compartilhar - Em breve")}>
+                                                <MoreHorizontal className="mr-2 h-4 w-4" /> Compartilhar
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => alert("Relatório - Em breve")}>
+                                                <MoreHorizontal className="mr-2 h-4 w-4" /> Relatório
+                                            </DropdownMenuItem>
                                             <DropdownMenuItem>
                                                 <Archive className="mr-2 h-4 w-4" /> Arquivar
                                             </DropdownMenuItem>
