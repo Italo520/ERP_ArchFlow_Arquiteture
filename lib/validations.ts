@@ -65,7 +65,7 @@ export const updateClientSchema = clientSchema.partial().extend({
 });
 
 // --- Activity Schemas ---
-export const activitySchema = z.object({
+export const activityBaseSchema = z.object({
     type: ActivityTypeEnum,
     title: z.string().min(2, "Title is required"),
     description: z.string().optional().nullable(),
@@ -82,7 +82,17 @@ export const activitySchema = z.object({
     attachments: z.array(z.any()).optional(),
 });
 
-export const updateActivitySchema = activitySchema.partial().extend({
+export const activitySchema = activityBaseSchema.refine((data) => {
+    if (data.startTime && data.endTime) {
+        return data.endTime > data.startTime;
+    }
+    return true;
+}, {
+    message: "End time must be after start time",
+    path: ["endTime"],
+});
+
+export const updateActivitySchema = activityBaseSchema.partial().extend({
     id: z.string().uuid(),
 });
 
