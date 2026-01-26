@@ -117,7 +117,7 @@ Arquivos YAML definindo each skill (ações que o agente pode executar).
 | **client-management.yaml** | 8 | CRUD completo de clientes + import/export |
 | **activities-tracking.yaml** | 8 | Time tracking, registros de atividades, relatórios |
 
-**Total:** 22 skills disponibles
+**Total:** 21 módulos de skills disponíveis (incluindo guias de desenvolvimento e workflow)
 
 ---
 
@@ -159,6 +159,43 @@ Arquivos YAML definindo each skill (ações que o agente pode executar).
 7. get_productivity_stats     # Estatísticas de produtividade
 8. update_activity            # Atualizar atividade
 ```
+
+### 💻 Development Skills
+
+Skills especializadas para desenvolvimento de software e arquitetura de sistemas.
+
+| Skill | Descrição |
+|-------|-----------|
+| **backend-guidelines** | Guia completo para microsserviços Node.js/Express/TypeScript |
+| **frontend-design** | Criação de interfaces modernas e produção-grade |
+| **senior-fullstack** | Desenvolvimento fullstack (React, Next.js, Node.js, GraphQL) |
+| **software-architecture** | Design de arquitetura e análise de qualidade de código |
+| **react-ui-patterns** | Padrões modernos de UI em React (loading, error, data fetching) |
+| **testing-patterns** | Padrões de teste com Jest, factories e TDD |
+| **test-driven-development** | Workflow de TDD para implementação de features |
+| **identidade-visual** | Diretrizes visuais (cores, tipografia) do ArchFlow |
+
+### 🛠️ Workflow & Tools
+
+Ferramentas auxiliares para produtividade e automação.
+
+| Skill | Descrição |
+|-------|-----------|
+| **git-pushing** | Automação de commits e push com mensagens convencionais |
+| **systematic-debugging** | Processo sistemático para resolução de bugs |
+| **verification-before-completion** | Verificação obrigatória antes de concluir tarefas |
+| **concise-planning** | Geração de checklists e planos de ação atômicos |
+| **workflow-automation** | Automação de fluxos (n8n, Temporal, Inngest) |
+| **criador-skills** | Helper para criar novas skills de agente |
+
+### 📄 Special Format Tools
+
+Manipulação de arquivos específicos.
+
+| Skill | Descrição |
+|-------|-----------|
+| **pdf** | Manipulação completa de PDFs (extração, criação, merge) |
+| **xlsx** | Criação e análise de planilhas Excel/CSV |
 
 ---
 

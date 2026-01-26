@@ -10,6 +10,9 @@ Documentação completa de como usar o agente IA especializado em ERP para escri
 1. [Introdução](#introdução)
 2. [Configuração Inicial](#configuração-inicial)
 3. [Skills Disponíveis](#skills-disponíveis)
+   - [Core ERP](#1-client-management-gestão-de-clientes)
+   - [Development](#4-development-skills)
+   - [Workflow & Tools](#5-workflow--utility-skills)
 4. [Exemplos de Uso](#exemplos-de-uso)
 5. [Boas Práticas](#boas-práticas)
 6. [Troubleshooting](#troubleshooting)
@@ -460,6 +463,36 @@ Agente: [ANALISANDO PRODUTIVIDADE]
         2. Casa Residencial - 48.5h
         3. Reformão Comercial - 35.0h
 ```
+
+---
+
+### 4. **Development Skills**
+
+Estas skills fornecem diretrizes e padrões para o desenvolvimento do sistema. O agente as utiliza para garantir qualidade e consistência no código.
+
+| Skill | Descrição e Uso |
+|-------|-----------------|
+| **backend-guidelines** | **Uso:** Criar endpoints, services e repositories.<br>**Descrição:** Padrões para Node.js/Express, camadas (Controller/Service), tratamento de erros e validação Zod. |
+| **frontend-design** | **Uso:** Criar novas telas e componentes.<br>**Descrição:** Diretrizes de UI/UX para interfaces modernas, vibrantes e responsivas. Evita designs genéricos. |
+| **react-ui-patterns** | **Uso:** Implementar lógica de UI.<br>**Descrição:** Patterns para loading states, error boundaries, data fetching e feedback visual. |
+| **senior-fullstack** | **Uso:** Arquitetura geral e stack.<br>**Descrição:** Melhores práticas para Next.js 14+, Server Actions, Prisma e integração fullstack. |
+| **software-architecture** | **Uso:** Revisão e planejamento.<br>**Descrição:** Princípios de Clean Architecture, SOLID e modularização. |
+| **testing-patterns** | **Uso:** Escrever testes.<br>**Descrição:** Guia para testes unitários e de integração com Jest, incluindo factories e mocks. |
+| **identidade-visual** | **Uso:** Estilização.<br>**Descrição:** Paleta de cores oficial, tipografia e design tokens do ArchFlow. |
+
+### 5. **Workflow & Utility Skills**
+
+Skills que auxiliam no fluxo de trabalho do agente e do desenvolvedor.
+
+| Skill | Descrição e Uso |
+|-------|-----------------|
+| **git-pushing** | **Uso:** `ag commit` ou "push changes".<br>**Descrição:** Gera mensagens de commit convencionais e realiza push automático. |
+| **systematic-debugging** | **Uso:** "Debugar erro X".<br>**Descrição:** Checklists e procedimentos para isolar e corrigir bugs complexos. |
+| **verification-before-completion** | **Uso:** Antes de marcar tarefa como "Done".<br>**Descrição:** Garante que testes e builds rodem antes de finalizar. |
+| **concise-planning** | **Uso:** "Planeje a task X".<br>**Descrição:** Cria planos de implementação detalhados e atômicos. |
+| **workflow-automation** | **Uso:** Criar automações.<br>**Descrição:** Padrões para n8n e background jobs duráveis. |
+| **pdf** | **Uso:** "Ler PDF" ou "Gerar relatório PDF".<br>**Descrição:** Extração de texto/tabelas e geração de documentos PDF. |
+| **xlsx** | **Uso:** "Criar planilha".<br>**Descrição:** Manipulação avançada de Excel e CSV. |
 
 ---
 
