@@ -9,7 +9,17 @@ jest.mock("@/lib/prisma", () => ({
         timeLog: {
             aggregate: jest.fn(),
         },
+        activity: {
+            findMany: jest.fn(),
+            count: jest.fn(),
+        },
+        $transaction: jest.fn((promises) => Promise.all(promises)),
     },
+}));
+
+// Mock Next Cache
+jest.mock("next/cache", () => ({
+    revalidatePath: jest.fn(),
 }));
 
 // Mock Auth
@@ -101,5 +111,36 @@ describe("Activity Unit Tests", () => {
             const result = await calculateBillableHours("project-empty");
             expect(result.data?.totalBillableHours).toBe(0);
         });
+    });
+});
+
+import { listActivities } from "@/app/actions/activity";
+
+describe("listActivities", () => {
+    it("should apply filters correctly", async () => {
+        // Mock return value
+        (prisma.activity.findMany as jest.Mock).mockResolvedValueOnce([]);
+        (prisma.activity.count as jest.Mock).mockResolvedValueOnce(0);
+
+        const filters = {
+            type: ActivityType.MEETING,
+            date: "2023-01-01"
+        };
+
+        await listActivities(filters, 1, 10);
+
+        const expectedDateStart = new Date("2023-01-01");
+        const expectedDateEnd = new Date("2023-01-02");
+
+        // Verify prisma call arguments
+        expect(prisma.activity.findMany).toHaveBeenCalledWith(expect.objectContaining({
+            where: expect.objectContaining({
+                type: ActivityType.MEETING,
+                startTime: {
+                    gte: expectedDateStart,
+                    lt: expectedDateEnd
+                }
+            })
+        }));
     });
 });

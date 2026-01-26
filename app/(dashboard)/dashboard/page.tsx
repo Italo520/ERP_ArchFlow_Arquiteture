@@ -1,31 +1,92 @@
-import React from 'react';
-import { getUserProjects } from '@/actions/project';
-import ProjectList from '@/components/dashboard/ProjectList';
-import Link from 'next/link';
+import { getDashboardMetrics } from "@/app/actions/dashboard";
+import { getCurrentUser } from "@/app/actions/auth";
+import { KPICard } from "@/components/dashboard/KPICard";
+import { DeadlineAlerts } from "@/components/dashboard/DeadlineAlerts";
+import { TodayActivities } from "@/components/dashboard/TodayActivities";
+import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
+import { Briefcase, CheckCircle, DollarSign, Users } from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-export default async function Dashboard() {
-    const projects = await getUserProjects();
+export default async function DashboardPage() {
+    const user = await getCurrentUser();
+    const metrics = await getDashboardMetrics(user?.id);
+
+    const currentDate = format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR });
+    // Capitalize first letter of formatted date
+    const formattedDate = currentDate.charAt(0).toUpperCase() + currentDate.slice(1);
+
+    // Format currency
+    const formattedRevenue = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(metrics.kpi.monthlyRevenue);
 
     return (
-        <div className="p-6 lg:p-10 max-w-[1400px] mx-auto">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-                <div className="flex flex-col gap-2">
-                    <h1 className="text-slate-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Meus Projetos</h1>
-                    <p className="text-slate-500 dark:text-[#95c6a9] text-base font-normal leading-normal max-w-2xl">
-                        Gerencie todos os seus projetos e acompanhe o progresso em tempo real.
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <Link href="/projects/new" className="flex items-center justify-center rounded-lg h-10 px-4 bg-primary text-[#122118] text-sm font-bold hover:bg-[#1bc65f] transition-colors shadow-lg shadow-primary/20">
-                        <span className="material-symbols-outlined mr-2 text-[18px]">add</span>
-                        <span>Novo Projeto</span>
-                    </Link>
+        <div className="flex-1 space-y-4 p-8 pt-6">
+            <div className="flex items-center justify-between space-y-2">
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+                    {/* Saudação personalizada could be "Olá, {user?.name}" if name available */}
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <p>Bem-vindo de volta!</p>
+                        <span>•</span>
+                        <p className="capitalize">{formattedDate}</p>
+                    </div>
                 </div>
             </div>
 
-            {/* Content */}
-            <ProjectList projects={projects} />
+            {/* KPI Section */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <KPICard
+                    title="Total de Clientes"
+                    value={metrics.kpi.totalClients}
+                    icon={Users}
+                    trendLabel="ativos na base"
+                />
+                <KPICard
+                    title="Projetos Ativos"
+                    value={metrics.kpi.activeProjects}
+                    icon={Briefcase}
+                    intent="positive"
+                />
+                <KPICard
+                    title="Receita do Mês"
+                    value={formattedRevenue}
+                    icon={DollarSign}
+                    intent="positive"
+                    // trend={12} // Example trend
+                    trendLabel="faturado (estimado)"
+                />
+                <KPICard
+                    title="Concluídos (Total)"
+                    value="-"
+                    icon={CheckCircle}
+                    trendLabel="essa semana"
+                />
+            </div>
+
+            {/* Main Content Grid */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+
+                {/* Charts Section - Takes 4 cols on large screens (approx 60%) */}
+                <div className="col-span-4">
+                    <DashboardCharts
+                        productivityData={metrics.charts.productivity}
+                        projectDistribution={metrics.charts.projectDistribution}
+                    />
+                </div>
+
+                {/* Side Panel - Takes 3 cols on large screens (approx 40%) */}
+                <div className="col-span-3 space-y-4">
+                    <div className="h-[300px]">
+                        <DeadlineAlerts projects={metrics.lists.urgentProjects} />
+                    </div>
+                    <div className="h-[400px]">
+                        <TodayActivities activities={metrics.lists.todaysAgenda} />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
