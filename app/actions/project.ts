@@ -431,7 +431,6 @@ export async function duplicateProject(projectId: string, newName: string, optio
         const original = await (prisma as any).project.findUnique({
             where: { id: projectId },
             include: {
-                phases: true,
                 stages: {
                     include: { tasks: true }
                 }
@@ -448,6 +447,7 @@ export async function duplicateProject(projectId: string, newName: string, optio
                 name: newName,
                 status: "PLANNING",
                 phases: options?.keepPhases ? data.phases : [],
+                stages: undefined, // Explicitly exclude stages to avoid relation create error
             }
         });
 
