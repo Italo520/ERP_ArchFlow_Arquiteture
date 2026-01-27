@@ -51,7 +51,6 @@ export function QuickActivityModal({ date, trigger }: QuickActivityModalProps) {
     const [open, setOpen] = useState(false);
     const router = useRouter();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = useForm<any>({
         resolver: zodResolver(quickActivitySchema) as any,
         defaultValues: {

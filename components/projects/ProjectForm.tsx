@@ -36,7 +36,6 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = useForm<any>({
         resolver: zodResolver(projectSchema) as any,
         defaultValues: {

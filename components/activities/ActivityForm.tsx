@@ -44,7 +44,6 @@ interface ActivityFormProps {
 
 export function ActivityForm({ initialData, onSuccess, projects = [], clients = [] }: ActivityFormProps) {
     const router = useRouter();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = useForm({
         resolver: zodResolver(formSchema) as any,
         defaultValues: initialData || {

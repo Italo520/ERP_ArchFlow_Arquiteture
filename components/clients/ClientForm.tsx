@@ -30,7 +30,6 @@ export function ClientForm({ initialData }: ClientFormProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [cepLoading, setCepLoading] = useState(false);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = useForm<any>({
         resolver: zodResolver(clientSchema) as any,
         defaultValues: initialData ? {

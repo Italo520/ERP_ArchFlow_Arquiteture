@@ -42,7 +42,6 @@ interface ManualTimeLogFormProps {
 
 export function ManualTimeLogForm({ projects }: ManualTimeLogFormProps) {
     const router = useRouter();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = useForm<any>({
         resolver: zodResolver(manualLogSchema) as any,
         defaultValues: {
