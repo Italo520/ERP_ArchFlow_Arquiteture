@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -66,10 +67,11 @@ export default function ProjectDeliverablesTab({ project }: { project: any }) {
                     <Card key={item.id} className="overflow-hidden group hover:shadow-lg transition-all">
                         <div className="aspect-video bg-muted flex items-center justify-center relative">
                             {item.type === 'RENDER_3D' && item.fileUrl ? (
-                                <img
+                                <Image
                                     src={item.fileUrl}
                                     alt={item.name}
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    className="object-cover"
                                 />
                             ) : (
                                 getFileIcon(item.type)

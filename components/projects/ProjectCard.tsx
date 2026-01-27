@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import {
     Card,
     CardContent,
@@ -52,9 +54,10 @@ export function ProjectCard({ project, onDelete, onDuplicate }: ProjectCardProps
             <CardHeader className="p-0 relative">
                 <div className="aspect-video w-full bg-muted rounded-t-xl overflow-hidden relative">
                     {project.thumbnailUrl ? (
-                        <img
+                        <Image
                             src={project.thumbnailUrl}
                             alt={project.name}
+                            fill
                             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
                         />
                     ) : (

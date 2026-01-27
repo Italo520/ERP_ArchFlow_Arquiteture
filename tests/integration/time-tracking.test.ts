@@ -19,8 +19,12 @@ describe("Time Tracking Integration Tests", () => {
         const project = await createProject({
             name: "Time Tracking Test Project",
             status: "PLANNING",
+            visibility: "PRIVATE",
+            hasGarage: false,
+            hasBasement: false,
+            environmentalLicenseRequired: false,
         });
-        if (!project.success || !project.data) throw new Error("Failed to create test project");
+        if ('error' in project || !project.success) throw new Error("Failed to create test project");
         testProjectId = project.data.id;
     });
 

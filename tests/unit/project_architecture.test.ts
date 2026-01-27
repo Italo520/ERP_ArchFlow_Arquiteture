@@ -38,6 +38,9 @@ describe("Project Architecture Actions", () => {
                 numberOfRooms: 8,
                 hasBasement: true,
                 environmentalLicenseRequired: true,
+                hasGarage: true,
+                visibility: "TEAM" as const,
+                status: "PLANNING",
                 phases: [
                     { name: "Briefing", order: 1, status: "COMPLETED" as const },
                     { name: "Anteprojeto", order: 2, status: "IN_PROGRESS" as const }
@@ -75,6 +78,7 @@ describe("Project Architecture Actions", () => {
 
             const result = await createProject(projectData);
 
+            if ('error' in result) throw new Error("Failed to create project");
             expect(result.success).toBe(true);
             expect(mockPrisma.project.create).toHaveBeenCalledWith({
                 data: expect.objectContaining({
@@ -102,6 +106,7 @@ describe("Project Architecture Actions", () => {
 
             const result = await updateProjectPhase("proj-1", phases);
 
+            if ('error' in result) throw new Error("Failed to update project phases");
             expect(result.success).toBe(true);
             expect(mockPrisma.project.update).toHaveBeenCalledWith({
                 where: { id: "proj-1" },
@@ -126,6 +131,7 @@ describe("Project Architecture Actions", () => {
             } as any);
 
             // Mock TimeLogs
+            // @ts-ignore
             mockPrisma.timeLog.groupBy.mockResolvedValue([
                 { category: "DESIGN", _sum: { duration: 10.5 } },
                 { category: "MEETING", _sum: { duration: 2.0 } }
