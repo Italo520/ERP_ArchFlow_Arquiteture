@@ -14,13 +14,13 @@ import { startOfMonth, endOfMonth, subMonths, format, startOfQuarter, endOfQuart
 import { ptBR } from "date-fns/locale";
 
 interface ReportsPageProps {
-    searchParams: {
+    searchParams: Promise<{
         period?: string;
         from?: string;
         to?: string;
         projects?: string;
         tab?: string;
-    };
+    }>;
 }
 
 function getPeriodDates(period: string, from?: string, to?: string) {
@@ -160,15 +160,16 @@ async function getReportData(
 }
 
 export default async function ReportsPage({ searchParams }: ReportsPageProps) {
+    const params = await searchParams;
     const user = await getCurrentUser();
     if (!user) {
         return <div>Acesso negado</div>;
     }
 
-    const period = searchParams.period || "month";
-    const periodDates = getPeriodDates(period, searchParams.from, searchParams.to);
-    const projectIds = searchParams.projects?.split(",").filter(Boolean);
-    const activeTab = searchParams.tab || "business";
+    const period = params.period || "month";
+    const periodDates = getPeriodDates(period, params.from, params.to);
+    const projectIds = params.projects?.split(",").filter(Boolean);
+    const activeTab = params.tab || "business";
 
     const reportData = await getReportData(periodDates, projectIds);
 

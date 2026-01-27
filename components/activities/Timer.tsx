@@ -104,7 +104,7 @@ export function Timer({ projects }: TimerProps) {
         const result = await startTimeLog({
             projectId,
             description,
-            category: TimeLogCategory.DEVELOPMENT, // Default or add selector
+            category: TimeLogCategory.DESIGN, // Default or add selector
             billable: true // Default or add selector
         });
 

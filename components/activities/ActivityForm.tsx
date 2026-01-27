@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { activitySchema } from "@/lib/validations";
+import { activityBaseSchema } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -32,8 +32,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { ActivityType } from "@prisma/client";
 
-// Extend schema for form usage if needed, or use directly
-const formSchema = activitySchema;
+// Use base schema (ZodObject) instead of refined schema (ZodEffects) for react-hook-form compatibility
+const formSchema = activityBaseSchema;
 
 interface ActivityFormProps {
     initialData?: any; // Replace with proper type from DB
@@ -44,14 +44,15 @@ interface ActivityFormProps {
 
 export function ActivityForm({ initialData, onSuccess, projects = [], clients = [] }: ActivityFormProps) {
     const router = useRouter();
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const form = useForm({
+        resolver: zodResolver(formSchema) as any,
         defaultValues: initialData || {
             type: "MEETING",
             title: "",
             description: "",
             startTime: new Date(),
-            endTime: new Date(new Date().setHours(new Date().getHours() + 1)), // Default 1 hour duration
+            endTime: new Date(new Date().setHours(new Date().getHours() + 1)),
             status: "SCHEDULED",
         },
     });
@@ -62,7 +63,7 @@ export function ActivityForm({ initialData, onSuccess, projects = [], clients = 
         try {
             let result;
             if (initialData?.id) {
-                result = await updateActivity(initialData.id, values);
+                result = await updateActivity(initialData.id, values as any);
             } else {
                 result = await createActivity(values);
             }

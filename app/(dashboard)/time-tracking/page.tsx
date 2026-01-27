@@ -19,14 +19,15 @@ import { Loader2 } from "lucide-react";
 
 
 interface PageProps {
-    searchParams: {
+    searchParams: Promise<{
         projectId?: string;
         startDate?: string;
         endDate?: string;
-    };
+    }>;
 }
 
 export default async function TimeTrackingPage({ searchParams }: PageProps) {
+    const params = await searchParams;
     const session = await auth();
 
     // Parallel data fetching
@@ -43,9 +44,9 @@ export default async function TimeTrackingPage({ searchParams }: PageProps) {
         prisma.project.findMany({ select: { id: true, name: true } }),
         // 2. Recent Logs with Filters from URL
         listTimeLogs(1, 50, {
-            projectId: searchParams?.projectId,
-            startDate: searchParams?.startDate,
-            endDate: searchParams?.endDate
+            projectId: params?.projectId,
+            startDate: params?.startDate,
+            endDate: params?.endDate
         }),
         // 3. Metrics
         getTimeLogMetrics(),

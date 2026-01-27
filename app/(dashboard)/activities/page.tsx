@@ -19,14 +19,15 @@ type ActivityWithRelations = Prisma.ActivityGetPayload<{
 }>;
 
 interface PageProps {
-    searchParams: {
+    searchParams: Promise<{
         date?: string;
-    };
+    }>;
 }
 
 export default async function ActivitiesPage({ searchParams }: PageProps) {
+    const params = await searchParams;
     // 1. Resolve selected date (URL or Today)
-    const selectedDateStr = searchParams.date || format(new Date(), "yyyy-MM-dd");
+    const selectedDateStr = params.date || format(new Date(), "yyyy-MM-dd");
     const selectedDate = new Date(selectedDateStr);
 
     // 2. Determine date range for fetching (Month window for dots, specific date for list? 

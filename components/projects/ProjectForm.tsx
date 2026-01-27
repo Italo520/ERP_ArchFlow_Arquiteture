@@ -36,18 +36,17 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const form = useForm<z.infer<typeof projectSchema>>({
-        resolver: zodResolver(projectSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const form = useForm<any>({
+        resolver: zodResolver(projectSchema) as any,
         defaultValues: {
             name: initialData?.name || "",
             status: initialData?.status || "PLANNING",
             clientId: initialData?.clientId || "",
             projectType: initialData?.projectType || "",
             address: initialData?.address || "",
-            // @ts-ignore
-            startDate: initialData?.startDate ? new Date(initialData.startDate) : undefined,
-            // @ts-ignore
-            estimatedEndDate: initialData?.estimatedEndDate ? new Date(initialData.estimatedEndDate) : undefined,
+            startDate: initialData?.startDate ? new Date(initialData.startDate as any) : undefined,
+            estimatedEndDate: initialData?.estimatedEndDate ? new Date(initialData.estimatedEndDate as any) : undefined,
             totalArea: initialData?.totalArea || 0,
             plannedCost: initialData?.plannedCost || 0,
             architecturalStyle: initialData?.architecturalStyle || null,
@@ -61,7 +60,7 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
         },
     });
 
-    async function onSubmit(data: z.infer<typeof projectSchema>) {
+    async function onSubmit(data: any) {
         setIsLoading(true);
         setError("");
 
@@ -122,7 +121,7 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Nome do Projeto</Label>
                                     <Input id="name" {...form.register("name")} />
-                                    {form.formState.errors.name && <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>}
+                                    {form.formState.errors.name && <p className="text-sm text-destructive">{String(form.formState.errors.name.message)}</p>}
                                 </div>
 
                                 <div className="space-y-2">

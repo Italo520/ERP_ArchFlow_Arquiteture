@@ -1,8 +1,7 @@
 "use client";
 
-import { ActivityWithDetails } from "@/app/actions/activity"; // We will create this type or infer it properly, for now assuming it's similar to the Card's needs
 import { ActivityCard } from "./ActivityCard";
-import { format, isSameDay, parseISO } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Activity } from "@prisma/client";
 

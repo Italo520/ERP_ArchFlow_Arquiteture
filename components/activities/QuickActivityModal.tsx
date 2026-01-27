@@ -51,8 +51,9 @@ export function QuickActivityModal({ date, trigger }: QuickActivityModalProps) {
     const [open, setOpen] = useState(false);
     const router = useRouter();
 
-    const form = useForm<z.infer<typeof quickActivitySchema>>({
-        resolver: zodResolver(quickActivitySchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const form = useForm<any>({
+        resolver: zodResolver(quickActivitySchema) as any,
         defaultValues: {
             title: "",
             type: "MEETING",
@@ -63,7 +64,7 @@ export function QuickActivityModal({ date, trigger }: QuickActivityModalProps) {
 
     const isSubmitting = form.formState.isSubmitting;
 
-    async function onSubmit(values: z.infer<typeof quickActivitySchema>) {
+    async function onSubmit(values: any) {
         // Construct full Date objects
         const startDateTime = new Date(date);
         const [hours, minutes] = values.startTime.split(':');

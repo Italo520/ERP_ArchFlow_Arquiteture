@@ -1,6 +1,6 @@
 'use server';
 
-import { db } from "@/lib/db";
+import { prisma as db } from "@/lib/prisma";
 import { startOfMonth, endOfMonth, startOfDay, endOfDay, subDays, format } from "date-fns";
 import { ActivityType } from "@prisma/client";
 
