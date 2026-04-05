@@ -1,11 +1,54 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import NotificationService from '@/services/notification.service';
+import { useSession } from 'next-auth/react';
 
 const NotificationBell = () => {
-    const { notifications, isConnected, unreadCount, markAsRead, clearNotifications } = useWebSocket();
+    const { data: session } = useSession();
+    const userId = session?.user?.id || 'global';
+
+    const {
+        notifications,
+        isConnected,
+        unreadCount,
+        markAsRead: wsMarkAsRead,
+        clearNotifications,
+        setInitialNotifications
+    } = useWebSocket(userId);
+
     const [isOpen, setIsOpen] = useState(false);
+
+    // Fetch initial notifications on mount
+    useEffect(() => {
+        const loadNotifications = async () => {
+            try {
+                // If the service doesn't work, this will fail gracefully
+                const data = await NotificationService.getNotifications();
+                if (data && Array.isArray(data)) {
+                    setInitialNotifications(data);
+                }
+            } catch (error) {
+                console.error('Failed to load initial notifications', error);
+            }
+        };
+
+        if (session?.user?.id) {
+            loadNotifications();
+        }
+    }, [session?.user?.id, setInitialNotifications]);
+
+    const handleMarkAsRead = async (notificationId) => {
+        // Optimistic update
+        wsMarkAsRead(notificationId);
+
+        try {
+            await NotificationService.markAsRead(notificationId);
+        } catch (error) {
+            console.error('Failed to mark as read on server', error);
+        }
+    };
 
     return (
         <div className="relative">
@@ -13,6 +56,7 @@ const NotificationBell = () => {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center justify-center rounded-full size-10 hover:bg-surface-dark text-white transition-colors relative"
+                title="Notificações"
             >
                 <span className="material-symbols-outlined">notifications</span>
 
@@ -27,7 +71,7 @@ const NotificationBell = () => {
                 <span
                     className={`absolute bottom-1.5 right-1.5 size-2 rounded-full border border-background-dark ${isConnected ? 'bg-primary' : 'bg-muted'
                         }`}
-                    title={isConnected ? 'Conectado' : 'Desconectado'}
+                    title={isConnected ? 'Conectado em Tempo Real' : 'Desconectado'}
                 />
             </button>
 
@@ -58,48 +102,54 @@ const NotificationBell = () => {
                         </div>
 
                         {/* Notifications List */}
-                        <div className="overflow-y-auto flex-1">
+                        <div className="overflow-y-auto flex-1 bg-white dark:bg-neutral-800">
                             {notifications.length === 0 ? (
-                                <div className="p-8 text-center text-text-secondary">
+                                <div className="p-8 text-center text-text-secondary dark:text-gray-400">
                                     <span className="material-symbols-outlined text-4xl mb-2 block opacity-50">
                                         notifications_off
                                     </span>
                                     <p className="text-sm">Nenhuma notificação</p>
                                 </div>
                             ) : (
-                                <div className="divide-y divide-border-dark">
+                                <div className="divide-y divide-gray-100 dark:divide-neutral-700">
                                     {notifications.map((notification, index) => (
                                         <div
                                             key={notification.id || index}
-                                            onClick={() => !notification.read && markAsRead(notification.id)}
-                                            className={`p-4 hover:bg-surface-highlight transition-colors cursor-pointer ${!notification.read ? 'bg-surface-highlight/50' : ''
+                                            onClick={() => !notification.read && handleMarkAsRead(notification.id)}
+                                            className={`p-4 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors cursor-pointer ${!notification.read ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
                                                 }`}
                                         >
                                             <div className="flex items-start gap-3">
-                                                <div className={`p-2 rounded-full ${notification.type === 'success' ? 'bg-status-done/10 text-status-done' :
-                                                    notification.type === 'warning' ? 'bg-status-todo/10 text-status-todo' :
-                                                        notification.type === 'error' ? 'bg-destructive/10 text-destructive' :
-                                                            'bg-primary/20 text-primary'
+                                                <div className={`p-2 rounded-full flex-shrink-0 ${notification.type === 'success' ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' :
+                                                    notification.type === 'warning' ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                                                        notification.type === 'error' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
+                                                            'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
                                                     }`}>
-                                                    <span className="material-symbols-outlined text-lg">
+                                                    <span className="material-symbols-outlined text-sm">
                                                         {notification.icon || 'info'}
                                                     </span>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-white text-sm font-medium mb-1">
+                                                    <p className={`text-sm font-medium mb-1 ${!notification.read ? 'text-gray-900 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'}`}>
                                                         {notification.title || 'Notificação'}
                                                     </p>
-                                                    <p className="text-text-secondary text-xs line-clamp-2">
+                                                    <p className="text-gray-500 dark:text-gray-400 text-xs line-clamp-2">
                                                         {notification.message}
                                                     </p>
                                                     {notification.timestamp && (
-                                                        <p className="text-text-secondary text-xs mt-1">
+                                                        <p className="text-gray-400 text-[10px] mt-1">
                                                             {new Date(notification.timestamp).toLocaleString('pt-BR')}
+                                                        </p>
+                                                    )}
+                                                    {/* Compatibilidade com dados antigos */}
+                                                    {notification.createdAt && !notification.timestamp && (
+                                                        <p className="text-gray-400 text-[10px] mt-1">
+                                                            {new Date(notification.createdAt).toLocaleString('pt-BR')}
                                                         </p>
                                                     )}
                                                 </div>
                                                 {!notification.read && (
-                                                    <div className="size-2 bg-primary rounded-full mt-2" />
+                                                    <div className="size-2 bg-primary rounded-full mt-2 flex-shrink-0" />
                                                 )}
                                             </div>
                                         </div>
