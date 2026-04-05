@@ -1,6 +1,5 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
@@ -21,7 +20,6 @@ async function getUser(email: string) {
 export const { handlers, auth, signIn, signOut } = NextAuth({
     secret: process.env.AUTH_SECRET,
     ...authConfig,
-    adapter: PrismaAdapter(prisma) as any,
     providers: [
         Credentials({
             name: "Credentials",
@@ -30,34 +28,38 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
-                console.log("Authorize called with:", credentials?.email);
+                console.log("NextAuth Authorize attempt for:", credentials?.email);
                 const parsedCredentials = z
                     .object({ email: z.string().email(), password: z.string().min(6) })
                     .safeParse(credentials);
-
+ 
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
-                    const normalizedEmail = email.toLowerCase();
+                    const normalizedEmail = email.toLowerCase().trim();
                     const user = await getUser(normalizedEmail);
+                    
                     if (!user) {
-                        console.log("User not found:", normalizedEmail);
+                        console.log("Auth Fail: User not found in DB:", normalizedEmail);
                         return null;
                     }
-                    console.log("User found, validating password...");
 
                     const passwordsMatch = await bcrypt.compare(password, user.passwordHash);
-
+ 
                     if (passwordsMatch) {
-                        console.log("Password valid!");
-                        return user;
+                        console.log("Auth Success: Password match for:", normalizedEmail);
+                        return {
+                            id: user.id,
+                            name: user.fullName,
+                            email: user.email,
+                            role: user.role
+                        };
                     } else {
-                        console.log("Password invalid for user:", email);
+                        console.log("Auth Fail: Password mismatch for:", normalizedEmail);
                     }
                 } else {
-                    console.log("Zod validation failed:", parsedCredentials.error);
+                    console.error("Auth Fail: Invalid email/password format", parsedCredentials.error.format());
                 }
-
-                console.log('Invalid credentials final return');
+ 
                 return null;
             },
         }),

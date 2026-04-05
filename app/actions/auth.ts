@@ -72,11 +72,9 @@ export async function signUp(data: z.infer<typeof signUpSchema>) {
 
         await prisma.user.create({
             data: {
-                email,
+                email: email.toLowerCase(),
                 fullName: name,
                 passwordHash,
-                // These fields are not in the current Schema, but we accept them to avoid errors.
-                // In the future, they could be mapped to a Company model or user metadata.
             },
         });
 
