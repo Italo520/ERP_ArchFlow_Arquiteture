@@ -82,7 +82,8 @@ export async function updateKanbanColumn(id: string, data: { title?: string, col
     if (!session?.user?.id) return { error: "Unauthorized" };
 
     try {
-        const column = await (prisma as any).projectKanbanColumn.update({
+        const model = (prisma as any).projectKanbanColumn || (prisma as any).ProjectKanbanColumn;
+        const column = await model.update({
             where: { id },
             data
         });
@@ -136,7 +137,8 @@ export async function updateProjectStatus(projectId: string, statusId: string) {
     if (!session?.user?.id) return { error: "Unauthorized" };
 
     try {
-        const project = await (prisma as any).project.update({
+        const projectModel = (prisma as any).project || (prisma as any).Project;
+        const project = await projectModel.update({
             where: { id: projectId },
             data: { status: statusId }
         });
