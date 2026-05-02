@@ -10,14 +10,36 @@ import { updateStage } from '@/actions/stage';
 import { 
     Plus, 
     X, 
-    MoreVertical, 
-    Edit2, 
-    Trash2, 
     Loader2 
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
-export function KanbanColumn({ stage, tasks, projectId, onTaskClick }) {
+interface Task {
+    id: string;
+    title: string;
+    description?: string | null;
+    priority?: string | null;
+    dueDate?: Date | string | null;
+    stageId: string;
+    projectId: string;
+    position: number;
+    [key: string]: any;
+}
+
+interface Stage {
+    id: string;
+    name: string;
+    projectId: string;
+    order: number;
+}
+
+interface KanbanColumnProps {
+    stage: Stage;
+    tasks: Task[];
+    projectId: string;
+    onTaskClick?: (task: Task) => void;
+}
+
+export function KanbanColumn({ stage, tasks, projectId, onTaskClick }: KanbanColumnProps) {
     const [isAdding, setIsAdding] = useState(false);
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [isEditingName, setIsEditingName] = useState(false);
@@ -78,18 +100,14 @@ export function KanbanColumn({ stage, tasks, projectId, onTaskClick }) {
 
         startTransition(async () => {
             try {
-                // We need to import updateStage, will add import in next step or use dynamic import/pass as prop?
-                // Better to import it directly.
-                // NOTE: I need to add the import statement for updateStage.
-                // For now, I'll assume handleRename logic details here and fix import in a separate block if needed, 
-                // or I can try to do it in one go if I check imports first.
-                // Since I am replacing lines 57-59 (header content), I can't easily add import at top.
-                // I will add the logic here and then add the import.
-                await updateStage(stage.id, projectId || stage.projectId, { name: stageName });
+                await updateStage(stage.id, projectId || stage.projectId, { name: stageName.trim() });
                 setIsEditingName(false);
             } catch (error) {
                 console.error("Failed to rename stage", error);
                 alert("Erro ao renomear etapa");
+                // Revert UI state on error
+                setStageName(stage.name);
+                setIsEditingName(false);
             }
         });
     };
